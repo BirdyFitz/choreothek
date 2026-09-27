@@ -3,6 +3,7 @@ import path from 'path';
 import { getUploadsDir } from './paths.js';
 import { getAllJams, insertJam, insertSongs, updateJamFolder, getSetting, setSetting } from './db.js';
 import { extractJamData } from './utils/claudeExtractor.js';
+import { t } from '../shared/i18n.js';
 
 // Keine Choreo Notes einer Jam (Vorgabe): Handouts von Ausbildungen/Academies.
 // Eigene Ausschlüsse folgen als Einstellung (Plan Paket 4).
@@ -35,7 +36,7 @@ const originalName = (pdfFilename) => pdfFilename.replace(/^\d+-/, '').toLowerCa
 export async function importJamSessions(log = console.log) {
   const roots = await getJamRoots();
   if (roots.length === 0) {
-    throw new Error('Kein Jam-Session-Ordner konfiguriert (Einstellungen → Media-Ordner).');
+    throw new Error(t('errors.noJamFolder'));
   }
 
   const ignoredRaw = await getSetting(IGNORE_SETTING);
@@ -97,7 +98,7 @@ export async function importJamSessions(log = console.log) {
       if (!data.songs || data.songs.length === 0) {
         fs.unlinkSync(destPath);
         ignored.add(name);
-        errors.push(`${path.basename(sourcePath)}: keine Songs erkannt – wird künftig übersprungen`);
+        errors.push(t('errors.noSongsRecognized', { file: path.basename(sourcePath) }));
         continue;
       }
       const jamId = await insertJam(data.jammer_name, data.jam_date, destFilename, data.location, path.dirname(sourcePath));

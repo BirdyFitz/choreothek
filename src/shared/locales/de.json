@@ -1,0 +1,166 @@
+{
+  "meta": {
+    "language": "Deutsch",
+    "dateLocale": "de-DE"
+  },
+  "app": {
+    "name": "Choreothek",
+    "tabs": {
+      "search": "Suchen",
+      "sources": "Datenquellen"
+    },
+    "toggle": {
+      "filter": "Filter",
+      "details": "Details",
+      "filterShow": "Filter einblenden",
+      "filterHide": "Filter ausblenden",
+      "detailsShow": "Details einblenden",
+      "detailsHide": "Details ausblenden"
+    },
+    "splitter": {
+      "filterWidth": "Breite des Filterbereichs",
+      "detailsWidth": "Breite des Detailbereichs",
+      "hint": "{label} – ziehen zum Verändern, Doppelklick für Standardbreite"
+    }
+  },
+  "filter": {
+    "title": "Filter",
+    "reset": "Zurücksetzen",
+    "song": "Song",
+    "songPlaceholder": "Titel oder Teil davon",
+    "rhythm": "Rhythmus",
+    "rhythmPlaceholder": "z. B. sal",
+    "source": "Quelle",
+    "sources": {
+      "all": "Alle",
+      "jam": "Jams",
+      "megamix": "MegaMix",
+      "zin": "Volume"
+    },
+    "jamGroup": "Jam Sessions",
+    "jammer": "Jammer",
+    "jammerAll": "Alle Jammer",
+    "location": "Ort",
+    "locationPlaceholder": "z. B. Musterstadt",
+    "period": "Zeitraum",
+    "periodFrom": "von",
+    "periodTo": "bis",
+    "jam": "Jam ({count})",
+    "jamAll": "Alle Jams",
+    "jamNoDate": "ohne Datum",
+    "megamix": "MegaMix",
+    "megamixAll": "Alle MegaMixe",
+    "zin": "ZIN Volume",
+    "zinAll": "Alle ZIN Volumes"
+  },
+  "results": {
+    "songs": {
+      "one": "{count} Song",
+      "other": "{count} Songs"
+    },
+    "unassigned": {
+      "one": "· {count} nicht zugeordnetes Video",
+      "other": "· {count} nicht zugeordnete Videos"
+    },
+    "searching": "Suche läuft",
+    "columns": {
+      "song": "Song",
+      "artist": "Interpret",
+      "rhythm": "Rhythmus",
+      "source": "Jammer / Edition",
+      "date": "Datum",
+      "location": "Ort",
+      "media": "Medien"
+    },
+    "sortAsc": "Aufsteigend sortiert – klicken für absteigend",
+    "sortDesc": "Absteigend sortiert – klicken für ohne Sortierung",
+    "sortNone": "Klicken, um aufsteigend zu sortieren",
+    "unassignedTag": "nicht zugeordnet",
+    "emptyTitle": "Keine Songs gefunden.",
+    "emptyHint": "Filter lockern oder in „Datenquellen“ Ordner einlesen."
+  },
+  "details": {
+    "title": "Details",
+    "empty": "Song in der Liste auswählen, um Musik, Videos und Choreo Notes zu sehen.",
+    "files": "Dateien",
+    "noFiles": "Zu diesem Song gibt es keine Dateien.",
+    "choreoNotes": "Choreo Notes",
+    "choreoNotesPage": "Choreo Notes, Seite {page}",
+    "choreoNotesLivePage": "Choreo Notes Live, Seite {page}",
+    "choreoNotesOneOnOnePage": "Choreo Notes 1on1, Seite {page}",
+    "loading": "Lade Angaben …",
+    "properties": "Details",
+    "cover": "Cover",
+    "props": {
+      "title": "Titel",
+      "artist": "Interpret",
+      "album": "Album",
+      "genre": "Genre",
+      "track": "Titelnummer",
+      "year": "Jahr",
+      "duration": "Länge",
+      "resolution": "Auflösung",
+      "bitrate": "Bitrate",
+      "bitrateValue": "{value} kBit/s",
+      "size": "Größe",
+      "modified": "Geändert",
+      "folder": "Ordner"
+    }
+  },
+  "sources": {
+    "foldersTitle": "Ordner",
+    "foldersHint": "Ordner auf deinem PC, aus denen Choreothek Songs einliest und Musik, Videos und Choreo Notes zuordnet.",
+    "jamRoots": "Jam Sessions (inkl. Unterordner, je Jam ein Ordner mit PDF, Musik und Videos)",
+    "jamRootPlaceholder": "z. B. D:\\Zumba\\Jam Sessions",
+    "addJamRoot": "weiteren Jam-Session-Ordner",
+    "megamixRoot": "MegaMix (MP3s)",
+    "megamixRootPlaceholder": "z. B. D:\\Zumba\\Musik\\MegaMix",
+    "zinMp3Root": "ZIN Volumes – Musik",
+    "zinMp3RootPlaceholder": "z. B. D:\\Zumba\\Musik\\ZIN Volumes",
+    "zinChoreoRoot": "ZIN Volumes – Choreo Notes (PDFs)",
+    "zinChoreoRootHint": "Die Videos der ZIN Volumes werden im Ordner darüber gesucht.",
+    "zinChoreoRootPlaceholder": "z. B. D:\\Zumba\\ZIN Volumes\\Choreo Notes",
+    "browse": "Durchsuchen",
+    "browseTitle": "Ordner auswählen",
+    "remove": "Ordner entfernen",
+    "save": "Speichern",
+    "saving": "Speichere …",
+    "saved": "Gespeichert. In den Jam-Session-Ordnern {count} Dateien gefunden.",
+    "saveError": "Fehler beim Speichern",
+    "importTitle": "Einlesen",
+    "importHint": "Liest neue Jams bzw. Editionen aus den gespeicherten Ordnern ein und trägt fehlende Ordner nach. Bereits eingelesene werden übersprungen.",
+    "importMegamix": "MegaMixe einlesen",
+    "importJams": "Jam Sessions einlesen",
+    "importZin": "ZIN Volumes einlesen",
+    "importing": "Lese ein …",
+    "importLocked": "Nutzt die KI – folgt in einer späteren Version",
+    "importResultJams": "{imported} neue Jam(s) mit {songs} Songs eingelesen, {skipped} übersprungen",
+    "importResultEditions": "{imported} neue Edition(en) mit {songs} Songs eingelesen, {skipped} übersprungen",
+    "importFoldersAdded": ", bei {count} fehlende Ordner nachgetragen",
+    "importProblems": " Probleme: {list}",
+    "importError": "Fehler beim Einlesen"
+  },
+  "menu": {
+    "fileNotFound": "Datei nicht gefunden",
+    "appCopy": "(Kopie in Choreothek – Original nicht gefunden)",
+    "open": "Öffnen",
+    "openWith": "Öffnen mit …",
+    "showInExplorer": "Im Explorer anzeigen",
+    "copyPath": "Pfad kopieren",
+    "properties": "Eigenschaften",
+    "selectFolder": "Ordner auswählen"
+  },
+  "errors": {
+    "forbidden": "Nicht erlaubt",
+    "fileNotFound": "Datei nicht gefunden",
+    "folderNotFound": "Ordner nicht gefunden: {path}",
+    "kiLockedJams": "Das Einlesen von Jam Sessions über die KI folgt in einer späteren Version.",
+    "kiLockedZin": "Das Einlesen von ZIN Volumes über die KI folgt in einer späteren Version.",
+    "noMegamixFolder": "Kein MegaMix-Ordner eingestellt (Datenquellen → Ordner).",
+    "noJamFolder": "Kein Jam-Session-Ordner eingestellt (Datenquellen → Ordner).",
+    "noChoreoFolder": "Kein Ordner für die Choreo Notes der ZIN Volumes eingestellt (Datenquellen → Ordner).",
+    "noSongsRecognized": "{file}: keine Songs erkannt – wird künftig übersprungen",
+    "unexpectedFilename": "Unerwartetes Dateinamensformat: „{file}“",
+    "unknownMegamixEdition": "Mega-Mix-Edition nicht erkennbar in „{label}“"
+  }
+}

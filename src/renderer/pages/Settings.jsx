@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { IconFolderOpen, IconX, IconPlus, IconDeviceFloppy, IconRefresh, IconSparkles } from '@tabler/icons-react'
 import { meldeDatenGeaendert } from '../lib/events.js'
+import { t } from '../../shared/i18n.js'
 
 // Ein Pfad-Feld mit „Durchsuchen“ (Windows-Ordnerdialog)
 function PathField({ id, label, hint, value, onChange, onBrowse, onRemove, disabled, placeholder }) {
@@ -10,11 +11,11 @@ function PathField({ id, label, hint, value, onChange, onBrowse, onRemove, disab
       {label && <label htmlFor={id}>{label}</label>}
       <div className="path-field">
         <input id={id} type="text" value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} disabled={disabled} />
-        <button type="button" onClick={onBrowse} disabled={disabled} title="Ordner auswählen">
-          <IconFolderOpen size={16} stroke={1.6} /> Durchsuchen
+        <button type="button" onClick={onBrowse} disabled={disabled} title={t('sources.browseTitle')}>
+          <IconFolderOpen size={16} stroke={1.6} /> {t('sources.browse')}
         </button>
         {onRemove && (
-          <button type="button" className="icon-btn" onClick={onRemove} disabled={disabled} title="Ordner entfernen" aria-label="Ordner entfernen">
+          <button type="button" className="icon-btn" onClick={onRemove} disabled={disabled} title={t('sources.remove')} aria-label={t('sources.remove')}>
             <IconX size={16} stroke={1.6} />
           </button>
         )}
@@ -79,13 +80,13 @@ export default function Settings() {
       })
       setMessage({
         type: 'success',
-        text: `Gespeichert. In den Jam-Session-Ordnern ${response.data.files_indexed} Dateien gefunden.`
+        text: t('sources.saved', { count: response.data.files_indexed })
       })
       meldeDatenGeaendert()
     } catch (error) {
       setMessage({
         type: 'error',
-        text: error.response?.data?.error || 'Fehler beim Speichern'
+        text: error.response?.data?.error || t('sources.saveError')
       })
     } finally {
       setSaving(false)
@@ -99,16 +100,23 @@ export default function Settings() {
     try {
       const response = await axios.post(`/api/reimport/${kind}`)
       const { importedEditions, importedSongs, skippedEditions, updatedFolders, errors = [] } = response.data
-      const was = kind === 'jam-sessions' ? 'Jam(s)' : 'Edition(en)'
       setReimportMessage({
         type: errors.length ? 'error' : 'success',
-        text: `${importedEditions} neue ${was} mit ${importedSongs} Songs eingelesen, ${skippedEditions} übersprungen${updatedFolders ? `, bei ${updatedFolders} fehlende Ordner nachgetragen` : ''}.${errors.length ? ` Probleme: ${errors.join(' | ')}` : ''}`
+        text:
+          t(kind === 'jam-sessions' ? 'sources.importResultJams' : 'sources.importResultEditions', {
+            imported: importedEditions,
+            songs: importedSongs,
+            skipped: skippedEditions
+          }) +
+          (updatedFolders ? t('sources.importFoldersAdded', { count: updatedFolders }) : '') +
+          '.' +
+          (errors.length ? t('sources.importProblems', { list: errors.join(' | ') }) : '')
       })
       meldeDatenGeaendert()
     } catch (error) {
       setReimportMessage({
         type: 'error',
-        text: error.response?.data?.error || 'Fehler beim Einlesen'
+        text: error.response?.data?.error || t('sources.importError')
       })
     } finally {
       setReimporting('')
@@ -117,9 +125,9 @@ export default function Settings() {
 
   // locked: nutzt die KI -- gesperrt, bis die KI-Schicht mit Bestätigungsmeldung fertig ist
   const reimportButton = (kind, label, locked = false) => (
-    <button type="button" onClick={() => handleReimport(kind)} disabled={locked || reimporting !== ''} title={locked ? 'Nutzt die KI – folgt in einer späteren Version' : undefined}>
+    <button type="button" onClick={() => handleReimport(kind)} disabled={locked || reimporting !== ''} title={locked ? t('sources.importLocked') : undefined}>
       {reimporting === kind ? <span className="spinner" /> : locked ? <IconSparkles size={16} stroke={1.6} /> : <IconRefresh size={16} stroke={1.6} />}
-      {reimporting === kind ? 'Lese ein …' : label}
+      {reimporting === kind ? t('sources.importing') : label}
     </button>
   )
 
@@ -128,14 +136,14 @@ export default function Settings() {
       <div className="page-inner">
         <form className="card" onSubmit={handleSubmit}>
           <div>
-            <h2>Ordner</h2>
-            <p className="hint">Ordner auf deinem PC, aus denen Choreothek Songs einliest und Musik, Videos und Choreo Notes zuordnet.</p>
+            <h2>{t('sources.foldersTitle')}</h2>
+            <p className="hint">{t('sources.foldersHint')}</p>
           </div>
 
           {message.text && <div className={`alert ${message.type}`}>{message.text}</div>}
 
           <div className="field">
-            <span className="field-label">Jam Sessions (inkl. Unterordner, je Jam ein Ordner mit PDF, Musik und Videos)</span>
+            <span className="field-label">{t('sources.jamRoots')}</span>
             {jamRoots.map((root, idx) => (
               <PathField
                 key={idx}
@@ -145,68 +153,65 @@ export default function Settings() {
                 onBrowse={() => browse(root, (p) => setJamRoot(idx, p))}
                 onRemove={jamRoots.length > 1 ? () => removeJamRoot(idx) : null}
                 disabled={saving}
-                placeholder={String.raw`z. B. D:\Zumba\Jam Sessions`}
+                placeholder={t('sources.jamRootPlaceholder')}
               />
             ))}
             <div>
               <button type="button" className="link" onClick={() => setJamRoots((roots) => [...roots, ''])} disabled={saving}>
-                <IconPlus size={14} stroke={1.8} /> weiteren Jam-Session-Ordner
+                <IconPlus size={14} stroke={1.8} /> {t('sources.addJamRoot')}
               </button>
             </div>
           </div>
 
           <PathField
             id="megamix-root-input"
-            label="MegaMix (MP3s)"
+            label={t('sources.megamixRoot')}
             value={megamixRoot}
             onChange={setMegamixRoot}
             onBrowse={() => browse(megamixRoot, setMegamixRoot)}
             disabled={saving}
-            placeholder={String.raw`z. B. D:\Zumba\Musik\MegaMix`}
+            placeholder={t('sources.megamixRootPlaceholder')}
           />
 
           <PathField
             id="zin-volumes-mp3-root-input"
-            label="ZIN Volumes – Musik"
+            label={t('sources.zinMp3Root')}
             value={zinVolumesMp3Root}
             onChange={setZinVolumesMp3Root}
             onBrowse={() => browse(zinVolumesMp3Root, setZinVolumesMp3Root)}
             disabled={saving}
-            placeholder={String.raw`z. B. D:\Zumba\Musik\ZIN Volumes`}
+            placeholder={t('sources.zinMp3RootPlaceholder')}
           />
 
           <PathField
             id="zin-volumes-choreo-root-input"
-            label="ZIN Volumes – Choreo Notes (PDFs)"
-            hint="Die Videos der ZIN Volumes werden im Ordner darüber gesucht."
+            label={t('sources.zinChoreoRoot')}
+            hint={t('sources.zinChoreoRootHint')}
             value={zinVolumesChoreoRoot}
             onChange={setZinVolumesChoreoRoot}
             onBrowse={() => browse(zinVolumesChoreoRoot, setZinVolumesChoreoRoot)}
             disabled={saving}
-            placeholder={String.raw`z. B. D:\Zumba\ZIN Volumes\Choreo Notes`}
+            placeholder={t('sources.zinChoreoRootPlaceholder')}
           />
 
           <div className="button-row">
             <button type="submit" className="primary" disabled={saving}>
               {saving ? <span className="spinner" /> : <IconDeviceFloppy size={16} stroke={1.6} />}
-              {saving ? 'Speichere …' : 'Speichern'}
+              {saving ? t('sources.saving') : t('sources.save')}
             </button>
           </div>
         </form>
 
         <div className="card">
           <div>
-            <h2>Einlesen</h2>
-            <p className="hint">
-              Liest neue Jams bzw. Editionen aus den gespeicherten Ordnern ein und trägt fehlende Ordner nach. Bereits eingelesene werden
-              übersprungen.
-            </p>
+            <h2>{t('sources.importTitle')}</h2>
+            <p className="hint">{t('sources.importHint')}</p>
           </div>
           {reimportMessage.text && <div className={`alert ${reimportMessage.type}`}>{reimportMessage.text}</div>}
           <div className="button-row">
-            {reimportButton('megamix', 'MegaMixe einlesen')}
-            {reimportButton('jam-sessions', 'Jam Sessions einlesen', true)}
-            {reimportButton('zin-volumes', 'ZIN Volumes einlesen', true)}
+            {reimportButton('megamix', t('sources.importMegamix'))}
+            {reimportButton('jam-sessions', t('sources.importJams'), true)}
+            {reimportButton('zin-volumes', t('sources.importZin'), true)}
           </div>
         </div>
       </div>

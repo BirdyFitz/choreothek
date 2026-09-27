@@ -2,11 +2,12 @@ import fs from 'fs';
 import path from 'path';
 import { getAllMegaMixes, insertMegaMix, insertMegaMixSongs, updateMegaMixFolder, getSetting } from './db.js';
 import { parseMegaMixFilename } from './utils/musicFilenameParser.js';
+import { t } from '../shared/i18n.js';
 
 export async function importMegaMix(mediaRoot) {
   const root = mediaRoot || (await getSetting('megamix_root'));
   if (!root) {
-    throw new Error('Kein MegaMix-Ordner eingestellt (Einstellungen → Datenquellen).');
+    throw new Error(t('errors.noMegamixFolder'));
   }
 
   const existing = await getAllMegaMixes();

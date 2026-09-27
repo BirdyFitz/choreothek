@@ -12,6 +12,7 @@ import {
 import { extractZinVolumeSongs } from './utils/zinVolumeExtractor.js';
 import { findFolderByEditionNumber } from './utils/editionFolderResolver.js';
 import { findWarmupSongs } from './utils/warmupParser.js';
+import { t } from '../shared/i18n.js';
 
 
 const VARIANT_ORDER = { combined: 0, live: 1, oneonone: 2 };
@@ -40,7 +41,7 @@ function groupPdfsByEdition(pdfFilenames) {
 export async function importZinVolumes(choreoRoot) {
   const root = choreoRoot || (await getSetting('zin_volumes_choreo_root'));
   if (!root) {
-    throw new Error('ZIN_VOLUMES_CHOREO_ROOT ist weder in .env noch in den Settings gesetzt.');
+    throw new Error(t('errors.noChoreoFolder'));
   }
 
   const mp3Root = await getSetting('zin_volumes_mp3_root');

@@ -3,6 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import { getSetting, setSetting } from '../db.js';
 import { importMegaMix } from '../importMegaMix.js';
+import { t } from '../../shared/i18n.js';
 
 const router = express.Router();
 
@@ -39,13 +40,13 @@ router.post('/library-settings', async (req, res) => {
     const zinVolumesChoreoRoot = (req.body.zin_volumes_choreo_root || '').trim();
 
     if (megamixRoot && !isValidDir(megamixRoot)) {
-      return res.status(400).json({ error: `Ordner nicht gefunden: ${megamixRoot}` });
+      return res.status(400).json({ error: t('errors.folderNotFound', { path: megamixRoot }) });
     }
     if (zinVolumesMp3Root && !isValidDir(zinVolumesMp3Root)) {
-      return res.status(400).json({ error: `Ordner nicht gefunden: ${zinVolumesMp3Root}` });
+      return res.status(400).json({ error: t('errors.folderNotFound', { path: zinVolumesMp3Root }) });
     }
     if (zinVolumesChoreoRoot && !isValidDir(zinVolumesChoreoRoot)) {
-      return res.status(400).json({ error: `Ordner nicht gefunden: ${zinVolumesChoreoRoot}` });
+      return res.status(400).json({ error: t('errors.folderNotFound', { path: zinVolumesChoreoRoot }) });
     }
 
     await setSetting('megamix_root', megamixRoot);
@@ -72,13 +73,13 @@ router.post('/reimport/megamix', async (req, res) => {
 // KI-Einlesen ist gesperrt, bis die KI-Schicht mit Bestätigungssperre steht (Plan Paket 3,
 // Grundsatz 5: keine KI-Nutzung ohne Meldung).
 router.post('/reimport/jam-sessions', (req, res) => {
-  res.status(409).json({ error: 'Das Einlesen von Jam Sessions über die KI folgt in einer späteren Version.' });
+  res.status(409).json({ error: t('errors.kiLockedJams') });
 });
 
 // KI-Einlesen ist gesperrt, bis die KI-Schicht mit Bestätigungssperre steht (Plan Paket 3,
 // Grundsatz 5: keine KI-Nutzung ohne Meldung).
 router.post('/reimport/zin-volumes', (req, res) => {
-  res.status(409).json({ error: 'Das Einlesen von ZIN Volumes über die KI folgt in einer späteren Version.' });
+  res.status(409).json({ error: t('errors.kiLockedZin') });
 });
 
 // Liefert Audio-/Videodateien aus den gezielt zugeordneten MegaMix-/ZIN-Volume-Ordnern aus.

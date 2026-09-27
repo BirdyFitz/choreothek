@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import axios from 'axios'
 import { IconMusic, IconMovie, IconFileText, IconInfoCircle, IconDisc } from '@tabler/icons-react'
 import { onMediaContextMenu, onPdfContextMenu } from '../lib/fileMenu.js'
+import { t } from '../../shared/i18n.js'
 
 // Alle Dateien eines Songs als Liste: Musik, Videos, Choreo Notes
 function filesOf(row) {
@@ -9,15 +10,15 @@ function filesOf(row) {
   for (const m of row.audio_paths || []) files.push({ kind: 'audio', label: m.label, url: m.url })
   for (const m of row.video_paths || []) files.push({ kind: 'video', label: m.label, url: m.url })
   if (row.pdf_filename && row.page) {
-    files.push({ kind: 'pdf', label: `Choreo Notes, Seite ${row.page}`, pdf: row.pdf_filename, page: row.page, source: row.pdf_source_path })
+    files.push({ kind: 'pdf', label: t('details.choreoNotesPage', { page: row.page }), pdf: row.pdf_filename, page: row.page, source: row.pdf_source_path })
   } else if (row.pdf_filename) {
-    files.push({ kind: 'pdf', label: 'Choreo Notes', pdf: row.pdf_filename, page: 1, source: row.pdf_source_path })
+    files.push({ kind: 'pdf', label: t('details.choreoNotes'), pdf: row.pdf_filename, page: 1, source: row.pdf_source_path })
   }
   if (row.live_pdf_filename && row.live_page) {
-    files.push({ kind: 'pdf', label: `Choreo Notes Live, Seite ${row.live_page}`, pdf: row.live_pdf_filename, page: row.live_page, source: row.live_pdf_source_path })
+    files.push({ kind: 'pdf', label: t('details.choreoNotesLivePage', { page: row.live_page }), pdf: row.live_pdf_filename, page: row.live_page, source: row.live_pdf_source_path })
   }
   if (row.oneonone_pdf_filename && row.oneonone_page) {
-    files.push({ kind: 'pdf', label: `Choreo Notes 1on1, Seite ${row.oneonone_page}`, pdf: row.oneonone_pdf_filename, page: row.oneonone_page, source: row.oneonone_pdf_source_path })
+    files.push({ kind: 'pdf', label: t('details.choreoNotesOneOnOnePage', { page: row.oneonone_page }), pdf: row.oneonone_pdf_filename, page: row.oneonone_page, source: row.oneonone_pdf_source_path })
   }
   return files
 }
@@ -53,36 +54,36 @@ function MediaInfo({ file }) {
     }
   }, [params])
 
-  if (!info) return <div className="muted">Lade Angaben …</div>
+  if (!info) return <div className="muted">{t('details.loading')}</div>
   if (info.error) return null
 
   const rows = [
-    ['Titel', info.title],
-    ['Interpret', info.artist],
-    ['Album', info.album],
-    ['Genre', info.genre],
-    ['Titelnummer', info.track],
-    ['Jahr', info.year],
-    ['Länge', formatDuration(info.duration)],
-    ['Auflösung', info.width && info.height ? `${info.width} × ${info.height}` : null],
-    ['Bitrate', info.bitrate ? `${info.bitrate} kBit/s` : null],
-    ['Größe', formatSize(info.size)],
-    ['Geändert', info.modified ? new Date(info.modified).toLocaleDateString('de-DE') : null],
-    ['Ordner', info.folder]
+    [t('details.props.title'), info.title],
+    [t('details.props.artist'), info.artist],
+    [t('details.props.album'), info.album],
+    [t('details.props.genre'), info.genre],
+    [t('details.props.track'), info.track],
+    [t('details.props.year'), info.year],
+    [t('details.props.duration'), formatDuration(info.duration)],
+    [t('details.props.resolution'), info.width && info.height ? `${info.width} × ${info.height}` : null],
+    [t('details.props.bitrate'), info.bitrate ? t('details.props.bitrateValue', { value: info.bitrate }) : null],
+    [t('details.props.size'), formatSize(info.size)],
+    [t('details.props.modified'), info.modified ? new Date(info.modified).toLocaleDateString(t('meta.dateLocale')) : null],
+    [t('details.props.folder'), info.folder]
   ].filter(([, v]) => v !== null && v !== undefined && v !== '')
 
   return (
     <>
       {file.kind === 'audio' &&
         (info.hasCover ? (
-          <img className="cover" src={`/api/media-cover?${params}`} alt="Cover" />
+          <img className="cover" src={`/api/media-cover?${params}`} alt={t('details.cover')} />
         ) : (
           <div className="cover" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <IconDisc size={64} stroke={1} className="muted" />
           </div>
         ))}
       <div>
-        <div className="section-title">Details</div>
+        <div className="section-title">{t('details.properties')}</div>
         <dl className="props">
           {rows.map(([k, v]) => (
             <FragmentRow key={k} label={k} value={v} />
@@ -112,13 +113,13 @@ export default function DetailsPanel({ row, width }) {
 
   if (!row) {
     return (
-      <aside className="pane pane-details" aria-label="Details" style={{ width }}>
+      <aside className="pane pane-details" aria-label={t('details.title')} style={{ width }}>
         <div className="pane-header">
-          <span className="pane-title">Details</span>
+          <span className="pane-title">{t('details.title')}</span>
         </div>
         <div className="empty">
           <IconInfoCircle size={32} stroke={1.4} />
-          <div>Song in der Liste auswählen, um Musik, Videos und Choreo Notes zu sehen.</div>
+          <div>{t('details.empty')}</div>
         </div>
       </aside>
     )
@@ -130,9 +131,9 @@ export default function DetailsPanel({ row, width }) {
     : row.edition_label
 
   return (
-    <aside className="pane pane-details" aria-label="Details" style={{ width }}>
+    <aside className="pane pane-details" aria-label={t('details.title')} style={{ width }}>
       <div className="pane-header">
-        <span className="pane-title">Details</span>
+        <span className="pane-title">{t('details.title')}</span>
       </div>
       <div className="details">
         <div>
@@ -141,13 +142,13 @@ export default function DetailsPanel({ row, width }) {
           <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 8 }}>
             {row.rhythm && <span className="tag accent">{row.rhythm}</span>}
             {source && <span className="tag">{source}</span>}
-            {row.unassigned && <span className="tag">nicht zugeordnet</span>}
+            {row.unassigned && <span className="tag">{t('results.unassignedTag')}</span>}
           </div>
         </div>
 
         {files.length > 0 ? (
           <div>
-            <div className="section-title">Dateien</div>
+            <div className="section-title">{t('details.files')}</div>
             <div className="file-list">
               {files.map((f, i) => {
                 const Icon = ICONS[f.kind]
@@ -167,7 +168,7 @@ export default function DetailsPanel({ row, width }) {
             </div>
           </div>
         ) : (
-          <div className="muted">Zu diesem Song gibt es keine Dateien.</div>
+          <div className="muted">{t('details.noFiles')}</div>
         )}
 
         {active?.kind === 'audio' && (

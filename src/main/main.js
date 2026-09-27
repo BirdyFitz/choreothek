@@ -5,6 +5,7 @@ import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron';
 import { startServer } from '../server/server.js';
 import { showFileMenu } from './fileMenu.js';
 import { warmUpPropertiesHelper, stopPropertiesHelper } from './windowsDialogs.js';
+import { t } from '../shared/i18n.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const appRoot = path.join(__dirname, '..', '..');
@@ -22,7 +23,7 @@ function createWindow() {
     height: 900,
     minWidth: 800,
     minHeight: 600,
-    title: 'Choreothek',
+    title: t('app.name'),
     autoHideMenuBar: true,
     webPreferences: {
       preload: path.join(__dirname, 'preload.cjs'),
@@ -67,7 +68,7 @@ app.whenReady().then(async () => {
   );
   ipcMain.handle('choreothek:select-folder', async (event, startPath) => {
     const result = await dialog.showOpenDialog(mainWindow, {
-      title: 'Ordner auswählen',
+      title: t('menu.selectFolder'),
       defaultPath: startPath || undefined,
       properties: ['openDirectory']
     });

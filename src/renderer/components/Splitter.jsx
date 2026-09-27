@@ -1,4 +1,5 @@
 import { useRef } from 'react'
+import { t } from '../../shared/i18n.js'
 
 // Verschiebbare Trennlinie zwischen zwei Bereichen (wie im Windows-Explorer).
 // side: 'left' = Bereich links der Linie wird breiter beim Ziehen nach rechts,
@@ -47,7 +48,7 @@ export default function Splitter({ side, width, onChange, onReset, label }) {
       aria-label={label}
       aria-valuenow={width}
       tabIndex={0}
-      title={`${label} – ziehen zum Verändern, Doppelklick für Standardbreite`}
+      title={t('app.splitter.hint', { label })}
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
       onPointerUp={onPointerUp}

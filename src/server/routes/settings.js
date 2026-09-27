@@ -2,6 +2,7 @@ import express from 'express';
 import fs from 'fs';
 import { getSetting, setSetting } from '../db.js';
 import { buildMediaIndex } from '../utils/mediaFinder.js';
+import { t } from '../../shared/i18n.js';
 
 const router = express.Router();
 
@@ -25,7 +26,7 @@ router.post('/settings', async (req, res) => {
       (p) => !fs.existsSync(p) || !fs.statSync(p).isDirectory()
     );
     if (invalid.length > 0) {
-      return res.status(400).json({ error: `Ordner nicht gefunden: ${invalid.join(', ')}` });
+      return res.status(400).json({ error: t('errors.folderNotFound', { path: invalid.join(', ') }) });
     }
 
     await setSetting('media_roots', JSON.stringify(mediaRoots));

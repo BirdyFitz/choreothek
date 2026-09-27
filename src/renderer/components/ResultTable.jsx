@@ -1,14 +1,15 @@
 import { IconArrowUp, IconArrowDown, IconArrowsSort, IconMusic, IconMovie, IconFileText, IconMoodEmpty } from '@tabler/icons-react'
 import { onMediaContextMenu, onPdfContextMenu } from '../lib/fileMenu.js'
+import { t } from '../../shared/i18n.js'
 
 // Spalten der Ergebnisliste; key passt zu SORT_COLUMNS in lib/sortRows.js
 const COLUMNS = [
-  { key: 'song', label: 'Song', width: '26%' },
-  { key: 'artist', label: 'Interpret', width: '15%' },
-  { key: 'rhythm', label: 'Rhythmus', width: '15%' },
-  { key: 'source', label: 'Jammer / Edition', width: '17%' },
-  { key: 'date', label: 'Datum', width: '10%' },
-  { key: 'location', label: 'Ort', width: '17%' }
+  { key: 'song', width: '26%' },
+  { key: 'artist', width: '15%' },
+  { key: 'rhythm', width: '15%' },
+  { key: 'source', width: '17%' },
+  { key: 'date', width: '10%' },
+  { key: 'location', width: '17%' }
 ]
 
 export function rowKey(r) {
@@ -46,7 +47,7 @@ export default function ResultTable({ rows, sort, onSort, selectedKey, onSelect,
         </colgroup>
         <thead>
           <tr>
-            {COLUMNS.map(({ key, label }) => {
+            {COLUMNS.map(({ key }) => {
               const dir = sort?.key === key ? sort.dir : null
               return (
                 <th key={key} aria-sort={dir === 'asc' ? 'ascending' : dir === 'desc' ? 'descending' : 'none'}>
@@ -54,14 +55,10 @@ export default function ResultTable({ rows, sort, onSort, selectedKey, onSelect,
                     className="sort-header"
                     onClick={() => onSort(key)}
                     title={
-                      dir === 'asc'
-                        ? 'Aufsteigend sortiert – klicken für absteigend'
-                        : dir === 'desc'
-                          ? 'Absteigend sortiert – klicken für ohne Sortierung'
-                          : 'Klicken, um aufsteigend zu sortieren'
+                      dir === 'asc' ? t('results.sortAsc') : dir === 'desc' ? t('results.sortDesc') : t('results.sortNone')
                     }
                   >
-                    {label}
+                    {t(`results.columns.${key}`)}
                     <span className={`sort-indicator ${dir ? 'active' : ''}`}>
                       <SortIcon dir={dir} />
                     </span>
@@ -70,7 +67,7 @@ export default function ResultTable({ rows, sort, onSort, selectedKey, onSelect,
               )
             })}
             <th>
-              <span style={{ padding: '0 10px' }}>Medien</span>
+              <span style={{ padding: '0 10px' }}>{t('results.columns.media')}</span>
             </th>
           </tr>
         </thead>
@@ -93,7 +90,7 @@ export default function ResultTable({ rows, sort, onSort, selectedKey, onSelect,
                   {r.unassigned && (
                     <>
                       {' '}
-                      <span className="tag">nicht zugeordnet</span>
+                      <span className="tag">{t('results.unassignedTag')}</span>
                     </>
                   )}
                 </td>
@@ -117,8 +114,8 @@ export default function ResultTable({ rows, sort, onSort, selectedKey, onSelect,
       {!loading && rows.length === 0 && (
         <div className="empty">
           <IconMoodEmpty size={32} stroke={1.4} />
-          <div>Keine Songs gefunden.</div>
-          <div className="muted">Filter lockern oder in „Datenquellen“ Ordner einlesen.</div>
+          <div>{t('results.emptyTitle')}</div>
+          <div className="muted">{t('results.emptyHint')}</div>
         </div>
       )}
     </div>

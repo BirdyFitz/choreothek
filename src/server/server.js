@@ -13,6 +13,7 @@ import { buildMediaIndex } from './utils/mediaFinder.js';
 import searchRoutes from './routes/search.js';
 import settingsRoutes from './routes/settings.js';
 import libraryRoutes from './routes/library.js';
+import { t } from '../shared/i18n.js';
 import mediaRoutes from './routes/media.js';
 
 export async function startServer({ dataDir, rendererDir, port = 0, dbFile } = {}) {
@@ -27,7 +28,7 @@ export async function startServer({ dataDir, rendererDir, port = 0, dbFile } = {
   app.use((req, res, next) => {
     if (req.headers.host !== expectedHost) return res.status(403).end();
     if (req.method !== 'GET' && req.method !== 'HEAD' && req.get('X-Choreothek-Token') !== token) {
-      return res.status(403).json({ error: 'Nicht erlaubt' });
+      return res.status(403).json({ error: t('errors.forbidden') });
     }
     next();
   });

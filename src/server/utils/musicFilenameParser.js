@@ -1,3 +1,5 @@
+import { t } from '../../shared/i18n.js';
+
 const LABEL_PATTERN = /^(?:\d+-)?(?:Maga|Mega)\s+Mix\s+(\d+)$/i;
 const TRACK_PATTERN = /^(\d+)\s+(.*)$/;
 
@@ -5,7 +7,7 @@ export function parseMegaMixFilename(filename) {
   const base = filename.replace(/\.mp3$/i, '');
   const parts = base.split(' - ');
   if (parts.length < 3) {
-    throw new Error(`Unerwartetes Dateinamensformat: "${filename}"`);
+    throw new Error(t('errors.unexpectedFilename', { file: filename }));
   }
 
   const labelPart = parts[0];
@@ -14,7 +16,7 @@ export function parseMegaMixFilename(filename) {
 
   const labelMatch = labelPart.match(LABEL_PATTERN);
   if (!labelMatch) {
-    throw new Error(`Konnte Mega-Mix-Edition nicht aus "${labelPart}" lesen`);
+    throw new Error(t('errors.unknownMegamixEdition', { label: labelPart }));
   }
   const editionNumber = parseInt(labelMatch[1], 10);
   const editionLabel = `Mega Mix ${editionNumber}`;

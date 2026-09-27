@@ -6,6 +6,7 @@ import path from 'path';
 import express from 'express';
 import { parseFile, selectCover } from 'music-metadata';
 import { isAllowedFile } from '../fileAccess.js';
+import { t } from '../../shared/i18n.js';
 
 const router = express.Router();
 
@@ -19,7 +20,7 @@ async function fileFromQuery(req) {
 router.get('/media-info', async (req, res) => {
   try {
     const file = await fileFromQuery(req);
-    if (!file) return res.status(404).json({ error: 'Datei nicht gefunden' });
+    if (!file) return res.status(404).json({ error: t('errors.fileNotFound') });
     const stat = fs.statSync(file);
     const info = {
       name: path.basename(file),

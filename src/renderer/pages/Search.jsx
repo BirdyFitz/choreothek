@@ -8,6 +8,7 @@ import DetailsPanel from '../components/DetailsPanel.jsx'
 import Splitter from '../components/Splitter.jsx'
 import { usePersistent } from '../lib/usePersistent.js'
 import { clampPaneWidth } from '../lib/paneWidth.js'
+import { t } from '../../shared/i18n.js'
 
 const FILTER_WIDTH = { standard: 260, min: 200, max: 480 }
 const DETAILS_WIDTH = { standard: 400, min: 280, max: 800 }
@@ -44,7 +45,7 @@ function toParams(f) {
 }
 
 function jamLabel(j) {
-  const datum = j.jam_datum ? j.jam_datum.split('-').reverse().join('.') : j.jam_date || 'ohne Datum'
+  const datum = j.jam_datum ? j.jam_datum.split('-').reverse().join('.') : j.jam_date || t('filter.jamNoDate')
   const ort = j.location ? (j.location.length > 40 ? j.location.slice(0, 39) + '…' : j.location) : ''
   return [datum, j.jammer_name, ort].filter(Boolean).join(' · ') + ` (${j.song_count})`
 }
@@ -178,19 +179,15 @@ export default function Search({ showFilters, showDetails }) {
         />
       )}
       {showFilters && (
-        <Splitter side="left" width={effFilter} onChange={resizeFilter} onReset={() => setFilterWidth(FILTER_WIDTH.standard)} label="Breite des Filterbereichs" />
+        <Splitter side="left" width={effFilter} onChange={resizeFilter} onReset={() => setFilterWidth(FILTER_WIDTH.standard)} label={t('app.splitter.filterWidth')} />
       )}
-      <section className="pane pane-list" aria-label="Ergebnisse">
+      <section className="pane pane-list" aria-label={t('results.songs', { count: songCount })}>
         <div className="pane-header">
-          <span className="pane-title">
-            {songCount} Song{songCount === 1 ? '' : 's'}
-          </span>
+          <span className="pane-title">{t('results.songs', { count: songCount })}</span>
           {unassignedCount > 0 && (
-            <span>
-              · {unassignedCount} nicht zugeordnete{unassignedCount === 1 ? 's' : ''} Video{unassignedCount === 1 ? '' : 's'}
-            </span>
+            <span>{t('results.unassigned', { count: unassignedCount })}</span>
           )}
-          {loading && <span className="spinner" style={{ marginLeft: 'auto' }} aria-label="Suche läuft" />}
+          {loading && <span className="spinner" style={{ marginLeft: 'auto' }} aria-label={t('results.searching')} />}
         </div>
         <ResultTable
           rows={shownResults}
@@ -202,7 +199,7 @@ export default function Search({ showFilters, showDetails }) {
         />
       </section>
       {showDetails && (
-        <Splitter side="right" width={effDetails} onChange={resizeDetails} onReset={() => setDetailsWidth(DETAILS_WIDTH.standard)} label="Breite des Detailbereichs" />
+        <Splitter side="right" width={effDetails} onChange={resizeDetails} onReset={() => setDetailsWidth(DETAILS_WIDTH.standard)} label={t('app.splitter.detailsWidth')} />
       )}
       {showDetails && <DetailsPanel row={selectedRow} width={effDetails} />}
     </>

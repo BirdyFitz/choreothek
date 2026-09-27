@@ -3,6 +3,7 @@ import { IconMusic, IconLayoutSidebar, IconLayoutSidebarRight } from '@tabler/ic
 import Search from './pages/Search.jsx'
 import Settings from './pages/Settings.jsx'
 import { usePersistent } from './lib/usePersistent.js'
+import { t } from '../shared/i18n.js'
 
 // Kopfleiste mit Reitern; auf „Suchen“ rechts die Schalter für Filter- und Detailbereich
 // (wie „Details“ im Windows-Explorer), gemerkt über Neustarts hinweg.
@@ -16,14 +17,14 @@ export default function App() {
       <header className="topbar">
         <div className="brand">
           <IconMusic size={20} stroke={1.8} />
-          Choreothek
+          {t('app.name')}
         </div>
         <nav className="tabs">
           <button className={`tab ${activeTab === 'search' ? 'active' : ''}`} onClick={() => setActiveTab('search')}>
-            Suchen
+            {t('app.tabs.search')}
           </button>
           <button className={`tab ${activeTab === 'sources' ? 'active' : ''}`} onClick={() => setActiveTab('sources')}>
-            Datenquellen
+            {t('app.tabs.sources')}
           </button>
         </nav>
         {activeTab === 'search' && (
@@ -31,20 +32,20 @@ export default function App() {
             <button
               className={`ghost ${showFilters ? 'active' : ''}`}
               onClick={() => setShowFilters(!showFilters)}
-              title={showFilters ? 'Filter ausblenden' : 'Filter einblenden'}
+              title={showFilters ? t('app.toggle.filterHide') : t('app.toggle.filterShow')}
               aria-pressed={showFilters}
             >
               <IconLayoutSidebar size={18} stroke={1.6} />
-              Filter
+              {t('app.toggle.filter')}
             </button>
             <button
               className={`ghost ${showDetails ? 'active' : ''}`}
               onClick={() => setShowDetails(!showDetails)}
-              title={showDetails ? 'Details ausblenden' : 'Details einblenden'}
+              title={showDetails ? t('app.toggle.detailsHide') : t('app.toggle.detailsShow')}
               aria-pressed={showDetails}
             >
               <IconLayoutSidebarRight size={18} stroke={1.6} />
-              Details
+              {t('app.toggle.details')}
             </button>
           </div>
         )}
