@@ -2,6 +2,7 @@ import { Fragment, useState, useEffect, useMemo } from 'react'
 import axios from 'axios'
 import { DATEN_GEAENDERT } from '../lib/events.js'
 import { sortRows, nextSort } from '../lib/sortRows.js'
+import { onMediaContextMenu, onPdfContextMenu } from '../lib/fileMenu.js'
 
 // Spalten der Ergebnistabelle; key passt zu SORT_COLUMNS in lib/sortRows.js
 const COLUMNS = [
@@ -418,6 +419,13 @@ export default function Search() {
                       <tr
                         className={isJamSession ? `song-row ${isExpanded('default') ? 'expanded' : ''}` : ''}
                         onClick={isJamSession ? () => toggleExpand(idx, 'default') : undefined}
+                        onContextMenu={
+                          song.unassigned
+                            ? onMediaContextMenu(song.video_paths[0]?.url)
+                            : isJamSession
+                              ? onPdfContextMenu(song.pdf_source_path, song.pdf_filename)
+                              : undefined
+                        }
                       >
                         <td className={song.unassigned ? 'unassigned-cell' : undefined}>
                           {song.song_name}
@@ -431,6 +439,7 @@ export default function Search() {
                               className="media-link"
                               title={media.label}
                               onClick={(e) => e.stopPropagation()}
+                              onContextMenu={onMediaContextMenu(media.url)}
                             >
                               🎵
                             </a>
@@ -444,6 +453,7 @@ export default function Search() {
                               className="media-link"
                               title={media.label}
                               onClick={(e) => e.stopPropagation()}
+                              onContextMenu={onMediaContextMenu(media.url)}
                             >
                               🎬
                             </a>
@@ -453,6 +463,7 @@ export default function Search() {
                               className="media-link"
                               title="Choreo Notes: Live"
                               onClick={() => toggleExpand(idx, 'live')}
+                              onContextMenu={onPdfContextMenu(song.live_pdf_source_path, song.live_pdf_filename)}
                             >
                               📄 Live
                             </a>
@@ -462,6 +473,7 @@ export default function Search() {
                               className="media-link"
                               title="Choreo Notes: 1on1"
                               onClick={() => toggleExpand(idx, 'oneonone')}
+                              onContextMenu={onPdfContextMenu(song.oneonone_pdf_source_path, song.oneonone_pdf_filename)}
                             >
                               📄 1on1
                             </a>

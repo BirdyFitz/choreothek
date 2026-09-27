@@ -3,6 +3,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron';
 import { startServer } from '../server/server.js';
+import { showFileMenu } from './fileMenu.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const appRoot = path.join(__dirname, '..', '..');
@@ -60,6 +61,9 @@ app.whenReady().then(async () => {
   if (!app.isPackaged) console.log(`Choreothek-Server: ${session.url} (Daten: ${app.getPath('userData')})`);
 
   ipcMain.handle('choreothek:token', () => session.token);
+  ipcMain.handle('choreothek:file-menu', (event, target) =>
+    showFileMenu(BrowserWindow.fromWebContents(event.sender), target)
+  );
   ipcMain.handle('choreothek:select-folder', async (event, startPath) => {
     const result = await dialog.showOpenDialog(mainWindow, {
       title: 'Ordner auswählen',

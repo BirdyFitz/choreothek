@@ -3,5 +3,7 @@ const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('choreothek', {
   getToken: () => ipcRenderer.invoke('choreothek:token'),
-  selectFolder: (startPath) => ipcRenderer.invoke('choreothek:select-folder', startPath || null)
+  selectFolder: (startPath) => ipcRenderer.invoke('choreothek:select-folder', startPath || null),
+  // target: { dir, file } oder { sourcePath, uploadName }
+  showFileMenu: (target) => ipcRenderer.invoke('choreothek:file-menu', target)
 });

@@ -1,5 +1,7 @@
+import fs from 'fs';
+import path from 'path';
 import express from 'express';
-import { searchSongs, getJamList, getAllRhythms, getAllJammers, getAllMegaMixEditionLabels, getAllZinVolumeEditionLabels } from '../db.js';
+import { getSetting, searchSongs, getJamList, getAllRhythms, getAllJammers, getAllMegaMixEditionLabels, getAllZinVolumeEditionLabels } from '../db.js';
 import {
   findExactMediaMatches,
   findSubstringMediaMatches,
@@ -26,6 +28,26 @@ function mediaFor(song, cache) {
     libraryMediaUrl,
     cache
   );
+}
+
+// Choreo Notes liegen als Kopie in der App (uploads, Name mit Zeitstempel-Präfix). Für das
+// Kontextmenü (Öffnen, Im Explorer anzeigen) wird das Original im Archiv gesucht:
+// Jam: <Jam-Ordner>/<Name>, ZIN Volume: <Choreo-Notes-Ordner>/<Name>. Nicht gefunden -> null.
+function originalPdf(folder, uploadName, cache) {
+  if (!folder || !uploadName) return null;
+  const candidate = path.join(folder, uploadName.replace(/^\d+-/, ''));
+  if (!cache.has(candidate)) cache.set(candidate, fs.existsSync(candidate) ? candidate : null);
+  return cache.get(candidate);
+}
+
+function withPdfSources(row, choreoRoot, cache) {
+  const isJam = row.source_type === 'jam_session';
+  return {
+    ...row,
+    pdf_source_path: isJam ? originalPdf(row.source_folder, row.pdf_filename, cache) : null,
+    live_pdf_source_path: isJam ? null : originalPdf(choreoRoot, row.live_pdf_filename, cache),
+    oneonone_pdf_source_path: isJam ? null : originalPdf(choreoRoot, row.oneonone_pdf_filename, cache)
+  };
 }
 
 function stripInternal(song) {
@@ -88,11 +110,13 @@ router.get('/search', async (req, res) => {
     const results = await searchSongs(rhythm, jammer, megamix, zinVolume, datumVon, datumBis, ort, song, jamId);
 
     const cache = new Map();
+    const pdfCache = new Map();
+    const choreoRoot = await getSetting('zin_volumes_choreo_root');
     const mediaByRow = new Map();
     const rows = results.map((row) => {
       const media = mediaFor(row, cache);
       mediaByRow.set(row, media);
-      return { ...stripInternal(row), audio_paths: media.audio, video_paths: media.video };
+      return { ...stripInternal(withPdfSources(row, choreoRoot, pdfCache)), audio_paths: media.audio, video_paths: media.video };
     });
 
     rows.push(...(await unassignedVideoRows(req.query, results, mediaByRow, cache)));
