@@ -196,18 +196,16 @@
     "key": "API-Schlüssel",
     "keyPlaceholder": "Schlüssel hier einfügen",
     "keyStoredPlaceholder": "gespeichert – zum Ersetzen neuen Schlüssel einfügen",
-    "keySave": "Speichern",
     "keyTest": "Testen",
-    "keyTestHint": "Prüft den Schlüssel kostenlos (fragt nur die Liste der Modelle ab)",
+    "keyTestHint": "Prüft den gespeicherten Schlüssel kostenlos (fragt nur die Liste der Modelle ab)",
     "keyDelete": "Schlüssel löschen",
-    "keySaved": "Schlüssel gespeichert (verschlüsselt, nur für dein Windows-Konto lesbar).",
     "keyDeleted": "Schlüssel gelöscht.",
     "keyValid": {
       "one": "Schlüssel gültig – {count} Modell verfügbar.",
       "other": "Schlüssel gültig – {count} Modelle verfügbar."
     },
     "keyStored": "Schlüssel ist gespeichert.",
-    "keyMissing": "Noch kein Schlüssel gespeichert.",
+    "keyMissing": "Noch kein Schlüssel gespeichert – Schlüssel einfügen und „Speichern und testen“ klicken.",
     "keyCreate": "Schlüssel beim Anbieter erstellen",
     "privacy": "Mir ist bekannt, dass die Choreo-Notes-PDFs zum Auslesen an {provider} gesendet werden. Musik, Videos und die Datenbank bleiben auf meinem PC.",
     "privacyGoogle": "Hinweis: In der kostenlosen Stufe von Gemini darf Google die Inhalte zur Verbesserung seiner Produkte verwenden.",
@@ -229,7 +227,14 @@
     "costsCalls": "Aufrufe",
     "costsAmount": "Kosten",
     "costsHint": "Berechnet aus den Token-Angaben der Anbieter und der Preistabelle (Stand {date}). Maßgeblich ist die Abrechnung des Anbieters.",
-    "unknownAmount": "unbekannt"
+    "unknownAmount": "unbekannt",
+    "keySaveTest": "Speichern und testen",
+    "keySavedValid": {
+      "one": "Schlüssel gespeichert und gültig – {count} Modell verfügbar.",
+      "other": "Schlüssel gespeichert und gültig – {count} Modelle verfügbar."
+    },
+    "keySavedInvalid": "Schlüssel gespeichert, aber der Test ist fehlgeschlagen: {error}",
+    "providerWithKey": "{provider} ✓"
   },
   "aiDialog": {
     "title": "Jetzt wird die KI genutzt",

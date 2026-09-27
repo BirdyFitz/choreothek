@@ -61,20 +61,30 @@ export default function AiSettings() {
   const provider = data.providers.find((p) => p.id === data.provider)
   const save = (patch, successText) => run('settings', () => axios.post('/api/ai/settings', patch), successText)
 
-  const saveKey = () =>
-    run(
-      'key',
-      async () => {
-        await axios.post('/api/ai/key', { provider: provider.id, key: keyInput })
-        setKeyInput('')
-      },
-      t('ai.keySaved')
-    )
+  // Speichern und gleich (kostenlos) prüfen -- ein Schritt, damit kein geprüfter, aber
+  // ungespeicherter Schlüssel zurückbleibt
+  const saveKey = async () => {
+    setBusy('key')
+    setMessage({ type: '', text: '' })
+    try {
+      await axios.post('/api/ai/key', { provider: provider.id, key: keyInput })
+      setKeyInput('')
+      try {
+        const res = await axios.post('/api/ai/test-key', { provider: provider.id })
+        setMessage({ type: 'success', text: t('ai.keySavedValid', { count: res.data.models }) })
+      } catch (error) {
+        setMessage({ type: 'error', text: t('ai.keySavedInvalid', { error: error.response?.data?.error || t('ai.saveError') }) })
+      }
+      await load()
+    } catch (error) {
+      setMessage({ type: 'error', text: error.response?.data?.error || t('ai.saveError') })
+    } finally {
+      setBusy('')
+    }
+  }
 
   const testKey = () =>
-    run('test', () => axios.post('/api/ai/test-key', { provider: provider.id, key: keyInput || undefined }), (res) =>
-      t('ai.keyValid', { count: res.data.models })
-    )
+    run('test', () => axios.post('/api/ai/test-key', { provider: provider.id }), (res) => t('ai.keyValid', { count: res.data.models }))
 
   const saveLimits = () => {
     const costLimitUsd = parseAmount(limitInput)
@@ -112,7 +122,7 @@ export default function AiSettings() {
           <select id="ai-provider" value={data.provider} disabled={busy !== ''} onChange={(e) => save({ provider: e.target.value })}>
             {data.providers.map((p) => (
               <option key={p.id} value={p.id}>
-                {p.label}
+                {p.hasKey ? t('ai.providerWithKey', { provider: p.label }) : p.label}
               </option>
             ))}
           </select>
@@ -142,9 +152,9 @@ export default function AiSettings() {
             disabled={busy !== ''}
           />
           <button type="button" onClick={saveKey} disabled={busy !== '' || !keyInput.trim()}>
-            {busy === 'key' ? <span className="spinner" /> : <IconKey size={16} stroke={1.6} />} {t('ai.keySave')}
+            {busy === 'key' ? <span className="spinner" /> : <IconKey size={16} stroke={1.6} />} {t('ai.keySaveTest')}
           </button>
-          <button type="button" onClick={testKey} disabled={busy !== '' || (!provider.hasKey && !keyInput.trim())} title={t('ai.keyTestHint')}>
+          <button type="button" onClick={testKey} disabled={busy !== '' || !provider.hasKey} title={t('ai.keyTestHint')}>
             {busy === 'test' ? <span className="spinner" /> : <IconPlugConnected size={16} stroke={1.6} />} {t('ai.keyTest')}
           </button>
           {provider.hasKey && (
