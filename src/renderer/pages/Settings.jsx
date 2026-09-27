@@ -2,6 +2,9 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { IconFolderOpen, IconX, IconPlus, IconDeviceFloppy, IconRefresh, IconSparkles } from '@tabler/icons-react'
 import { meldeDatenGeaendert } from '../lib/events.js'
+import { formatUsd } from '../lib/money.js'
+import AiSettings from '../components/AiSettings.jsx'
+import AiConfirmDialog from '../components/AiConfirmDialog.jsx'
 import { t } from '../../shared/i18n.js'
 
 // Ein Pfad-Feld mit „Durchsuchen“ (Windows-Ordnerdialog)
@@ -34,6 +37,10 @@ export default function Settings() {
   const [message, setMessage] = useState({ type: '', text: '' })
   const [reimporting, setReimporting] = useState('')
   const [reimportMessage, setReimportMessage] = useState({ type: '', text: '' })
+  // Offene Meldung „Jetzt wird die KI genutzt“: { kind, plan }
+  const [pending, setPending] = useState(null)
+  // Nach einem KI-Einlesen die KI-Karte neu laden (Kosten, Guthaben, „Nachfragen“)
+  const [aiRefresh, setAiRefresh] = useState(0)
 
   // Windows-Ordnerdialog über den Hauptprozess; übernimmt den gewählten Ordner ins Feld
   const browse = async (current, apply) => {
@@ -93,13 +100,47 @@ export default function Settings() {
     }
   }
 
+  // KI-Einlesen: erst Plan holen (was wird gesendet, was kostet es), dann ggf. Meldung zeigen
+  const AI_KIND = { 'jam-sessions': 'jam', 'zin-volumes': 'zin' }
+
   const handleReimport = async (kind) => {
+    if (!AI_KIND[kind]) return runReimport(kind)
+    setReimporting(kind)
+    setReimportMessage({ type: '', text: '' })
+    try {
+      const { data: plan } = await axios.post('/api/ai/plan', { kind: AI_KIND[kind] })
+      if (plan.blocked) {
+        setReimportMessage({ type: 'error', text: t(`errors.ai.${plan.blocked}`) })
+        setReimporting('')
+      } else if (plan.mustConfirm) {
+        setPending({ kind, plan })
+      } else {
+        await runReimport(kind, { planId: plan.id })
+      }
+    } catch (error) {
+      setReimportMessage({ type: 'error', text: error.response?.data?.error || t('sources.importError') })
+      setReimporting('')
+    }
+  }
+
+  const confirmPending = ({ dontAskAgain }) => {
+    const { kind, plan } = pending
+    setPending(null)
+    runReimport(kind, { planId: plan.id, confirmed: true, dontAskAgain })
+  }
+
+  const cancelPending = () => {
+    setPending(null)
+    setReimporting('')
+  }
+
+  const runReimport = async (kind, body) => {
     setReimporting(kind)
     setReimportMessage({ type: '', text: '' })
 
     try {
-      const response = await axios.post(`/api/reimport/${kind}`)
-      const { importedEditions, importedSongs, skippedEditions, updatedFolders, errors = [] } = response.data
+      const response = await axios.post(`/api/reimport/${kind}`, body)
+      const { importedEditions, importedSongs, skippedEditions, updatedFolders, errors = [], aiCostUsd } = response.data
       setReimportMessage({
         type: errors.length ? 'error' : 'success',
         text:
@@ -110,6 +151,7 @@ export default function Settings() {
           }) +
           (updatedFolders ? t('sources.importFoldersAdded', { count: updatedFolders }) : '') +
           '.' +
+          (aiCostUsd ? t('sources.importAiCost', { amount: formatUsd(aiCostUsd) }) : '') +
           (errors.length ? t('sources.importProblems', { list: errors.join(' | ') }) : '')
       })
       meldeDatenGeaendert()
@@ -120,13 +162,14 @@ export default function Settings() {
       })
     } finally {
       setReimporting('')
+      if (body) setAiRefresh((n) => n + 1)
     }
   }
 
-  // locked: nutzt die KI -- gesperrt, bis die KI-Schicht mit Bestätigungsmeldung fertig ist
-  const reimportButton = (kind, label, locked = false) => (
-    <button type="button" onClick={() => handleReimport(kind)} disabled={locked || reimporting !== ''} title={locked ? t('sources.importLocked') : undefined}>
-      {reimporting === kind ? <span className="spinner" /> : locked ? <IconSparkles size={16} stroke={1.6} /> : <IconRefresh size={16} stroke={1.6} />}
+  // Knöpfe, die die KI nutzen, tragen das Funken-Symbol
+  const reimportButton = (kind, label) => (
+    <button type="button" onClick={() => handleReimport(kind)} disabled={reimporting !== ''} title={AI_KIND[kind] ? t('sources.importUsesAi') : undefined}>
+      {reimporting === kind ? <span className="spinner" /> : AI_KIND[kind] ? <IconSparkles size={16} stroke={1.6} /> : <IconRefresh size={16} stroke={1.6} />}
       {reimporting === kind ? t('sources.importing') : label}
     </button>
   )
@@ -210,11 +253,14 @@ export default function Settings() {
           {reimportMessage.text && <div className={`alert ${reimportMessage.type}`}>{reimportMessage.text}</div>}
           <div className="button-row">
             {reimportButton('megamix', t('sources.importMegamix'))}
-            {reimportButton('jam-sessions', t('sources.importJams'), true)}
-            {reimportButton('zin-volumes', t('sources.importZin'), true)}
+            {reimportButton('jam-sessions', t('sources.importJams'))}
+            {reimportButton('zin-volumes', t('sources.importZin'))}
           </div>
         </div>
+
+        <AiSettings key={aiRefresh} />
       </div>
+      {pending && <AiConfirmDialog plan={pending.plan} onConfirm={confirmPending} onCancel={cancelPending} />}
     </div>
   )
 }

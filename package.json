@@ -16,11 +16,14 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.128.0",
+    "@google/genai": "^2.24.0",
     "@tabler/icons-react": "^3.48.0",
     "axios": "^1.20.0",
     "better-sqlite3": "^13.0.3",
     "express": "^4.22.3",
     "music-metadata": "^11.16.1",
+    "openai": "^7.23.0",
+    "pdf-lib": "^1.17.1",
     "react": "^19.3.0",
     "react-dom": "^19.3.0"
   },
@@ -32,6 +35,8 @@
   },
   "allowScripts": {
     "better-sqlite3@13.0.3": false,
-    "electron@44.4.5": true
+    "electron@44.4.5": true,
+    "@google/genai": false,
+    "protobufjs": false
   }
 }

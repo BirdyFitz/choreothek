@@ -73,6 +73,24 @@ const MIGRATIONS = [
     oneonone_page INTEGER
   );
   CREATE INDEX idx_zin_volume_songs_volume ON zin_volume_songs(zin_volume_id);
+  `,
+  // 2: Protokoll aller KI-Aufrufe (Kostenanzeige, Schätzung aus echten Werten)
+  `
+  CREATE TABLE ai_calls (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+    provider TEXT NOT NULL,
+    model TEXT NOT NULL,
+    kind TEXT NOT NULL,
+    files TEXT,
+    pages INTEGER,
+    input_tokens INTEGER,
+    output_tokens INTEGER,
+    cost_usd REAL,
+    ok INTEGER NOT NULL,
+    error TEXT
+  );
+  CREATE INDEX idx_ai_calls_provider ON ai_calls(provider, created_at);
   `
 ];
 
@@ -384,4 +402,46 @@ export async function insertZinVolumeSongs(zinVolumeId, songs) {
       );
     }
   })();
+}
+
+// ---------- KI-Aufrufe ----------
+
+export async function logAiCall(c) {
+  getDb()
+    .prepare(
+      `INSERT INTO ai_calls (provider, model, kind, files, pages, input_tokens, output_tokens, cost_usd, ok, error)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+    )
+    .run(c.provider, c.model, c.kind, c.files ?? null, c.pages ?? null, c.inputTokens ?? null, c.outputTokens ?? null, c.costUsd ?? null, c.ok ? 1 : 0, c.error ?? null);
+}
+
+// Gemessene Mittelwerte für die Kostenschätzung (nur erfolgreiche Aufrufe mit Seitenzahl)
+export async function aiAverages(provider, kind) {
+  return getDb()
+    .prepare(
+      `SELECT COUNT(*) AS calls, SUM(input_tokens) * 1.0 / NULLIF(SUM(pages), 0) AS input_per_page,
+              AVG(output_tokens) AS output_per_call
+       FROM ai_calls WHERE ok = 1 AND provider = ? AND kind = ? AND pages > 0`
+    )
+    .get(provider, kind);
+}
+
+export async function aiSpentSince(provider, sinceIso) {
+  return (
+    getDb()
+      .prepare('SELECT COALESCE(SUM(cost_usd), 0) AS spent FROM ai_calls WHERE provider = ? AND created_at >= ?')
+      .get(provider, sinceIso.replace('T', ' ').slice(0, 19)).spent || 0
+  );
+}
+
+// Kosten je Monat und Anbieter (für die Übersicht)
+export async function aiCostsByMonth() {
+  return getDb()
+    .prepare(
+      `SELECT substr(created_at, 1, 7) AS month, provider, COUNT(*) AS calls, SUM(ok) AS ok_calls,
+              COALESCE(SUM(input_tokens), 0) AS input_tokens, COALESCE(SUM(output_tokens), 0) AS output_tokens,
+              SUM(cost_usd) AS cost_usd, SUM(CASE WHEN cost_usd IS NULL AND ok = 1 THEN 1 ELSE 0 END) AS unpriced
+       FROM ai_calls GROUP BY month, provider ORDER BY month DESC, provider`
+    )
+    .all();
 }

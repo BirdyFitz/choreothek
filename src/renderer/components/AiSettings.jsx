@@ -1,0 +1,258 @@
+import { useState, useEffect, useCallback } from 'react'
+import axios from 'axios'
+import { IconKey, IconTrash, IconPlugConnected, IconExternalLink, IconDeviceFloppy } from '@tabler/icons-react'
+import { formatUsd, formatDate } from '../lib/money.js'
+import { t } from '../../shared/i18n.js'
+
+// Beträge in Eingabefeldern: Komma oder Punkt als Dezimaltrenner
+const parseAmount = (text) => {
+  const n = Number(String(text).replace(',', '.').trim())
+  return text !== '' && Number.isFinite(n) && n >= 0 ? n : null
+}
+
+// Karte „KI“ in den Datenquellen: Anbieter, Modell, Schlüssel, Datenschutz, Nachfragen,
+// Kostengrenze, Guthaben und Kostenübersicht. Schlüssel werden nur gesendet, nie angezeigt.
+export default function AiSettings() {
+  const [data, setData] = useState(null)
+  const [costs, setCosts] = useState([])
+  const [keyInput, setKeyInput] = useState('')
+  const [busy, setBusy] = useState('')
+  const [message, setMessage] = useState({ type: '', text: '' })
+  const [limitInput, setLimitInput] = useState('')
+  const [warnInput, setWarnInput] = useState('')
+  const [balanceInput, setBalanceInput] = useState('')
+
+  const load = useCallback(async () => {
+    const [settings, costList] = await Promise.all([axios.get('/api/ai/settings'), axios.get('/api/ai/costs')])
+    setData(settings.data)
+    setCosts(costList.data.months)
+    setLimitInput(String(settings.data.costLimitUsd).replace('.', ','))
+    setWarnInput(String(settings.data.balanceWarnUsd).replace('.', ','))
+  }, [])
+
+  useEffect(() => {
+    load().catch((error) => setMessage({ type: 'error', text: error.response?.data?.error || t('ai.loadError') }))
+  }, [load])
+
+  // Eine Aktion ausführen, Meldung zeigen, danach neu laden
+  const run = async (name, action, successText) => {
+    setBusy(name)
+    setMessage({ type: '', text: '' })
+    try {
+      const result = await action()
+      if (successText) setMessage({ type: 'success', text: typeof successText === 'function' ? successText(result) : successText })
+      await load()
+    } catch (error) {
+      setMessage({ type: 'error', text: error.response?.data?.error || t('ai.saveError') })
+    } finally {
+      setBusy('')
+    }
+  }
+
+  if (!data) {
+    return (
+      <div className="card">
+        <h2>{t('ai.title')}</h2>
+        {message.text && <div className={`alert ${message.type}`}>{message.text}</div>}
+      </div>
+    )
+  }
+
+  const provider = data.providers.find((p) => p.id === data.provider)
+  const save = (patch, successText) => run('settings', () => axios.post('/api/ai/settings', patch), successText)
+
+  const saveKey = () =>
+    run(
+      'key',
+      async () => {
+        await axios.post('/api/ai/key', { provider: provider.id, key: keyInput })
+        setKeyInput('')
+      },
+      t('ai.keySaved')
+    )
+
+  const testKey = () =>
+    run('test', () => axios.post('/api/ai/test-key', { provider: provider.id, key: keyInput || undefined }), (res) =>
+      t('ai.keyValid', { count: res.data.models })
+    )
+
+  const saveLimits = () => {
+    const costLimitUsd = parseAmount(limitInput)
+    const balanceWarnUsd = parseAmount(warnInput)
+    if (costLimitUsd === null || balanceWarnUsd === null) {
+      setMessage({ type: 'error', text: t('errors.ai.invalidAmount') })
+      return
+    }
+    save({ costLimitUsd, balanceWarnUsd }, t('ai.saved'))
+  }
+
+  const saveBalance = () => {
+    const amountUsd = parseAmount(balanceInput)
+    if (amountUsd === null) {
+      setMessage({ type: 'error', text: t('errors.ai.invalidAmount') })
+      return
+    }
+    run('balance', () => axios.post('/api/ai/balance', { provider: provider.id, amountUsd }), t('ai.balanceSaved')).then(() => setBalanceInput(''))
+  }
+
+  const providerLabel = (id) => data.providers.find((p) => p.id === id)?.label || id
+
+  return (
+    <div className="card">
+      <div>
+        <h2>{t('ai.title')}</h2>
+        <p className="hint">{t('ai.hint')}</p>
+      </div>
+
+      {message.text && <div className={`alert ${message.type}`}>{message.text}</div>}
+
+      <div className="field-row">
+        <div className="field">
+          <label htmlFor="ai-provider">{t('ai.provider')}</label>
+          <select id="ai-provider" value={data.provider} disabled={busy !== ''} onChange={(e) => save({ provider: e.target.value })}>
+            {data.providers.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.label}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="field">
+          <label htmlFor="ai-model">{t('ai.model')}</label>
+          <select id="ai-model" value={provider.model} disabled={busy !== ''} onChange={(e) => save({ model: e.target.value })}>
+            {provider.models.map((m) => (
+              <option key={m} value={m}>
+                {m}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      <div className="field">
+        <label htmlFor="ai-key">{t('ai.key')}</label>
+        <div className="path-field">
+          <input
+            id="ai-key"
+            type="password"
+            autoComplete="off"
+            value={keyInput}
+            onChange={(e) => setKeyInput(e.target.value)}
+            placeholder={provider.hasKey ? t('ai.keyStoredPlaceholder') : t('ai.keyPlaceholder')}
+            disabled={busy !== ''}
+          />
+          <button type="button" onClick={saveKey} disabled={busy !== '' || !keyInput.trim()}>
+            {busy === 'key' ? <span className="spinner" /> : <IconKey size={16} stroke={1.6} />} {t('ai.keySave')}
+          </button>
+          <button type="button" onClick={testKey} disabled={busy !== '' || (!provider.hasKey && !keyInput.trim())} title={t('ai.keyTestHint')}>
+            {busy === 'test' ? <span className="spinner" /> : <IconPlugConnected size={16} stroke={1.6} />} {t('ai.keyTest')}
+          </button>
+          {provider.hasKey && (
+            <button
+              type="button"
+              className="icon-btn"
+              onClick={() => run('delete', () => axios.delete(`/api/ai/key/${provider.id}`), t('ai.keyDeleted'))}
+              disabled={busy !== ''}
+              title={t('ai.keyDelete')}
+              aria-label={t('ai.keyDelete')}
+            >
+              <IconTrash size={16} stroke={1.6} />
+            </button>
+          )}
+        </div>
+        <span className="muted" style={{ fontSize: 12 }}>
+          {provider.hasKey ? t('ai.keyStored') : t('ai.keyMissing')}{' '}
+          <a href={provider.keysUrl} target="_blank" rel="noreferrer">
+            {t('ai.keyCreate')} <IconExternalLink size={12} stroke={1.8} />
+          </a>
+        </span>
+      </div>
+
+      <label className="check">
+        <input type="checkbox" checked={provider.privacyAck} disabled={busy !== ''} onChange={(e) => save({ privacyAck: e.target.checked })} />
+        <span>
+          {t('ai.privacy', { provider: provider.label })}
+          {provider.id === 'google' && <span className="muted"> {t('ai.privacyGoogle')}</span>}
+        </span>
+      </label>
+
+      <label className="check">
+        <input type="checkbox" checked={data.askBeforeUse} disabled={busy !== ''} onChange={(e) => save({ askBeforeUse: e.target.checked })} />
+        <span>{t('ai.askBeforeUse')}</span>
+      </label>
+
+      <div className="field-row">
+        <div className="field">
+          <label htmlFor="ai-limit">{t('ai.costLimit')}</label>
+          <input id="ai-limit" inputMode="decimal" value={limitInput} onChange={(e) => setLimitInput(e.target.value)} disabled={busy !== ''} />
+        </div>
+        <div className="field">
+          <label htmlFor="ai-warn">{t('ai.balanceWarn')}</label>
+          <input id="ai-warn" inputMode="decimal" value={warnInput} onChange={(e) => setWarnInput(e.target.value)} disabled={busy !== ''} />
+        </div>
+        <div className="field field-end">
+          <button type="button" onClick={saveLimits} disabled={busy !== ''}>
+            <IconDeviceFloppy size={16} stroke={1.6} /> {t('ai.save')}
+          </button>
+        </div>
+      </div>
+      <span className="muted" style={{ fontSize: 12 }}>
+        {t('ai.costLimitHint')}
+      </span>
+
+      <div className="field">
+        <label htmlFor="ai-balance">{t('ai.balance', { provider: provider.label })}</label>
+        <div className="path-field">
+          <input id="ai-balance" inputMode="decimal" value={balanceInput} onChange={(e) => setBalanceInput(e.target.value)} placeholder={t('ai.balancePlaceholder')} disabled={busy !== ''} />
+          <button type="button" onClick={saveBalance} disabled={busy !== '' || !balanceInput.trim()}>
+            {t('ai.balanceSave')}
+          </button>
+        </div>
+        <span className="muted" style={{ fontSize: 12 }}>
+          {provider.balance
+            ? t('ai.balanceState', {
+                amount: formatUsd(provider.balance.amountUsd),
+                date: formatDate(provider.balance.since),
+                spent: formatUsd(provider.balance.spentUsd),
+                remaining: formatUsd(provider.balance.remainingUsd)
+              })
+            : t('ai.balanceNone')}{' '}
+          <a href={provider.billingUrl} target="_blank" rel="noreferrer">
+            {t('ai.billing')} <IconExternalLink size={12} stroke={1.8} />
+          </a>
+        </span>
+      </div>
+
+      <div className="field">
+        <span className="field-label">{t('ai.costsTitle')}</span>
+        {costs.length === 0 ? (
+          <span className="muted">{t('ai.costsNone')}</span>
+        ) : (
+          <table className="results cost-table">
+            <thead>
+              <tr>
+                <th>{t('ai.costsMonth')}</th>
+                <th>{t('ai.provider')}</th>
+                <th>{t('ai.costsCalls')}</th>
+                <th>{t('ai.costsAmount')}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {costs.map((c) => (
+                <tr key={`${c.month}-${c.provider}`}>
+                  <td>{c.month}</td>
+                  <td>{providerLabel(c.provider)}</td>
+                  <td>{c.calls}</td>
+                  <td>{formatUsd(c.cost_usd ?? 0)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+        <span className="muted" style={{ fontSize: 12 }}>
+          {t('ai.costsHint', { date: formatDate(data.pricesAsOf) })}
+        </span>
+      </div>
+    </div>
+  )
+}

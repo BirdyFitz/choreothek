@@ -9,7 +9,7 @@ import {
   updateZinVolumeFolders,
   getSetting
 } from './db.js';
-import { extractZinVolumeSongs } from './utils/zinVolumeExtractor.js';
+import { extractWithAi, isFatalAiError, AiError } from './ai/aiService.js';
 import { findFolderByEditionNumber } from './utils/editionFolderResolver.js';
 import { findWarmupSongs } from './utils/warmupParser.js';
 import { t } from '../shared/i18n.js';
@@ -38,46 +38,59 @@ function groupPdfsByEdition(pdfFilenames) {
   return groups;
 }
 
-export async function importZinVolumes(choreoRoot) {
-  const root = choreoRoot || (await getSetting('zin_volumes_choreo_root'));
+async function scanZin() {
+  const root = await getSetting('zin_volumes_choreo_root');
   if (!root) {
     throw new Error(t('errors.noChoreoFolder'));
   }
+  const alreadyImported = new Set(await getAllZinVolumeEditionLabels());
+  const allFiles = await fs.promises.readdir(root);
+  const groups = groupPdfsByEdition(allFiles.filter((f) => f.toLowerCase().endsWith('.pdf')));
+  const label = (editionNumber) => `ZIN Volume ${editionNumber}`;
+  const candidates = [...groups]
+    .filter(([editionNumber]) => !alreadyImported.has(label(editionNumber)))
+    .map(([editionNumber, files]) => ({
+      label: label(editionNumber),
+      editionNumber,
+      files: files.map((f) => path.join(root, f.filename))
+    }));
+  return { root, groups, alreadyImported, candidates };
+}
 
+// Für den KI-Plan: welche Volumes (PDF-Gruppen) würden an die KI gehen
+export async function findZinCandidates() {
+  return (await scanZin()).candidates;
+}
+
+// Liest die im bestätigten Plan genannten Volumes ein (KI-Extraktion) und trägt bei bereits
+// eingelesenen Volumes fehlende Audio-/Video-Ordner nach (ohne KI).
+export async function importZinVolumes(permit) {
+  const { root, groups, alreadyImported } = await scanZin();
   const mp3Root = await getSetting('zin_volumes_mp3_root');
   const videoRoot = path.dirname(root);
 
-  const alreadyImported = new Set(await getAllZinVolumeEditionLabels());
-
-  const allFiles = await fs.promises.readdir(root);
-  const pdfFilenames = allFiles.filter((f) => f.toLowerCase().endsWith('.pdf'));
-  const groups = groupPdfsByEdition(pdfFilenames);
-
   let importedEditions = 0;
   let importedSongs = 0;
-  let skippedEditions = 0;
+  const skippedEditions = groups.size - permit.plan.items.length;
   const errors = [];
 
-  for (const [editionNumber, files] of groups) {
-    const editionLabel = `ZIN Volume ${editionNumber}`;
-    if (alreadyImported.has(editionLabel)) {
-      skippedEditions++;
-      continue;
-    }
-
+  for (const item of permit.plan.items) {
+    const { editionNumber } = item;
+    const editionLabel = item.label;
+    if (alreadyImported.has(editionLabel) || !item.files.every((f) => fs.existsSync(f))) continue;
     try {
       const destFilenames = [];
       const destPaths = [];
-      for (const file of files) {
+      for (const file of item.files) {
         const timestamp = Date.now() + destFilenames.length;
-        const destFilename = `${timestamp}-${file.filename}`;
+        const destFilename = `${timestamp}-${path.basename(file)}`;
         const destPath = path.join(getUploadsDir(), destFilename);
-        fs.copyFileSync(path.join(root, file.filename), destPath);
+        fs.copyFileSync(file, destPath);
         destFilenames.push(destFilename);
         destPaths.push(destPath);
       }
 
-      const data = await extractZinVolumeSongs(destPaths);
+      const data = await extractWithAi(permit, 'zin', destPaths);
 
       const songs = data.songs.map((s, i) => ({
         name: s.name,
@@ -118,13 +131,15 @@ export async function importZinVolumes(choreoRoot) {
       importedSongs += allSongs.length;
       console.log(`✓ ${editionLabel}: ${allSongs.length} Songs`);
     } catch (error) {
-      errors.push(`${editionLabel}: ${error.message}`);
+      const text = error instanceof AiError ? t(`errors.ai.${error.code}`) : error.message;
+      errors.push(`${editionLabel}: ${text}`);
       console.error(`✗ ${editionLabel}: ${error.message}`);
+      if (error instanceof AiError && isFatalAiError(error.code)) break;
     }
   }
 
   // Bereits importierte Volumes: fehlende Audio-/Video-Ordner nachtragen (z.B. Videos erst
-  // nach dem Einlesen entpackt). Gesetzte Ordner bleiben unverändert, kein Claude-Aufruf.
+  // nach dem Einlesen entpackt). Gesetzte Ordner bleiben unverändert, kein KI-Aufruf.
   let updatedFolders = 0;
   for (const zv of await getAllZinVolumesFull()) {
     if (zv.audio_folder && zv.live_video_folder && zv.oneonone_video_folder) continue;
@@ -143,5 +158,5 @@ export async function importZinVolumes(choreoRoot) {
     }
   }
 
-  return { importedEditions, importedSongs, skippedEditions, updatedFolders, errors };
+  return { importedEditions, importedSongs, skippedEditions, updatedFolders, errors, aiCostUsd: permit.costUsd };
 }

@@ -3,6 +3,10 @@ import fs from 'fs';
 import path from 'path';
 import { getSetting, setSetting } from '../db.js';
 import { importMegaMix } from '../importMegaMix.js';
+import { importJamSessions } from '../importJamSessions.js';
+import { importZinVolumes } from '../importZinVolumes.js';
+import { redeemPlan, closePermit, GateError } from '../ai/gate.js';
+import { rememberConfirmation } from '../ai/aiService.js';
 import { t } from '../../shared/i18n.js';
 
 const router = express.Router();
@@ -70,17 +74,35 @@ router.post('/reimport/megamix', async (req, res) => {
   }
 });
 
-// KI-Einlesen ist gesperrt, bis die KI-Schicht mit Bestätigungssperre steht (Plan Paket 3,
-// Grundsatz 5: keine KI-Nutzung ohne Meldung).
-router.post('/reimport/jam-sessions', (req, res) => {
-  res.status(409).json({ error: t('errors.kiLockedJams') });
-});
+// KI-Einlesen: nur mit einem vorher angeforderten Plan (POST /api/ai/plan), der bestätigt
+// bzw. nach den Regeln „nicht mehr fragen“ freigegeben ist (Grundsatz 5, zentrale Sperre).
+function aiImportRoute(kind, runImport) {
+  return async (req, res) => {
+    const { planId, confirmed = false, dontAskAgain = false } = req.body || {};
+    let permit;
+    try {
+      permit = redeemPlan(planId, kind, { confirmed: confirmed === true });
+    } catch (error) {
+      if (error instanceof GateError) {
+        return res.status(409).json({ error: t(`errors.ai.${error.code}`), code: error.code });
+      }
+      throw error;
+    }
+    try {
+      await rememberConfirmation(permit, { confirmed: confirmed === true, dontAskAgain: dontAskAgain === true });
+      const result = await runImport(permit);
+      res.json({ success: true, ...result });
+    } catch (error) {
+      console.error('KI-Einlesen-Fehler:', error);
+      res.status(500).json({ error: error.message });
+    } finally {
+      closePermit(permit);
+    }
+  };
+}
 
-// KI-Einlesen ist gesperrt, bis die KI-Schicht mit Bestätigungssperre steht (Plan Paket 3,
-// Grundsatz 5: keine KI-Nutzung ohne Meldung).
-router.post('/reimport/zin-volumes', (req, res) => {
-  res.status(409).json({ error: t('errors.kiLockedZin') });
-});
+router.post('/reimport/jam-sessions', aiImportRoute('jam', (permit) => importJamSessions(permit)));
+router.post('/reimport/zin-volumes', aiImportRoute('zin', (permit) => importZinVolumes(permit)));
 
 // Liefert Audio-/Videodateien aus den gezielt zugeordneten MegaMix-/ZIN-Volume-Ordnern aus.
 // dir muss unterhalb eines der konfigurierten Datenquellen-Roots liegen (Path-Traversal-Schutz).

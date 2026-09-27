@@ -54,7 +54,7 @@ test('Ändernde Anfragen brauchen den Token', async () => {
   assert.equal(ok.status, 200);
 });
 
-test('KI-Einlesen ist gesperrt (Grundsatz 5)', async () => {
+test('KI-Einlesen ohne Plan ist gesperrt (Grundsatz 5)', async () => {
   const headers = { 'X-Choreothek-Token': session.token };
   for (const kind of ['jam-sessions', 'zin-volumes']) {
     const res = await api(`reimport/${kind}`, { method: 'POST', headers });

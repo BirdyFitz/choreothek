@@ -3,6 +3,8 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron';
 import { startServer } from '../server/server.js';
+import { setSecretStore } from '../server/ai/secrets.js';
+import { createSafeStorageStore } from './secretStore.js';
 import { showFileMenu } from './fileMenu.js';
 import { warmUpPropertiesHelper, stopPropertiesHelper } from './windowsDialogs.js';
 import { t } from '../shared/i18n.js';
@@ -55,6 +57,7 @@ app.on('second-instance', () => {
 
 app.whenReady().then(async () => {
   if (!isFirstInstance) return;
+  setSecretStore(createSafeStorageStore(app.getPath('userData')));
   session = await startServer({
     dataDir: app.getPath('userData'),
     rendererDir: path.join(appRoot, 'dist', 'renderer')
