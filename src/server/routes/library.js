@@ -8,6 +8,7 @@ import { importZinVolumes } from '../importZinVolumes.js';
 import { redeemPlan, closePermit, GateError } from '../ai/gate.js';
 import { rememberConfirmation } from '../ai/aiService.js';
 import { t } from '../../shared/i18n.js';
+import { mediaRoots } from '../fileAccess.js';
 
 const router = express.Router();
 
@@ -26,10 +27,12 @@ router.get('/library-settings', async (req, res) => {
     const megamixRoot = await getSetting('megamix_root');
     const zinVolumesMp3Root = await getSetting('zin_volumes_mp3_root');
     const zinVolumesChoreoRoot = await getSetting('zin_volumes_choreo_root');
+    const zinVolumesVideoRoot = await getSetting('zin_volumes_video_root');
     res.json({
       megamix_root: megamixRoot || '',
       zin_volumes_mp3_root: zinVolumesMp3Root || '',
-      zin_volumes_choreo_root: zinVolumesChoreoRoot || ''
+      zin_volumes_choreo_root: zinVolumesChoreoRoot || '',
+      zin_volumes_video_root: zinVolumesVideoRoot || ''
     });
   } catch (error) {
     console.error('Library-Settings-Fehler:', error);
@@ -42,6 +45,7 @@ router.post('/library-settings', async (req, res) => {
     const megamixRoot = (req.body.megamix_root || '').trim();
     const zinVolumesMp3Root = (req.body.zin_volumes_mp3_root || '').trim();
     const zinVolumesChoreoRoot = (req.body.zin_volumes_choreo_root || '').trim();
+    const zinVolumesVideoRoot = (req.body.zin_volumes_video_root || '').trim();
 
     if (megamixRoot && !isValidDir(megamixRoot)) {
       return res.status(400).json({ error: t('errors.folderNotFound', { path: megamixRoot }) });
@@ -52,10 +56,14 @@ router.post('/library-settings', async (req, res) => {
     if (zinVolumesChoreoRoot && !isValidDir(zinVolumesChoreoRoot)) {
       return res.status(400).json({ error: t('errors.folderNotFound', { path: zinVolumesChoreoRoot }) });
     }
+    if (zinVolumesVideoRoot && !isValidDir(zinVolumesVideoRoot)) {
+      return res.status(400).json({ error: t('errors.folderNotFound', { path: zinVolumesVideoRoot }) });
+    }
 
     await setSetting('megamix_root', megamixRoot);
     await setSetting('zin_volumes_mp3_root', zinVolumesMp3Root);
     await setSetting('zin_volumes_choreo_root', zinVolumesChoreoRoot);
+    await setSetting('zin_volumes_video_root', zinVolumesVideoRoot);
 
     res.json({ success: true });
   } catch (error) {
@@ -113,14 +121,7 @@ router.get('/library-media', async (req, res) => {
       return res.status(400).end();
     }
 
-    const megamixRoot = await getSetting('megamix_root');
-    const zinVolumesMp3Root = await getSetting('zin_volumes_mp3_root');
-    const choreoRoot = await getSetting('zin_volumes_choreo_root');
-    const videoRoot = choreoRoot ? path.dirname(choreoRoot) : null;
-    const mediaRootsRaw = await getSetting('media_roots');
-    const jamMediaRoots = mediaRootsRaw ? JSON.parse(mediaRootsRaw) : [];
-
-    const allowedRoots = [megamixRoot, zinVolumesMp3Root, videoRoot, ...jamMediaRoots].filter(Boolean);
+    const allowedRoots = await mediaRoots();
     const targetDir = path.resolve(dir);
     const allowed = allowedRoots.some((root) => isUnderRoot(targetDir, root));
     if (!allowed) {

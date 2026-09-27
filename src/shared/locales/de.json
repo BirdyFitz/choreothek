@@ -183,7 +183,8 @@
       "unknownModel": "Unbekanntes Modell.",
       "unknownKind": "Unbekannte Art des Einlesens.",
       "invalidAmount": "Bitte einen Betrag von 0 oder mehr eingeben."
-    }
+    },
+    "invalidRequest": "Ungültige Anfrage."
   },
   "ai": {
     "title": "KI",

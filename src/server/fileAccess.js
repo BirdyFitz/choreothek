@@ -4,18 +4,25 @@ import fs from 'fs';
 import path from 'path';
 import { getSetting } from './db.js';
 import { getUploadsDir } from './paths.js';
+import { zinFolders, ZIN_OVERRIDES_SETTING, MEGAMIX_OVERRIDES_SETTING } from './scan/settings.js';
+import { MEDIA_OVERRIDES_SETTING } from './scan/jams.js';
+
+// Alle Ordner, aus denen Musik/Videos ausgeliefert werden dürfen: Datenquellen und die in der
+// Vorschau von Hand zugeordneten Ordner (die auch außerhalb der Datenquellen liegen können)
+export async function mediaRoots() {
+  const json = async (key, fallback) => JSON.parse((await getSetting(key)) || JSON.stringify(fallback));
+  const roots = [...(await json('media_roots', []))];
+  const { choreoRoot, musicRoot, videoRoot } = await zinFolders();
+  roots.push(await getSetting('megamix_root'), choreoRoot, musicRoot, videoRoot);
+  for (const key of [ZIN_OVERRIDES_SETTING, MEGAMIX_OVERRIDES_SETTING]) {
+    for (const entry of Object.values(await json(key, {}))) roots.push(...Object.values(entry));
+  }
+  roots.push(...Object.values(await json(MEDIA_OVERRIDES_SETTING, {})));
+  return roots.filter(Boolean);
+}
 
 async function allowedRoots() {
-  const roots = [getUploadsDir()];
-  roots.push(...JSON.parse((await getSetting('media_roots')) || '[]'));
-  for (const key of ['megamix_root', 'zin_volumes_mp3_root']) {
-    const value = await getSetting(key);
-    if (value) roots.push(value);
-  }
-  // Videos der ZIN Volumes liegen im Ordner über den Choreo Notes
-  const choreoRoot = await getSetting('zin_volumes_choreo_root');
-  if (choreoRoot) roots.push(path.dirname(choreoRoot));
-  return roots.filter(Boolean).map((r) => path.resolve(r).toLowerCase());
+  return [getUploadsDir(), ...(await mediaRoots())].map((r) => path.resolve(r).toLowerCase());
 }
 
 export async function isAllowedFile(file) {
