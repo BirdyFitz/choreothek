@@ -2,6 +2,7 @@
 //   extract({ apiKey, model, pdfs: [{ name, base64 }], prompt }) -> { text, inputTokens, outputTokens }
 //   testKey(apiKey) -> Anzahl Modelle (kostenlos: nur die Modellliste wird abgefragt)
 // Aufrufformen nach der Dokumentation der Anbieter bzw. den SDK-Typen (Stand 27.09.2026).
+// Vorbelegte Modelle nach dem Vergleichstest vom 27.09.2026 (docs/ki-vergleich.md).
 import Anthropic from '@anthropic-ai/sdk';
 import OpenAI from 'openai';
 import { GoogleGenAI } from '@google/genai';
@@ -52,7 +53,7 @@ const anthropic = {
 const openai = {
   id: 'openai',
   label: 'OpenAI (ChatGPT)',
-  defaultModel: 'gpt-6-astra',
+  defaultModel: 'gpt-6-luna',
   billingUrl: 'https://platform.openai.com/settings/organization/billing/overview',
   keysUrl: 'https://platform.openai.com/api-keys',
   async testKey(apiKey) {
