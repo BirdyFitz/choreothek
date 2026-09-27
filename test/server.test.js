@@ -144,3 +144,11 @@ test('Medien-Angaben nur für Dateien aus den Datenquellen', async () => {
   assert.equal(info.size, 3);
   assert.equal((await api(q(dataDir, 'geheim.txt').replace('media-info', 'media-cover'))).status, 404);
 });
+
+test('Einrichtungsassistent: offen ohne Ordner, erledigt nach Abschluss', async () => {
+  const headers = { 'Content-Type': 'application/json', 'X-Choreothek-Token': session.token };
+  await api('settings', { method: 'POST', headers, body: JSON.stringify({ media_roots: [] }) });
+  assert.deepEqual(await (await api('setup')).json(), { done: false });
+  await api('setup', { method: 'POST', headers, body: JSON.stringify({ done: true }) });
+  assert.deepEqual(await (await api('setup')).json(), { done: true });
+});

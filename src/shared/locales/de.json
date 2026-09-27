@@ -352,5 +352,35 @@
       "summary": "{total} MegaMixe erkannt, {new} neu",
       "folder": "Ordner"
     }
+  },
+  "wizard": {
+    "title": "Einrichtung",
+    "open": "Einrichtungsassistent öffnen",
+    "steps": {
+      "welcome": "Willkommen",
+      "folders": "Ordner",
+      "ai": "KI",
+      "import": "Einlesen"
+    },
+    "welcome": {
+      "title": "Willkommen bei Choreothek",
+      "text": "Choreothek macht dein eigenes Archiv aus Jam Sessions, MegaMixen und ZIN Volumes durchsuchbar – nach Song, Rhythmus, Jammer, Ort und Datum – und zeigt dazu Choreo Notes, Musik und Videos.",
+      "privacy": "Deine Daten bleiben auf deinem PC. Nur zum Auslesen der Choreo-Notes-PDFs werden diese an den KI-Anbieter gesendet, den du selbst auswählst – und nie ohne vorherige Meldung.",
+      "needFolders": "Du wählst die Ordner, in denen deine Jam Sessions, MegaMixe und ZIN Volumes liegen.",
+      "needKey": "Für Jam Sessions und ZIN Volumes brauchst du einen eigenen API-Schlüssel bei Anthropic, OpenAI oder Google. Die Kosten rechnet der Anbieter direkt mit dir ab.",
+      "megamixNoAi": "MegaMixe liest Choreothek ohne KI aus den Dateinamen."
+    },
+    "ai": {
+      "hint": "Wähle einen KI-Anbieter und hinterlege deinen Schlüssel. Du kannst diesen Schritt auch überspringen und die KI später unter „Datenquellen“ einrichten."
+    },
+    "import": {
+      "hint": "Prüfe, was erkannt wurde, ordne Fehlendes von Hand zu und starte dann das Einlesen. Vor jeder KI-Nutzung erscheint eine Meldung mit den geschätzten Kosten."
+    },
+    "start": "Los geht’s",
+    "next": "Weiter",
+    "skip": "Überspringen",
+    "back": "Zurück",
+    "saveAndNext": "Speichern und weiter",
+    "finish": "Fertig"
   }
 }

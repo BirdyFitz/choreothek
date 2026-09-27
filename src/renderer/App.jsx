@@ -1,7 +1,9 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import axios from 'axios'
 import { IconMusic, IconLayoutSidebar, IconLayoutSidebarRight } from '@tabler/icons-react'
 import Search from './pages/Search.jsx'
 import Settings from './pages/Settings.jsx'
+import SetupWizard from './pages/SetupWizard.jsx'
 import { usePersistent } from './lib/usePersistent.js'
 import { t } from '../shared/i18n.js'
 
@@ -11,6 +13,15 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('search')
   const [showFilters, setShowFilters] = usePersistent('showFilters', true)
   const [showDetails, setShowDetails] = usePersistent('showDetails', true)
+  // Einrichtungsassistent beim ersten Start (oder auf Wunsch aus „Datenquellen“)
+  const [wizard, setWizard] = useState(false)
+
+  useEffect(() => {
+    axios
+      .get('/api/setup')
+      .then((res) => setWizard(!res.data.done))
+      .catch(() => setWizard(false))
+  }, [])
 
   return (
     <div className="app">
@@ -19,6 +30,7 @@ export default function App() {
           <IconMusic size={20} stroke={1.8} />
           {t('app.name')}
         </div>
+        {!wizard && (
         <nav className="tabs">
           <button className={`tab ${activeTab === 'search' ? 'active' : ''}`} onClick={() => setActiveTab('search')}>
             {t('app.tabs.search')}
@@ -27,7 +39,9 @@ export default function App() {
             {t('app.tabs.sources')}
           </button>
         </nav>
-        {activeTab === 'search' && (
+        )}
+        {wizard && <span className="topbar-title">{t('wizard.title')}</span>}
+        {!wizard && activeTab === 'search' && (
           <div className="topbar-right">
             <button
               className={`ghost ${showFilters ? 'active' : ''}`}
@@ -51,11 +65,21 @@ export default function App() {
         )}
       </header>
 
-      <div className="main" style={{ display: activeTab === 'search' ? 'flex' : 'none' }}>
+      {wizard && (
+        <div className="main">
+          <SetupWizard
+            onFinish={() => {
+              setWizard(false)
+              setActiveTab('search')
+            }}
+          />
+        </div>
+      )}
+      <div className="main" style={{ display: !wizard && activeTab === 'search' ? 'flex' : 'none' }}>
         <Search showFilters={showFilters} showDetails={showDetails} />
       </div>
-      <div className="main" style={{ display: activeTab === 'sources' ? 'flex' : 'none' }}>
-        <Settings />
+      <div className="main" style={{ display: !wizard && activeTab === 'sources' ? 'flex' : 'none' }}>
+        <Settings onOpenWizard={() => setWizard(true)} />
       </div>
     </div>
   )

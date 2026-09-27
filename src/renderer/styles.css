@@ -903,3 +903,61 @@ body.resizing video {
   height: 8px;
   accent-color: var(--accent);
 }
+
+/* ---------- Einrichtungsassistent ---------- */
+
+.topbar-title {
+  color: var(--text-2);
+  font-weight: 600;
+}
+
+.wizard-steps {
+  list-style: none;
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.wizard-steps button.link {
+  color: var(--text-3);
+  gap: 6px;
+}
+
+.wizard-steps li.active button.link {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.wizard-steps li.done button.link {
+  color: var(--success);
+}
+
+.step-no {
+  display: inline-grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1px solid currentColor;
+  font-size: 11px;
+}
+
+.wizard-note {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 10px 12px;
+  border-radius: var(--radius);
+  background: var(--accent-soft);
+}
+
+.wizard-list {
+  margin-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.wizard-nav .spacer {
+  flex: 1;
+}

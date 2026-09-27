@@ -39,4 +39,18 @@ router.post('/settings', async (req, res) => {
   }
 });
 
+// Einrichtungsassistent: gilt als erledigt, wenn abgeschlossen oder schon Ordner eingestellt sind
+// (Installationen von vor dem Assistenten)
+router.get('/setup', async (req, res) => {
+  const done = (await getSetting('setup_done')) === '1';
+  const folders = await Promise.all(['megamix_root', 'zin_volumes_mp3_root', 'zin_volumes_choreo_root'].map(getSetting));
+  const jamRoots = JSON.parse((await getSetting('media_roots')) || '[]');
+  res.json({ done: done || jamRoots.length > 0 || folders.some(Boolean) });
+});
+
+router.post('/setup', async (req, res) => {
+  await setSetting('setup_done', req.body.done ? '1' : '0');
+  res.json({ success: true });
+});
+
 export default router;
