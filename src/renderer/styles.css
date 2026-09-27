@@ -740,10 +740,14 @@ body.resizing video {
   cursor: pointer;
 }
 
+/* feste Größe: sonst drückt ein langer Text das Kästchen auf 0 Breite zusammen */
 .check input {
-  width: auto;
-  height: auto;
-  margin-top: 2px;
+  flex: none;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  margin-top: 1px;
+  accent-color: var(--accent);
 }
 
 .card a,
