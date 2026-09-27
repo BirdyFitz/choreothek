@@ -8,7 +8,11 @@ test('Eigenschaften-Helfer: Pfad kommt über stdin, nicht im Skripttext (keine A
 })
 
 test('Eigenschaften-Helfer: kein "Split-Path -LiteralPath -Leaf" (gibt es in PowerShell 5.1 nicht)', () => {
-  assert.doesNotMatch(script, /Split-Path[^\n]*-LiteralPath[^\n]*-Leaf/)
+  const code = script
+    .split('\n')
+    .filter((line) => !line.trim().startsWith('#'))
+    .join('\n')
+  assert.doesNotMatch(code, /Split-Path[^\n]*-LiteralPath[^\n]*-Leaf/)
   assert.match(script, /\[IO\.Path\]::GetFileName\(\$path\)/)
 })
 
