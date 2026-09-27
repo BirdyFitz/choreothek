@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import { meldeDatenGeaendert } from '../lib/events.js'
 
 // Ein Pfad-Feld mit 📁-Knopf für den Ordner-Browser
 function PathField({ id, label, value, onChange, onBrowse, onRemove, disabled, placeholder }) {
@@ -84,6 +85,7 @@ export default function Settings() {
         type: 'success',
         text: `✓ Gespeichert. In den Jam-Session-Ordnern ${response.data.files_indexed} Dateien gefunden.`
       })
+      meldeDatenGeaendert()
     } catch (error) {
       setMessage({
         type: 'error',
@@ -106,6 +108,7 @@ export default function Settings() {
         type: errors.length ? 'error' : 'success',
         text: `✓ ${importedEditions} neue ${was} mit ${importedSongs} Songs importiert, ${skippedEditions} übersprungen${updatedFolders ? `, bei ${updatedFolders} fehlende Ordner nachgetragen` : ''}.${errors.length ? ` Probleme: ${errors.join(' | ')}` : ''}`
       })
+      meldeDatenGeaendert()
     } catch (error) {
       setReimportMessage({
         type: 'error',

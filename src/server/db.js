@@ -310,7 +310,7 @@ export async function getAllJammers() {
 
 export async function getAllMegaMixEditionLabels() {
   return getDb()
-    .prepare('SELECT edition_label FROM megamixes ORDER BY edition_label')
+    .prepare('SELECT edition_label FROM megamixes ORDER BY edition_number, edition_label')
     .all()
     .map((r) => r.edition_label);
 }
@@ -331,7 +331,7 @@ export async function insertMegaMixSongs(megamixId, songs) {
 
 export async function getAllZinVolumeEditionLabels() {
   return getDb()
-    .prepare('SELECT edition_label FROM zin_volumes ORDER BY edition_label')
+    .prepare('SELECT edition_label FROM zin_volumes ORDER BY edition_number, edition_label')
     .all()
     .map((r) => r.edition_label);
 }

@@ -236,6 +236,35 @@
             font-size: 0.9em;
         }
 
+        /* Sortierbare Spaltenüberschrift: sieht aus wie Text, ist aber ein Knopf (auch per Tastatur) */
+        .sort-header {
+            background: none;
+            color: inherit;
+            border: none;
+            padding: 0;
+            font: inherit;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+
+        .sort-header:hover {
+            transform: none;
+            box-shadow: none;
+            color: #667eea;
+        }
+
+        .sort-indicator {
+            font-size: 0.8em;
+            color: #bbb;
+        }
+
+        .sort-indicator.active {
+            color: #667eea;
+        }
+
         .results-table td {
             padding: 10px 12px;
             border-bottom: 1px solid #eee;

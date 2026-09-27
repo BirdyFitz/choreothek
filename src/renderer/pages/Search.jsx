@@ -1,5 +1,17 @@
 import { Fragment, useState, useEffect, useMemo } from 'react'
 import axios from 'axios'
+import { DATEN_GEAENDERT } from '../lib/events.js'
+import { sortRows, nextSort } from '../lib/sortRows.js'
+
+// Spalten der Ergebnistabelle; key passt zu SORT_COLUMNS in lib/sortRows.js
+const COLUMNS = [
+  { key: 'song', label: 'Song' },
+  { key: 'artist', label: 'Interpret' },
+  { key: 'rhythm', label: 'Rhythmus' },
+  { key: 'source', label: 'Jammer / Edition' },
+  { key: 'date', label: 'Datum' },
+  { key: 'location', label: 'Ort' }
+]
 
 export default function Search() {
   const [song, setSong] = useState('')
@@ -21,7 +33,7 @@ export default function Search() {
   const [searched, setSearched] = useState(false)
   const [expanded, setExpanded] = useState(null) // { idx, variant: 'default' | 'live' | 'oneonone' }
 
-  // Load rhythms, jammers, megamixes and zin volumes on mount
+  // Auswahllisten laden: beim Start und immer, wenn anderswo Daten eingelesen/gespeichert wurden
   useEffect(() => {
     const loadFilters = async () => {
       try {
@@ -42,6 +54,8 @@ export default function Search() {
       }
     }
     loadFilters()
+    window.addEventListener(DATEN_GEAENDERT, loadFilters)
+    return () => window.removeEventListener(DATEN_GEAENDERT, loadFilters)
   }, [])
 
   const handleJammerChange = (value) => {
@@ -149,6 +163,14 @@ export default function Search() {
     setZinVolume('')
     setResults([])
     setSearched(false)
+    setExpanded(null)
+  }
+
+  // Sortierung per Klick auf die Spaltenüberschrift (bleibt über neue Suchen erhalten)
+  const [sort, setSort] = useState(null)
+  const shownResults = useMemo(() => sortRows(results, sort), [results, sort])
+  const handleSort = (key) => {
+    setSort((current) => nextSort(current, key))
     setExpanded(null)
   }
 
@@ -346,16 +368,34 @@ export default function Search() {
             <table className="results-table">
               <thead>
                 <tr>
-                  <th>Song</th>
-                  <th>Interpret</th>
-                  <th>Rhythmus</th>
-                  <th>Jammer / Edition</th>
-                  <th>Datum</th>
-                  <th>Ort</th>
+                  {COLUMNS.map(({ key, label }) => {
+                    const dir = sort?.key === key ? sort.dir : null
+                    return (
+                      <th key={key} aria-sort={dir === 'asc' ? 'ascending' : dir === 'desc' ? 'descending' : 'none'}>
+                        <button
+                          type="button"
+                          className="sort-header"
+                          onClick={() => handleSort(key)}
+                          title={
+                            dir === 'asc'
+                              ? 'Aufsteigend sortiert – klicken für absteigend'
+                              : dir === 'desc'
+                                ? 'Absteigend sortiert – klicken für ohne Sortierung'
+                                : 'Klicken, um aufsteigend zu sortieren'
+                          }
+                        >
+                          {label}
+                          <span className={`sort-indicator ${dir ? 'active' : ''}`}>
+                            {dir === 'asc' ? '▲' : dir === 'desc' ? '▼' : '↕'}
+                          </span>
+                        </button>
+                      </th>
+                    )
+                  })}
                 </tr>
               </thead>
               <tbody>
-                {results.map((song, idx) => {
+                {shownResults.map((song, idx) => {
                   // Nicht zugeordnete Videos haben keine Choreo-Seite -> Zeile nicht aufklappbar
                   const isJamSession = song.source_type === 'jam_session' && !song.unassigned
                   const hasLive = song.source_type === 'zin_volume' && song.live_page

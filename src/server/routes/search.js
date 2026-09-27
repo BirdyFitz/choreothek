@@ -30,7 +30,7 @@ function mediaFor(song, cache) {
 
 function stripInternal(song) {
   // eslint-disable-next-line no-unused-vars
-  const { source_folder, audio_folder, live_video_folder, oneonone_video_folder, jam_datum, ...rest } = song;
+  const { source_folder, audio_folder, live_video_folder, oneonone_video_folder, ...rest } = song;
   return rest;
 }
 
