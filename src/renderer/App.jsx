@@ -2,19 +2,10 @@ import { useState } from 'react'
 import { IconMusic, IconLayoutSidebar, IconLayoutSidebarRight } from '@tabler/icons-react'
 import Search from './pages/Search.jsx'
 import Settings from './pages/Settings.jsx'
-import { readSetting, writeSetting } from './lib/storage.js'
+import { usePersistent } from './lib/usePersistent.js'
 
 // Kopfleiste mit Reitern; auf „Suchen“ rechts die Schalter für Filter- und Detailbereich
 // (wie „Details“ im Windows-Explorer), gemerkt über Neustarts hinweg.
-function usePersistent(key, fallback) {
-  const [value, setValue] = useState(() => readSetting(key, fallback))
-  const update = (next) => {
-    setValue(next)
-    writeSetting(key, next)
-  }
-  return [value, update]
-}
-
 export default function App() {
   const [activeTab, setActiveTab] = useState('search')
   const [showFilters, setShowFilters] = usePersistent('showFilters', true)

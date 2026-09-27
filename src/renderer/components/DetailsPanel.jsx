@@ -102,7 +102,7 @@ function FragmentRow({ label, value }) {
   )
 }
 
-export default function DetailsPanel({ row }) {
+export default function DetailsPanel({ row, width }) {
   const files = useMemo(() => (row ? filesOf(row) : []), [row])
   const [activeIdx, setActiveIdx] = useState(0)
 
@@ -112,7 +112,7 @@ export default function DetailsPanel({ row }) {
 
   if (!row) {
     return (
-      <aside className="pane pane-details" aria-label="Details">
+      <aside className="pane pane-details" aria-label="Details" style={{ width }}>
         <div className="pane-header">
           <span className="pane-title">Details</span>
         </div>
@@ -130,7 +130,7 @@ export default function DetailsPanel({ row }) {
     : row.edition_label
 
   return (
-    <aside className="pane pane-details" aria-label="Details">
+    <aside className="pane pane-details" aria-label="Details" style={{ width }}>
       <div className="pane-header">
         <span className="pane-title">Details</span>
       </div>

@@ -9,12 +9,12 @@ const QUELLEN = [
 
 // Linke Spalte: Suchfelder und Filter. Welche Filter erscheinen, hängt von der Quelle ab:
 // Jam-Filter (Jammer, Ort, Zeitraum, Jam) bei „Alle“/„Jams“, Edition bei MegaMix bzw. ZIN.
-export default function FilterPanel({ filters, set, setQuelle, lists, filteredJams, jamLabel, onReset, hasFilter }) {
+export default function FilterPanel({ width, filters, set, setQuelle, lists, filteredJams, jamLabel, onReset, hasFilter }) {
   const { quelle } = filters
   const showJam = quelle === '' || quelle === 'jam'
 
   return (
-    <aside className="pane pane-filter" aria-label="Filter">
+    <aside className="pane pane-filter" aria-label="Filter" style={{ width }}>
       <div className="pane-header">
         <span className="pane-title">Filter</span>
         {hasFilter && (

@@ -265,6 +265,49 @@ button.link:hover:not(:disabled) {
   overflow-y: auto;
 }
 
+/* Verschiebbare Trennlinie: liegt unsichtbar über der Rahmenlinie, beim Überfahren/Ziehen farbig */
+.splitter {
+  width: 7px;
+  margin: 0 -3px;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 5;
+  cursor: col-resize;
+  touch-action: none;
+}
+
+.splitter::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 2px;
+  width: 3px;
+  background: transparent;
+  transition: background 0.1s;
+}
+
+.splitter:hover::after,
+.splitter:focus-visible::after,
+body.resizing .splitter::after {
+  background: var(--accent);
+}
+
+.splitter:focus-visible {
+  outline: none;
+}
+
+body.resizing {
+  cursor: col-resize;
+  user-select: none;
+}
+
+/* PDF-/Video-Anzeigen fangen sonst die Maus beim Ziehen ab */
+body.resizing iframe,
+body.resizing video {
+  pointer-events: none;
+}
+
 .pane-header {
   display: flex;
   align-items: center;

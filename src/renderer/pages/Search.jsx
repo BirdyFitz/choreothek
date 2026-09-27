@@ -5,6 +5,12 @@ import { sortRows, nextSort } from '../lib/sortRows.js'
 import FilterPanel from '../components/FilterPanel.jsx'
 import ResultTable, { rowKey } from '../components/ResultTable.jsx'
 import DetailsPanel from '../components/DetailsPanel.jsx'
+import Splitter from '../components/Splitter.jsx'
+import { usePersistent } from '../lib/usePersistent.js'
+import { clampPaneWidth } from '../lib/paneWidth.js'
+
+const FILTER_WIDTH = { standard: 260, min: 200, max: 480 }
+const DETAILS_WIDTH = { standard: 400, min: 280, max: 800 }
 
 const EMPTY_FILTERS = {
   song: '',
@@ -53,6 +59,22 @@ export default function Search({ showFilters, showDetails }) {
   const [reloadCounter, setReloadCounter] = useState(0)
   const [sort, setSort] = useState(null)
   const [selectedKey, setSelectedKey] = useState(null)
+
+  // Breiten der Seitenbereiche (per Trennlinie verschiebbar, gemerkt). Beim Verkleinern des
+  // Fensters werden sie so begrenzt, dass die Ergebnisliste genug Platz behält.
+  const [filterWidth, setFilterWidth] = usePersistent('filterWidth', FILTER_WIDTH.standard)
+  const [detailsWidth, setDetailsWidth] = usePersistent('detailsWidth', DETAILS_WIDTH.standard)
+  const [windowWidth, setWindowWidth] = useState(() => window.innerWidth)
+  useEffect(() => {
+    // ResizeObserver statt resize-Ereignis: erfasst jede Größenänderung zuverlässig
+    const observer = new ResizeObserver(() => setWindowWidth(document.documentElement.clientWidth))
+    observer.observe(document.documentElement)
+    return () => observer.disconnect()
+  }, [])
+  const effDetails = showDetails ? clampPaneWidth(detailsWidth, { ...DETAILS_WIDTH, windowWidth, otherPaneWidth: showFilters ? FILTER_WIDTH.min : 0 }) : 0
+  const effFilter = showFilters ? clampPaneWidth(filterWidth, { ...FILTER_WIDTH, windowWidth, otherPaneWidth: effDetails }) : 0
+  const resizeFilter = (w) => setFilterWidth(clampPaneWidth(w, { ...FILTER_WIDTH, windowWidth, otherPaneWidth: effDetails }))
+  const resizeDetails = (w) => setDetailsWidth(clampPaneWidth(w, { ...DETAILS_WIDTH, windowWidth, otherPaneWidth: effFilter }))
 
   // Auswahllisten laden: beim Start und immer, wenn anderswo Daten eingelesen/gespeichert wurden
   useEffect(() => {
@@ -144,6 +166,7 @@ export default function Search({ showFilters, showDetails }) {
     <>
       {showFilters && (
         <FilterPanel
+          width={effFilter}
           filters={filters}
           set={set}
           setQuelle={setQuelle}
@@ -153,6 +176,9 @@ export default function Search({ showFilters, showDetails }) {
           onReset={() => setFilters(EMPTY_FILTERS)}
           hasFilter={hasFilter}
         />
+      )}
+      {showFilters && (
+        <Splitter side="left" width={effFilter} onChange={resizeFilter} onReset={() => setFilterWidth(FILTER_WIDTH.standard)} label="Breite des Filterbereichs" />
       )}
       <section className="pane pane-list" aria-label="Ergebnisse">
         <div className="pane-header">
@@ -175,7 +201,10 @@ export default function Search({ showFilters, showDetails }) {
           loading={loading}
         />
       </section>
-      {showDetails && <DetailsPanel row={selectedRow} />}
+      {showDetails && (
+        <Splitter side="right" width={effDetails} onChange={resizeDetails} onReset={() => setDetailsWidth(DETAILS_WIDTH.standard)} label="Breite des Detailbereichs" />
+      )}
+      {showDetails && <DetailsPanel row={selectedRow} width={effDetails} />}
     </>
   )
 }
