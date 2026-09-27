@@ -4,6 +4,7 @@ import { fileURLToPath } from 'url';
 import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron';
 import { startServer } from '../server/server.js';
 import { showFileMenu } from './fileMenu.js';
+import { warmUpPropertiesHelper, stopPropertiesHelper } from './windowsDialogs.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const appRoot = path.join(__dirname, '..', '..');
@@ -74,9 +75,14 @@ app.whenReady().then(async () => {
   });
 
   createWindow();
+
+  // Helfer für den Eigenschaften-Dialog im Hintergrund vorbereiten (spart beim ersten Klick
+  // rund eine Sekunde); verzögert, damit der App-Start nicht gebremst wird
+  setTimeout(() => warmUpPropertiesHelper(), 3000);
 });
 
 app.on('window-all-closed', () => {
+  stopPropertiesHelper();
   if (session) session.server.close();
   app.quit();
 });

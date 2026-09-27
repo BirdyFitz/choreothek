@@ -5,9 +5,10 @@
 import path from 'path';
 import { Menu, clipboard, shell } from 'electron';
 import { resolveFileTarget, isAppCopy } from '../server/fileAccess.js';
-import { openWithDialog, propertiesDialog } from './windowsDialogs.js';
+import { openWithDialog, propertiesDialog, warmUpPropertiesHelper } from './windowsDialogs.js';
 
 export async function showFileMenu(window, target) {
+  warmUpPropertiesHelper(); // falls der Helfer nicht (mehr) läuft: jetzt starten, bis zum Klick ist er meist bereit
   const file = await resolveFileTarget(target);
   if (!file) {
     Menu.buildFromTemplate([{ label: 'Datei nicht gefunden', enabled: false }]).popup({ window });
