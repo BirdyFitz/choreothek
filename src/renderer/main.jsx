@@ -2,6 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import axios from 'axios'
 import App from './App.jsx'
+import './styles.css'
 
 // Sitzungs-Token vom Hauptprozess: ohne ihn nimmt der lokale Server keine ändernden Anfragen an
 async function start() {

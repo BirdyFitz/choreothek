@@ -181,14 +181,16 @@ const contains = (column) => `lower_de(${column}) LIKE lower_de(?)`;
 // datumVon/datumBis (YYYY-MM-DD) und ort gibt es nur bei Jam Sessions -- sind sie gesetzt,
 // werden MegaMix und ZIN Volumes nicht mit durchsucht.
 // song: Teilstring im Songtitel, alle drei Quellen. jamId: genau eine Jam Session.
-export async function searchSongs(rhythm, jammerName, megamix, zinVolume, datumVon, datumBis, ort, song, jamId) {
+// quelle: 'jam' | 'megamix' | 'zin' schränkt auf eine Quellenart ein (leer = alle).
+export async function searchSongs(rhythm, jammerName, megamix, zinVolume, datumVon, datumBis, ort, song, jamId, quelle) {
   const branches = [];
   const params = [];
 
   const jamOnly = Boolean(jammerName || datumVon || datumBis || ort || jamId);
-  const wantsJam = !megamix && !zinVolume;
-  const wantsMegamix = !jamOnly && !zinVolume;
-  const wantsZinVolume = !jamOnly && !megamix;
+  const only = (q) => !quelle || quelle === q;
+  const wantsJam = !megamix && !zinVolume && only('jam');
+  const wantsMegamix = !jamOnly && !zinVolume && only('megamix');
+  const wantsZinVolume = !jamOnly && !megamix && only('zin');
 
   if (wantsJam) {
     let cond = 'WHERE 1=1';

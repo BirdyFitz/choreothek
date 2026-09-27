@@ -125,3 +125,22 @@ test('Kontextmenü: Original-PDF gefunden, nur Dateien aus den Datenquellen erla
   assert.equal(fallback, path.join(dataDir, 'uploads', '123-Choreo Notes.pdf'), 'Kopie der App, wenn Original fehlt');
   assert.ok(isAppCopy(fallback));
 });
+
+test('Filter nach Quelle', async () => {
+  const onlyMix = await (await api('search?quelle=megamix')).json();
+  assert.ok(onlyMix.length > 0 && onlyMix.every((r) => r.source_type === 'megamix'));
+  const onlyJam = await (await api('search?quelle=jam')).json();
+  assert.ok(onlyJam.length > 0 && onlyJam.every((r) => r.source_type === 'jam_session'));
+});
+
+test('Medien-Angaben nur für Dateien aus den Datenquellen', async () => {
+  const q = (dir, file) => `media-info?dir=${encodeURIComponent(dir)}&file=${encodeURIComponent(file)}`;
+  const outside = await api(q(dataDir, 'geheim.txt'));
+  assert.equal(outside.status, 404);
+  const inside = await api(q(path.join(dataDir, 'archiv', '2025_03_14 Beispiel-Jam'), 'Choreo Notes.pdf'));
+  assert.equal(inside.status, 200);
+  const info = await inside.json();
+  assert.equal(info.name, 'Choreo Notes.pdf');
+  assert.equal(info.size, 3);
+  assert.equal((await api(q(dataDir, 'geheim.txt').replace('media-info', 'media-cover'))).status, 404);
+});

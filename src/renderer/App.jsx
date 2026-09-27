@@ -1,42 +1,70 @@
 import { useState } from 'react'
+import { IconMusic, IconLayoutSidebar, IconLayoutSidebarRight } from '@tabler/icons-react'
 import Search from './pages/Search.jsx'
 import Settings from './pages/Settings.jsx'
+import { readSetting, writeSetting } from './lib/storage.js'
 
-function App() {
+// Kopfleiste mit Reitern; auf „Suchen“ rechts die Schalter für Filter- und Detailbereich
+// (wie „Details“ im Windows-Explorer), gemerkt über Neustarts hinweg.
+function usePersistent(key, fallback) {
+  const [value, setValue] = useState(() => readSetting(key, fallback))
+  const update = (next) => {
+    setValue(next)
+    writeSetting(key, next)
+  }
+  return [value, update]
+}
+
+export default function App() {
   const [activeTab, setActiveTab] = useState('search')
+  const [showFilters, setShowFilters] = usePersistent('showFilters', true)
+  const [showDetails, setShowDetails] = usePersistent('showDetails', true)
 
   return (
-    <div className="container">
-      <div className="header">
-        <h1>🎵 Choreothek</h1>
-        <p>Dein Nachschlagewerk für Songs, Rhythmen und Choreos</p>
-      </div>
-
-      <div className="nav-tabs">
-        <button
-          className={`nav-tab ${activeTab === 'search' ? 'active' : ''}`}
-          onClick={() => setActiveTab('search')}
-        >
-          🔍 Suchen
-        </button>
-        <button
-          className={`nav-tab ${activeTab === 'settings' ? 'active' : ''}`}
-          onClick={() => setActiveTab('settings')}
-        >
-          ⚙️ Einstellungen
-        </button>
-      </div>
-
-      <div className="content">
-        <div className={`tab-content ${activeTab === 'search' ? 'active' : ''}`}>
-          <Search />
+    <div className="app">
+      <header className="topbar">
+        <div className="brand">
+          <IconMusic size={20} stroke={1.8} />
+          Choreothek
         </div>
-        <div className={`tab-content ${activeTab === 'settings' ? 'active' : ''}`}>
-          <Settings />
-        </div>
+        <nav className="tabs">
+          <button className={`tab ${activeTab === 'search' ? 'active' : ''}`} onClick={() => setActiveTab('search')}>
+            Suchen
+          </button>
+          <button className={`tab ${activeTab === 'sources' ? 'active' : ''}`} onClick={() => setActiveTab('sources')}>
+            Datenquellen
+          </button>
+        </nav>
+        {activeTab === 'search' && (
+          <div className="topbar-right">
+            <button
+              className={`ghost ${showFilters ? 'active' : ''}`}
+              onClick={() => setShowFilters(!showFilters)}
+              title={showFilters ? 'Filter ausblenden' : 'Filter einblenden'}
+              aria-pressed={showFilters}
+            >
+              <IconLayoutSidebar size={18} stroke={1.6} />
+              Filter
+            </button>
+            <button
+              className={`ghost ${showDetails ? 'active' : ''}`}
+              onClick={() => setShowDetails(!showDetails)}
+              title={showDetails ? 'Details ausblenden' : 'Details einblenden'}
+              aria-pressed={showDetails}
+            >
+              <IconLayoutSidebarRight size={18} stroke={1.6} />
+              Details
+            </button>
+          </div>
+        )}
+      </header>
+
+      <div className="main" style={{ display: activeTab === 'search' ? 'flex' : 'none' }}>
+        <Search showFilters={showFilters} showDetails={showDetails} />
+      </div>
+      <div className="main" style={{ display: activeTab === 'sources' ? 'flex' : 'none' }}>
+        <Settings />
       </div>
     </div>
   )
 }
-
-export default App

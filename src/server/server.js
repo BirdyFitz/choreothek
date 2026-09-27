@@ -13,6 +13,7 @@ import { buildMediaIndex } from './utils/mediaFinder.js';
 import searchRoutes from './routes/search.js';
 import settingsRoutes from './routes/settings.js';
 import libraryRoutes from './routes/library.js';
+import mediaRoutes from './routes/media.js';
 
 export async function startServer({ dataDir, rendererDir, port = 0, dbFile } = {}) {
   setDataDir(dataDir);
@@ -36,6 +37,7 @@ export async function startServer({ dataDir, rendererDir, port = 0, dbFile } = {
   app.use('/api', searchRoutes);
   app.use('/api', settingsRoutes);
   app.use('/api', libraryRoutes);
+  app.use('/api', mediaRoutes);
   app.get('/api/health', (req, res) => res.json({ status: 'OK' }));
 
   if (rendererDir && fs.existsSync(rendererDir)) {

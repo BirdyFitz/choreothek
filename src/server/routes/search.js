@@ -60,12 +60,12 @@ function stripInternal(song) {
 // sie trotzdem anklickbar sind. Nur ohne Rhythmusfilter (Dateien haben keinen Rhythmus);
 // mit Songfilter nur Videos, deren Dateiname den Suchtext enthält. MegaMix hat keine Videos.
 async function unassignedVideoRows(query, results, mediaByRow, cache) {
-  const { rhythm, jammer, megamix, zin_volume: zinVolume, datum_von: datumVon, datum_bis: datumBis, ort, song, jam_id: jamId } = query;
+  const { rhythm, jammer, megamix, zin_volume: zinVolume, datum_von: datumVon, datum_bis: datumBis, ort, song, jam_id: jamId, quelle } = query;
   if (rhythm) return [];
 
   // Umfang = alle Jams/Volumes, die ohne Songfilter getroffen würden
   const scope = song
-    ? await searchSongs(undefined, jammer, megamix, zinVolume, datumVon, datumBis, ort, undefined, jamId)
+    ? await searchSongs(undefined, jammer, megamix, zinVolume, datumVon, datumBis, ort, undefined, jamId, quelle)
     : results;
 
   const groups = new Map();
@@ -106,8 +106,8 @@ async function unassignedVideoRows(query, results, mediaByRow, cache) {
 
 router.get('/search', async (req, res) => {
   try {
-    const { rhythm, jammer, megamix, zin_volume: zinVolume, datum_von: datumVon, datum_bis: datumBis, ort, song, jam_id: jamId } = req.query;
-    const results = await searchSongs(rhythm, jammer, megamix, zinVolume, datumVon, datumBis, ort, song, jamId);
+    const { rhythm, jammer, megamix, zin_volume: zinVolume, datum_von: datumVon, datum_bis: datumBis, ort, song, jam_id: jamId, quelle } = req.query;
+    const results = await searchSongs(rhythm, jammer, megamix, zinVolume, datumVon, datumBis, ort, song, jamId, quelle);
 
     const cache = new Map();
     const pdfCache = new Map();
