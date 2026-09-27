@@ -122,11 +122,20 @@ export default function Search({ showFilters, showDetails }) {
   const set = (key, value) =>
     setFilters((f) => {
       const next = { ...f, [key]: value }
-      // Jam-Filter schränken auf Jams ein; eine gewählte Edition passt dann nicht mehr
+      // Die Gruppen schließen sich gegenseitig aus: Jam-Filter, MegaMix-Edition, ZIN-Volume.
+      // Wer in einer Gruppe etwas wählt, leert die anderen (sonst gäbe es keine Treffer).
       if (JAM_FILTERS.includes(key) && value) {
         next.megamix = ''
         next.zinVolume = ''
         if (next.quelle !== 'jam') next.quelle = next.quelle === '' ? '' : 'jam'
+      }
+      if (key === 'megamix' && value) {
+        for (const k of JAM_FILTERS) next[k] = ''
+        next.zinVolume = ''
+      }
+      if (key === 'zinVolume' && value) {
+        for (const k of JAM_FILTERS) next[k] = ''
+        next.megamix = ''
       }
       return next
     })

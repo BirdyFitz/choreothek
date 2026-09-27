@@ -5,10 +5,12 @@ const QUELLEN = ['', 'jam', 'megamix', 'zin']
 const QUELLEN_KEY = { '': 'all', jam: 'jam', megamix: 'megamix', zin: 'zin' }
 
 // Linke Spalte: Suchfelder und Filter. Welche Filter erscheinen, hängt von der Quelle ab:
-// Jam-Filter (Jammer, Ort, Zeitraum, Jam) bei „Alle“/„Jams“, Edition bei MegaMix bzw. ZIN.
+// bei „Alle“ alle Gruppen, sonst nur die der gewählten Quelle.
 export default function FilterPanel({ width, filters, set, setQuelle, lists, filteredJams, jamLabel, onReset, hasFilter }) {
   const { quelle } = filters
   const showJam = quelle === '' || quelle === 'jam'
+  const showMegamix = quelle === '' || quelle === 'megamix'
+  const showZin = quelle === '' || quelle === 'zin'
 
   return (
     <aside className="pane pane-filter" aria-label={t('filter.title')} style={{ width }}>
@@ -115,7 +117,7 @@ export default function FilterPanel({ width, filters, set, setQuelle, lists, fil
           </div>
         )}
 
-        {quelle === 'megamix' && (
+        {showMegamix && (
           <div className="filter-group">
             <div className="field">
               <label htmlFor="f-megamix">{t('filter.megamix')}</label>
@@ -131,7 +133,7 @@ export default function FilterPanel({ width, filters, set, setQuelle, lists, fil
           </div>
         )}
 
-        {quelle === 'zin' && (
+        {showZin && (
           <div className="filter-group">
             <div className="field">
               <label htmlFor="f-zin">{t('filter.zin')}</label>
