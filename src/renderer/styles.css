@@ -818,3 +818,75 @@ body.resizing video {
 .modal-buttons {
   justify-content: flex-end;
 }
+
+/* ---------- Vorschau vor dem Einlesen ---------- */
+
+.card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.preview-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.segmented.segmented-3 {
+  grid-template-columns: repeat(3, auto);
+}
+
+.segmented.segmented-3 button {
+  padding: 0 14px;
+}
+
+.preview-table {
+  max-height: 360px;
+  overflow: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.preview-table .results th {
+  position: sticky;
+  top: 0;
+}
+
+.icon-btn.inline {
+  height: 18px;
+  width: 18px;
+  padding: 0;
+  vertical-align: middle;
+}
+
+.tag.warning {
+  background: var(--warning-soft);
+  color: var(--warning);
+}
+
+.unrecognized {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.unrecognized li {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.assign-inline {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.assign-inline input {
+  width: 70px;
+}

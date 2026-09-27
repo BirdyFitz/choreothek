@@ -5,6 +5,7 @@ import { meldeDatenGeaendert } from '../lib/events.js'
 import { formatUsd } from '../lib/money.js'
 import AiSettings from '../components/AiSettings.jsx'
 import AiConfirmDialog from '../components/AiConfirmDialog.jsx'
+import ImportPreview from '../components/ImportPreview.jsx'
 import { t } from '../../shared/i18n.js'
 
 // Ein Pfad-Feld mit „Durchsuchen“ (Windows-Ordnerdialog)
@@ -33,6 +34,7 @@ export default function Settings() {
   const [megamixRoot, setMegamixRoot] = useState('')
   const [zinVolumesMp3Root, setZinVolumesMp3Root] = useState('')
   const [zinVolumesChoreoRoot, setZinVolumesChoreoRoot] = useState('')
+  const [zinVolumesVideoRoot, setZinVolumesVideoRoot] = useState('')
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState({ type: '', text: '' })
   const [reimporting, setReimporting] = useState('')
@@ -62,6 +64,7 @@ export default function Settings() {
         setMegamixRoot(response.data.megamix_root || '')
         setZinVolumesMp3Root(response.data.zin_volumes_mp3_root || '')
         setZinVolumesChoreoRoot(response.data.zin_volumes_choreo_root || '')
+        setZinVolumesVideoRoot(response.data.zin_volumes_video_root || '')
       } catch (error) {
         console.error('Fehler beim Laden der Datenquellen:', error)
       }
@@ -83,7 +86,8 @@ export default function Settings() {
       await axios.post('/api/library-settings', {
         megamix_root: megamixRoot.trim(),
         zin_volumes_mp3_root: zinVolumesMp3Root.trim(),
-        zin_volumes_choreo_root: zinVolumesChoreoRoot.trim()
+        zin_volumes_choreo_root: zinVolumesChoreoRoot.trim(),
+        zin_volumes_video_root: zinVolumesVideoRoot.trim()
       })
       setMessage({
         type: 'success',
@@ -229,12 +233,22 @@ export default function Settings() {
           <PathField
             id="zin-volumes-choreo-root-input"
             label={t('sources.zinChoreoRoot')}
-            hint={t('sources.zinChoreoRootHint')}
             value={zinVolumesChoreoRoot}
             onChange={setZinVolumesChoreoRoot}
             onBrowse={() => browse(zinVolumesChoreoRoot, setZinVolumesChoreoRoot)}
             disabled={saving}
             placeholder={t('sources.zinChoreoRootPlaceholder')}
+          />
+
+          <PathField
+            id="zin-volumes-video-root-input"
+            label={t('sources.zinVideoRoot')}
+            hint={t('sources.zinVideoRootHint')}
+            value={zinVolumesVideoRoot}
+            onChange={setZinVolumesVideoRoot}
+            onBrowse={() => browse(zinVolumesVideoRoot || zinVolumesChoreoRoot, setZinVolumesVideoRoot)}
+            disabled={saving}
+            placeholder={t('sources.zinVideoRootPlaceholder')}
           />
 
           <div className="button-row">
@@ -244,6 +258,8 @@ export default function Settings() {
             </button>
           </div>
         </form>
+
+        <ImportPreview />
 
         <div className="card">
           <div>

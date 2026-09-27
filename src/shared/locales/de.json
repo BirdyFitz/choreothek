@@ -118,7 +118,6 @@
     "zinMp3Root": "ZIN Volumes – Musik",
     "zinMp3RootPlaceholder": "z. B. D:\\Zumba\\Musik\\ZIN Volumes",
     "zinChoreoRoot": "ZIN Volumes – Choreo Notes (PDFs)",
-    "zinChoreoRootHint": "Die Videos der ZIN Volumes werden im Ordner darüber gesucht.",
     "zinChoreoRootPlaceholder": "z. B. D:\\Zumba\\ZIN Volumes\\Choreo Notes",
     "browse": "Durchsuchen",
     "browseTitle": "Ordner auswählen",
@@ -139,7 +138,10 @@
     "importProblems": " Probleme: {list}",
     "importError": "Fehler beim Einlesen",
     "importUsesAi": "Nutzt die KI – vorher erscheint eine Meldung mit den geschätzten Kosten",
-    "importAiCost": " KI-Kosten ca. {amount} (geschätzt)."
+    "importAiCost": " KI-Kosten ca. {amount} (geschätzt).",
+    "zinVideoRoot": "ZIN Volumes – Videos",
+    "zinVideoRootHint": "Leer lassen: Videos werden im Ordner über den Choreo Notes gesucht.",
+    "zinVideoRootPlaceholder": "z. B. D:ZumbaZIN VolumesVideos"
   },
   "menu": {
     "fileNotFound": "Datei nicht gefunden",
@@ -268,5 +270,81 @@
     "dontAskAgain": "Nicht mehr fragen (wieder einschaltbar unter Datenquellen → KI)",
     "cancel": "Abbrechen",
     "confirm": "KI nutzen und einlesen"
+  },
+  "preview": {
+    "title": "Vorschau",
+    "hint": "Was Choreothek in deinen Ordnern erkennt – vor dem Einlesen. Nicht Erkanntes kannst du hier von Hand zuordnen.",
+    "reload": "Neu erkennen",
+    "loadError": "Vorschau konnte nicht geladen werden",
+    "saveError": "Fehler beim Speichern",
+    "save": "Speichern",
+    "tabs": {
+      "jams": "Jam Sessions",
+      "zin": "ZIN Volumes",
+      "megamix": "MegaMix"
+    },
+    "onlyOpen": "Nur Neues und Hinweise zeigen",
+    "nothingOpen": "Nichts zu tun – alles erkannt und eingelesen.",
+    "status": "Status",
+    "statusNew": "neu",
+    "statusImported": "eingelesen",
+    "assign": "Zuordnen …",
+    "manual": "von Hand",
+    "resetAssign": "Zuordnung von Hand entfernen",
+    "files": {
+      "one": "{count} Datei",
+      "other": "{count} Dateien"
+    },
+    "unrecognized": "Nicht erkannt",
+    "duplicateOf": "zweiter Ordner für Nr. {number}",
+    "pdfNoNumber": "keine Nummer erkennbar – Nummer in den Dateinamen schreiben",
+    "numberPlaceholder": "Nr.",
+    "kinds": {
+      "pdf": "PDF",
+      "music": "Musik",
+      "live": "Live-Videos",
+      "oneonone": "1on1-Videos",
+      "video": "Videos"
+    },
+    "assignAs": {
+      "musicFolder": "als Musik",
+      "liveFolder": "als Live",
+      "oneononeFolder": "als 1on1"
+    },
+    "jams": {
+      "summary": "{new} neu, {imported} eingelesen, {noSongs} ohne erkannte Songs, {ignored} ignoriert",
+      "pdf": "Choreo Notes",
+      "folder": "Ordner",
+      "media": "Musik und Videos",
+      "ownFolder": "aus dem Jam-Ordner",
+      "sharedFolder": "Ordner geteilt",
+      "noSongs": "keine Songs erkannt",
+      "retry": "erneut versuchen",
+      "retryHint": "Beim nächsten Einlesen wieder an die KI senden",
+      "patterns": "Ignorieren, wenn der PDF-Name enthält (durch Komma getrennt)",
+      "patternsPlaceholder": "z. B. Handout, Teilnahmebestätigung",
+      "patternsHint": "Solche PDFs gelten nicht als Jam und werden nicht an die KI gesendet.",
+      "patternsSaved": "Ignorierliste gespeichert.",
+      "ignoredList": "Ignoriert: {list}",
+      "ignoredCount": "{name} ({count}×)"
+    },
+    "zin": {
+      "summary": "{total} Volumes erkannt, {new} neu, {incomplete} mit fehlenden Teilen",
+      "number": "Nr.",
+      "pdfs": "Choreo Notes",
+      "music": "Musik",
+      "live": "Live-Videos",
+      "oneonone": "1on1-Videos",
+      "noPdf": "keine PDF",
+      "variants": {
+        "combined": "PDF",
+        "live": "Live",
+        "oneonone": "1on1"
+      }
+    },
+    "megamix": {
+      "summary": "{total} MegaMixe erkannt, {new} neu",
+      "folder": "Ordner"
+    }
   }
 }
