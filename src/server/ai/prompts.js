@@ -4,7 +4,7 @@ export function jamPrompt() {
   return `Du bist ein PDF-Parser für Zumba Jam Sessions. Lies die folgende PDF und extrahiere:
 1. Jammer-Name (Person, die die Session leitet)
 2. Jam-Datum (falls vorhanden)
-3. Location/Ort der Jam (Name des Studios/der Location plus Adresse/Ort, z.B. "Fit mit Nicole, 74348 Lauffen am Neckar")
+3. Location/Ort der Jam (Name des Studios/der Location plus Adresse/Ort, z.B. "Tanzstudio Sonnenschein, 12345 Musterstadt")
 4. Die Songs mit ihrem Rhythmus (z.B. "Reggaeton", "Salsa", "Cumbia", "Merengue", etc.), dem Interpreten (steht meist unter "Artist" oder "Interpret") und der PDF-Seitenzahl, auf der die Choreo-Notes/Schrittfolge für diesen Song stehen (meist eine Seite pro Song)
 
 Gib das Ergebnis als JSON zurück (nichts anderes, nur valides JSON):
