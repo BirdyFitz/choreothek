@@ -4,7 +4,7 @@ const QUELLEN = [
   { value: '', label: 'Alle' },
   { value: 'jam', label: 'Jams' },
   { value: 'megamix', label: 'MegaMix' },
-  { value: 'zin', label: 'ZIN' }
+  { value: 'zin', label: 'Volume' }
 ]
 
 // Linke Spalte: Suchfelder und Filter. Welche Filter erscheinen, hängt von der Quelle ab:
