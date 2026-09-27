@@ -14,8 +14,9 @@ export async function findJamCandidates() {
 
 // Liest die im bestätigten Plan genannten Jam-PDFs ein (KI-Extraktion) und trägt bei
 // vorhandenen Jams einen fehlenden Jam-Ordner nach (ohne KI).
-// onProgress({ done, total, current }) meldet den Fortschritt je PDF.
-export async function importJamSessions(permit, { log = console.log, onProgress = () => {} } = {}) {
+// onProgress({ done, total, current }) meldet den Fortschritt je PDF; isCancelled() bricht nach der
+// laufenden PDF ab.
+export async function importJamSessions(permit, { log = console.log, onProgress = () => {}, isCancelled = () => false } = {}) {
   const { jams, folderUpdates } = await scanJams();
   const byPdf = new Map(jams.map((j) => [path.resolve(j.pdf).toLowerCase(), j]));
   const noSongsRaw = await getSetting(NO_SONGS_SETTING);
@@ -35,6 +36,7 @@ export async function importJamSessions(permit, { log = console.log, onProgress 
   const items = permit.plan.items;
   let i = 0;
   for (const item of items) {
+    if (isCancelled()) break;
     const sourcePath = item.files[0];
     onProgress({ done: i, total: items.length, current: item.label });
     // Nur, was bestätigt wurde und weiterhin als neu erkannt wird

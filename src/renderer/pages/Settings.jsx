@@ -43,6 +43,31 @@ export default function Settings() {
   const [pending, setPending] = useState(null)
   // Nach einem KI-Einlesen die KI-Karte neu laden (Kosten, Guthaben, „Nachfragen“)
   const [aiRefresh, setAiRefresh] = useState(0)
+  // Fortschritt eines laufenden KI-Einlesens (vom Server abgefragt): { done, total, current, cancelRequested }
+  const [progress, setProgress] = useState(null)
+
+  const aiRunning = reimporting === 'jam-sessions' || reimporting === 'zin-volumes'
+  useEffect(() => {
+    if (!aiRunning) {
+      setProgress(null)
+      return
+    }
+    const poll = async () => {
+      try {
+        setProgress((await axios.get('/api/import-progress')).data)
+      } catch {
+        // nächste Abfrage versucht es wieder
+      }
+    }
+    const timer = setInterval(poll, 1000)
+    poll()
+    return () => clearInterval(timer)
+  }, [aiRunning])
+
+  const cancelImport = async () => {
+    await axios.post('/api/import-cancel')
+    setProgress((p) => (p ? { ...p, cancelRequested: true } : p))
+  }
 
   // Windows-Ordnerdialog über den Hauptprozess; übernimmt den gewählten Ordner ins Feld
   const browse = async (current, apply) => {
@@ -144,7 +169,7 @@ export default function Settings() {
 
     try {
       const response = await axios.post(`/api/reimport/${kind}`, body)
-      const { importedEditions, importedSongs, skippedEditions, updatedFolders, errors = [], aiCostUsd } = response.data
+      const { importedEditions, importedSongs, skippedEditions, updatedFolders, errors = [], aiCostUsd, cancelled } = response.data
       setReimportMessage({
         type: errors.length ? 'error' : 'success',
         text:
@@ -156,6 +181,7 @@ export default function Settings() {
           (updatedFolders ? t('sources.importFoldersAdded', { count: updatedFolders }) : '') +
           '.' +
           (aiCostUsd ? t('sources.importAiCost', { amount: formatUsd(aiCostUsd) }) : '') +
+          (cancelled ? t('sources.importCancelled') : '') +
           (errors.length ? t('sources.importProblems', { list: errors.join(' | ') }) : '')
       })
       meldeDatenGeaendert()
@@ -267,6 +293,21 @@ export default function Settings() {
             <p className="hint">{t('sources.importHint')}</p>
           </div>
           {reimportMessage.text && <div className={`alert ${reimportMessage.type}`}>{reimportMessage.text}</div>}
+          {aiRunning && !pending && (
+            <div className="progress">
+              <progress max={progress?.total || 1} value={progress?.done || 0} />
+              <span className="muted">
+                {progress?.cancelRequested
+                  ? t('sources.cancelling')
+                  : progress?.total
+                    ? t('sources.progress', { done: progress.done, total: progress.total, current: progress.current || '' })
+                    : t('sources.progressStart')}
+              </span>
+              <button type="button" onClick={cancelImport} disabled={Boolean(progress?.cancelRequested)}>
+                {t('sources.cancel')}
+              </button>
+            </div>
+          )}
           <div className="button-row">
             {reimportButton('megamix', t('sources.importMegamix'))}
             {reimportButton('jam-sessions', t('sources.importJams'))}

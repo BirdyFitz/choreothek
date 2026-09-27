@@ -141,7 +141,12 @@
     "importAiCost": " KI-Kosten ca. {amount} (geschätzt).",
     "zinVideoRoot": "ZIN Volumes – Videos",
     "zinVideoRootHint": "Leer lassen: Videos werden im Ordner über den Choreo Notes gesucht.",
-    "zinVideoRootPlaceholder": "z. B. D:ZumbaZIN VolumesVideos"
+    "zinVideoRootPlaceholder": "z. B. D:ZumbaZIN VolumesVideos",
+    "progress": "{done} von {total} – {current}",
+    "progressStart": "Bereite vor …",
+    "cancel": "Abbrechen",
+    "cancelling": "Wird nach der laufenden Datei abgebrochen …",
+    "importCancelled": " Abgebrochen – der Rest wird beim nächsten Einlesen angeboten."
   },
   "menu": {
     "fileNotFound": "Datei nicht gefunden",
@@ -186,7 +191,8 @@
       "unknownKind": "Unbekannte Art des Einlesens.",
       "invalidAmount": "Bitte einen Betrag von 0 oder mehr eingeben."
     },
-    "invalidRequest": "Ungültige Anfrage."
+    "invalidRequest": "Ungültige Anfrage.",
+    "importRunning": "Es läuft bereits ein Einlesen."
   },
   "ai": {
     "title": "KI",

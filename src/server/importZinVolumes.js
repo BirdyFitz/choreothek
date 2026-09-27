@@ -29,8 +29,9 @@ export async function findZinCandidates() {
 
 // Liest die im bestätigten Plan genannten Volumes ein (KI-Extraktion) und trägt bei bereits
 // eingelesenen Volumes fehlende Musik-/Video-Ordner nach (ohne KI).
-// onProgress({ done, total, current }) meldet den Fortschritt je Volume.
-export async function importZinVolumes(permit, { onProgress = () => {} } = {}) {
+// onProgress({ done, total, current }) meldet den Fortschritt je Volume; isCancelled() bricht nach dem
+// laufenden Volume ab.
+export async function importZinVolumes(permit, { onProgress = () => {}, isCancelled = () => false } = {}) {
   const { editions, alreadyImported } = await scanZin();
   const byNumber = new Map(editions.map((e) => [e.number, e]));
 
@@ -41,6 +42,7 @@ export async function importZinVolumes(permit, { onProgress = () => {} } = {}) {
 
   const items = permit.plan.items;
   for (const [index, item] of items.entries()) {
+    if (isCancelled()) break;
     const { editionNumber } = item;
     const editionLabel = item.label;
     onProgress({ done: index, total: items.length, current: editionLabel });

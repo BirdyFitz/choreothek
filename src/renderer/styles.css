@@ -890,3 +890,16 @@ body.resizing video {
 .assign-inline input {
   width: 70px;
 }
+
+.progress {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.progress progress {
+  flex: 1 1 200px;
+  height: 8px;
+  accent-color: var(--accent);
+}

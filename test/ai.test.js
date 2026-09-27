@@ -242,3 +242,37 @@ test('Schlüssel testen nutzt nur die Modellliste', async () => {
   assert.deepEqual(await res.json(), { success: true, models: 3 });
   assert.equal(calls.length, 0);
 });
+
+test('Fortschritt, zweites Einlesen gesperrt, Abbruch nach der laufenden PDF', async () => {
+  await post('ai/settings', { privacyAck: true });
+  await addJamPdf();
+  await addJamPdf();
+  await addJamPdf();
+  let release;
+  const gate = new Promise((r) => (release = r));
+  answer = async () => {
+    await gate;
+    return jamAnswer();
+  };
+  const p = await plan();
+  assert.ok(p.items.length >= 3);
+  const running = post('reimport/jam-sessions', { planId: p.id, confirmed: true });
+  while (calls.length === 0) await new Promise((r) => setTimeout(r, 10));
+
+  const progress = await (await fetch(`${session.url}api/import-progress`)).json();
+  assert.equal(progress.kind, 'jam');
+  assert.equal(progress.total, p.items.length);
+  assert.equal(progress.done, 0);
+
+  const second = await plan();
+  const blocked = await post('reimport/jam-sessions', { planId: second.id, confirmed: true });
+  assert.equal(blocked.status, 409);
+  assert.match((await blocked.json()).error, /bereits/);
+
+  await post('import-cancel', {});
+  release();
+  const result = await (await running).json();
+  assert.equal(result.cancelled, true);
+  assert.equal(calls.length, 1, 'nach dem Abbruch keine weiteren Aufrufe');
+  assert.equal(await (await fetch(`${session.url}api/import-progress`)).json(), null);
+});

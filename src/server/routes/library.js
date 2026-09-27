@@ -9,6 +9,7 @@ import { redeemPlan, closePermit, GateError } from '../ai/gate.js';
 import { rememberConfirmation } from '../ai/aiService.js';
 import { t } from '../../shared/i18n.js';
 import { mediaRoots } from '../fileAccess.js';
+import { startProgress, reportProgress, finishProgress, getProgress, requestCancel, isCancelRequested } from '../importProgress.js';
 
 const router = express.Router();
 
@@ -87,10 +88,13 @@ router.post('/reimport/megamix', async (req, res) => {
 function aiImportRoute(kind, runImport) {
   return async (req, res) => {
     const { planId, confirmed = false, dontAskAgain = false } = req.body || {};
+    // Es läuft immer nur ein Einlesen -- vor dem Einlösen prüfen, damit der Plan nicht verfällt
+    if (!startProgress(kind)) return res.status(409).json({ error: t('errors.importRunning') });
     let permit;
     try {
       permit = redeemPlan(planId, kind, { confirmed: confirmed === true });
     } catch (error) {
+      finishProgress();
       if (error instanceof GateError) {
         return res.status(409).json({ error: t(`errors.ai.${error.code}`), code: error.code });
       }
@@ -98,19 +102,24 @@ function aiImportRoute(kind, runImport) {
     }
     try {
       await rememberConfirmation(permit, { confirmed: confirmed === true, dontAskAgain: dontAskAgain === true });
-      const result = await runImport(permit);
+      const result = await runImport(permit, { onProgress: reportProgress, isCancelled: isCancelRequested });
+      if (isCancelRequested()) result.cancelled = true;
       res.json({ success: true, ...result });
     } catch (error) {
       console.error('KI-Einlesen-Fehler:', error);
       res.status(500).json({ error: error.message });
     } finally {
       closePermit(permit);
+      finishProgress();
     }
   };
 }
 
-router.post('/reimport/jam-sessions', aiImportRoute('jam', (permit) => importJamSessions(permit)));
-router.post('/reimport/zin-volumes', aiImportRoute('zin', (permit) => importZinVolumes(permit)));
+router.get('/import-progress', (req, res) => res.json(getProgress()));
+router.post('/import-cancel', (req, res) => res.json({ success: requestCancel() }));
+
+router.post('/reimport/jam-sessions', aiImportRoute('jam', (permit, opts) => importJamSessions(permit, opts)));
+router.post('/reimport/zin-volumes', aiImportRoute('zin', (permit, opts) => importZinVolumes(permit, opts)));
 
 // Liefert Audio-/Videodateien aus den gezielt zugeordneten MegaMix-/ZIN-Volume-Ordnern aus.
 // dir muss unterhalb eines der konfigurierten Datenquellen-Roots liegen (Path-Traversal-Schutz).
