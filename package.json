@@ -1,0 +1,35 @@
+{
+  "name": "choreothek",
+  "productName": "Choreothek",
+  "version": "0.1.0",
+  "description": "Nachschlagewerk für Choreos, Songs und Rhythmen aus dem eigenen Tanz-Archiv (Jam Sessions, Mixe, Volumes) – Windows-Desktop-App",
+  "license": "GPL-3.0-only",
+  "author": "Harald Henke",
+  "private": true,
+  "type": "module",
+  "main": "src/main/main.js",
+  "scripts": {
+    "dev": "vite build && electron .",
+    "build:renderer": "vite build",
+    "start": "electron .",
+    "test": "cross-env ELECTRON_RUN_AS_NODE=1 electron test/server.test.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.128.0",
+    "axios": "^1.20.0",
+    "better-sqlite3": "^13.0.3",
+    "express": "^4.22.3",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^6.1.1",
+    "cross-env": "^10.1.0",
+    "electron": "^44.4.5",
+    "vite": "^8.3.1"
+  },
+  "allowScripts": {
+    "better-sqlite3@13.0.3": false,
+    "electron@44.4.5": true
+  }
+}
