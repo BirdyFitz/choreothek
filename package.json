@@ -14,7 +14,8 @@
     "start": "electron .",
     "test": "cross-env ELECTRON_RUN_AS_NODE=1 electron test/run.js",
     "ffmpeg:local": "node scripts/ffmpeg.mjs --local",
-    "dist": "vite build && electron-builder --win --publish never"
+    "dist": "vite build && electron-builder --win --publish never",
+    "icon": "electron scripts/icon.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.128.0",
@@ -90,7 +91,8 @@
           ]
         }
       ],
-      "artifactName": "Choreothek-Setup-${version}.${ext}"
+      "artifactName": "Choreothek-Setup-${version}.${ext}",
+      "icon": "build/icon.ico"
     },
     "nsis": {
       "oneClick": false,

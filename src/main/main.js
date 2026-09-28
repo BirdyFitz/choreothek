@@ -1,4 +1,5 @@
 // Electron-Hauptprozess: startet den lokalen Server und öffnet das App-Fenster.
+import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron';
@@ -23,7 +24,10 @@ let mainWindow = null;
 let session = null;
 
 function createWindow() {
+  // Fenstersymbol: im installierten Programm kommt es aus der .exe, in der Entwicklung aus build/
+  const devIcon = path.join(appRoot, 'build', 'icon.png');
   mainWindow = new BrowserWindow({
+    ...(!app.isPackaged && fs.existsSync(devIcon) ? { icon: devIcon } : {}),
     width: 1280,
     height: 900,
     minWidth: 800,

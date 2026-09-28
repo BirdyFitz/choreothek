@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-import { IconMusic, IconLayoutSidebar, IconLayoutSidebarRight } from '@tabler/icons-react'
+import { IconLayoutSidebar, IconLayoutSidebarRight } from '@tabler/icons-react'
+import Logo from './components/Logo.jsx'
 import Search from './pages/Search.jsx'
 import Settings from './pages/Settings.jsx'
 import Library from './pages/Library.jsx'
@@ -39,7 +40,7 @@ export default function App() {
     <div className="app">
       <header className="topbar">
         <div className="brand">
-          <IconMusic size={20} stroke={1.8} />
+          <Logo size={20} />
           {t('app.name')}
         </div>
         {!wizard && (
