@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { IconPlayerPlay, IconPlayerPause, IconRepeat, IconExternalLink, IconPlayerSkipBack, IconX } from '@tabler/icons-react'
+import { IconPlayerPlay, IconPlayerPause, IconRepeat, IconExternalLink, IconPlayerSkipBack, IconX, IconMaximize } from '@tabler/icons-react'
 import { parseTime, formatTime, loopJump, SPEEDS } from '../lib/player.js'
 import { usePersistent } from '../lib/usePersistent.js'
 import { openInDefaultApp } from '../lib/fileMenu.js'
@@ -20,6 +20,12 @@ export default function MediaPlayer({ url, kind, seekTo }) {
   const [loop, setLoop] = useState(false)
   const [jumpText, setJumpText] = useState('')
   const [failed, setFailed] = useState(null)
+  // Videohöhe: begrenzt, damit bei Hochkant-Videos die Bedienelemente sichtbar bleiben
+  const [videoSize, setVideoSize] = usePersistent('playerVideoSize', 'm')
+
+  const fullscreen = () => {
+    media.current?.requestFullscreen?.().catch(() => {})
+  }
 
   // Neue Datei: Abschnitt und Fehler zurücksetzen (Tempo bleibt über Dateien hinweg)
   useEffect(() => {
@@ -115,7 +121,8 @@ export default function MediaPlayer({ url, kind, seekTo }) {
       ArrowRight: () => seek((media.current?.currentTime ?? 0) + 5),
       a: () => setPoint('a'),
       b: () => setPoint('b'),
-      l: () => setLoop((v) => !v)
+      l: () => setLoop((v) => !v),
+      f: () => kind === 'video' && fullscreen()
     }
     const action = keys[e.key]
     if (action) {
@@ -132,10 +139,11 @@ export default function MediaPlayer({ url, kind, seekTo }) {
       <Tag
         ref={media}
         key={url}
-        className={kind === 'video' ? 'viewer' : 'player-audio'}
+        className={kind === 'video' ? `viewer video-size-${videoSize}` : 'player-audio'}
         src={url}
         preload="metadata"
         onClick={toggle}
+        onDoubleClick={kind === 'video' ? fullscreen : undefined}
         onPlay={() => setPlaying(true)}
         onPause={() => setPlaying(false)}
         onTimeUpdate={(e) => {
@@ -226,6 +234,26 @@ export default function MediaPlayer({ url, kind, seekTo }) {
                 </>
               )}
             </div>
+
+            {kind === 'video' && (
+              <div className="player-size" role="group" aria-label={t('player.size')}>
+                {['s', 'm', 'l'].map((size) => (
+                  <button
+                    key={size}
+                    type="button"
+                    className={videoSize === size ? 'active' : ''}
+                    aria-pressed={videoSize === size}
+                    onClick={() => setVideoSize(size)}
+                    title={t(`player.sizes.${size}`)}
+                  >
+                    {t(`player.sizeShort.${size}`)}
+                  </button>
+                ))}
+                <button type="button" className="icon-btn" onClick={fullscreen} title={t('player.fullscreen')} aria-label={t('player.fullscreen')}>
+                  <IconMaximize size={16} stroke={1.6} />
+                </button>
+              </div>
+            )}
 
             <form
               className="player-jump"
