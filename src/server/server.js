@@ -15,6 +15,7 @@ import settingsRoutes from './routes/settings.js';
 import libraryRoutes from './routes/library.js';
 import aiRoutes from './routes/ai.js';
 import previewRoutes from './routes/preview.js';
+import collectionRoutes from './routes/collection.js';
 import { t } from '../shared/i18n.js';
 import mediaRoutes from './routes/media.js';
 
@@ -42,6 +43,7 @@ export async function startServer({ dataDir, rendererDir, port = 0, dbFile } = {
   app.use('/api', libraryRoutes);
   app.use('/api', aiRoutes);
   app.use('/api', previewRoutes);
+  app.use('/api', collectionRoutes);
   app.use('/api', mediaRoutes);
   app.get('/api/health', (req, res) => res.json({ status: 'OK' }));
 

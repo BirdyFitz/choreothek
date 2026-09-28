@@ -445,3 +445,117 @@ export async function aiCostsByMonth() {
     )
     .all();
 }
+
+// ---------- Bibliothek: Anzeigen und Bearbeiten ----------
+
+// Je Art: Tabellen, Fremdschlüssel, bearbeitbare Kopf- und Songfelder
+export const COLLECTION_TYPES = {
+  jam: {
+    table: 'jams',
+    songTable: 'songs',
+    fk: 'jam_id',
+    head: ['jammer_name', 'jam_date', 'location', 'source_folder'],
+    song: ['song_name', 'artist', 'rhythm', 'position', 'page']
+  },
+  zin: {
+    table: 'zin_volumes',
+    songTable: 'zin_volume_songs',
+    fk: 'zin_volume_id',
+    head: ['audio_folder', 'live_video_folder', 'oneonone_video_folder'],
+    song: ['song_name', 'artist', 'rhythm', 'position', 'live_pdf_filename', 'live_page', 'oneonone_pdf_filename', 'oneonone_page']
+  },
+  megamix: {
+    table: 'megamixes',
+    songTable: 'megamix_songs',
+    fk: 'megamix_id',
+    head: ['source_folder'],
+    song: ['song_name', 'rhythm', 'position']
+  }
+};
+
+export async function listCollection(type) {
+  const c = COLLECTION_TYPES[type];
+  const count = `(SELECT COUNT(*) FROM ${c.songTable} s WHERE s.${c.fk} = t.id) AS song_count`;
+  if (type === 'jam') {
+    return getDb()
+      .prepare(`SELECT t.id, t.jammer_name, t.jam_date, t.jam_datum, t.location, ${count} FROM jams t ORDER BY t.jam_datum DESC NULLS LAST, t.jammer_name`)
+      .all();
+  }
+  return getDb().prepare(`SELECT t.id, t.edition_number, t.edition_label, ${count} FROM ${c.table} t ORDER BY t.edition_number, t.edition_label`).all();
+}
+
+export async function getCollectionItem(type, id) {
+  const c = COLLECTION_TYPES[type];
+  const item = getDb().prepare(`SELECT * FROM ${c.table} WHERE id = ?`).get(id);
+  if (!item) return null;
+  item.songs = getDb()
+    .prepare(`SELECT id, ${c.song.join(', ')} FROM ${c.songTable} WHERE ${c.fk} = ? ORDER BY position, id`)
+    .all(id);
+  return item;
+}
+
+// Nur die für die Art erlaubten Kopffelder; beim Jam-Datum wird das ISO-Datum neu berechnet
+export async function updateCollectionHead(type, id, fields) {
+  const c = COLLECTION_TYPES[type];
+  const keys = c.head.filter((k) => k in fields);
+  if (!keys.length) return;
+  const values = keys.map((k) => fields[k] ?? null);
+  let sql = keys.map((k) => `${k} = ?`).join(', ');
+  if (type === 'jam' && keys.includes('jam_date')) {
+    sql += ', jam_datum = ?';
+    values.push(parseJamDate(fields.jam_date));
+  }
+  getDb().prepare(`UPDATE ${c.table} SET ${sql} WHERE id = ?`).run(...values, id);
+}
+
+// Songliste komplett ersetzen (in einer Transaktion); Position aus der Reihenfolge, außer sie ist
+// ausdrücklich gesetzt (Warm-up-Songs der Volumes stehen mit Position ≤ 0 vor den übrigen)
+export async function replaceCollectionSongs(type, id, songs) {
+  const c = COLLECTION_TYPES[type];
+  const cols = c.song;
+  const insert = getDb().prepare(`INSERT INTO ${c.songTable} (${c.fk}, ${cols.join(', ')}) VALUES (?, ${cols.map(() => '?').join(', ')})`);
+  getDb().transaction(() => {
+    getDb().prepare(`DELETE FROM ${c.songTable} WHERE ${c.fk} = ?`).run(id);
+    songs.forEach((song, i) => {
+      const row = { ...song, position: Number.isInteger(song.position) ? song.position : i + 1 };
+      insert.run(id, ...cols.map((k) => row[k] ?? null));
+    });
+  })();
+}
+
+// Löscht einen Eintrag samt Songs; liefert die Namen der PDF-Kopien, die dann niemand mehr nutzt
+export async function deleteCollectionItem(type, id) {
+  const item = await getCollectionItem(type, id);
+  if (!item) return [];
+  const c = COLLECTION_TYPES[type];
+  const pdfs =
+    type === 'jam'
+      ? [item.pdf_filename]
+      : type === 'zin'
+        ? item.songs.flatMap((s) => [s.live_pdf_filename, s.oneonone_pdf_filename])
+        : [];
+  getDb().prepare(`DELETE FROM ${c.table} WHERE id = ?`).run(id);
+  return [...new Set(pdfs.filter(Boolean))];
+}
+
+export async function jammerNameCounts() {
+  return getDb().prepare('SELECT jammer_name, COUNT(*) AS jams FROM jams GROUP BY jammer_name ORDER BY jammer_name').all();
+}
+
+// Schreibweise eines Jammers vereinheitlichen; liefert die Zahl geänderter Jams
+export async function renameJammer(from, to) {
+  return getDb().prepare('UPDATE jams SET jammer_name = ? WHERE jammer_name = ?').run(to, from).changes;
+}
+
+// Alle Ordner, die Einträgen zugeordnet sind (auch von Hand in der Bibliothek gewählte)
+export async function assignedFolders() {
+  return getDb()
+    .prepare(
+      `SELECT source_folder AS f FROM jams UNION SELECT source_folder FROM megamixes
+       UNION SELECT audio_folder FROM zin_volumes UNION SELECT live_video_folder FROM zin_volumes
+       UNION SELECT oneonone_video_folder FROM zin_volumes`
+    )
+    .all()
+    .map((r) => r.f)
+    .filter(Boolean);
+}

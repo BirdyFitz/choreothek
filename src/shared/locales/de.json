@@ -192,7 +192,15 @@
       "invalidAmount": "Bitte einen Betrag von 0 oder mehr eingeben."
     },
     "invalidRequest": "Ungültige Anfrage.",
-    "importRunning": "Es läuft bereits ein Einlesen."
+    "importRunning": "Es läuft bereits ein Einlesen.",
+    "edit": {
+      "notFound": "Eintrag nicht gefunden.",
+      "invalidPage": "Seitenzahlen müssen ganze Zahlen ab 1 sein.",
+      "jammerRequired": "Bitte einen Namen für den Jammer angeben.",
+      "songNameRequired": "Jeder Song braucht einen Titel.",
+      "pdfMissing": "Die PDF-Kopie in Choreothek fehlt – bitte über „Datenquellen“ neu einlesen.",
+      "noAiForMegamix": "MegaMixe werden ohne KI aus den Dateinamen gelesen."
+    }
   },
   "ai": {
     "title": "KI",

@@ -71,7 +71,8 @@ export async function balanceInfo(settings, provider) {
 
 // Plan für einen Einlese-Vorgang. items: [{ label, files: [pdfPfade], ... }] -- was genau
 // gesendet würde. Ergebnis enthält Schätzung, Gründe für die Meldung und ggf. eine Sperre.
-export async function buildPlan(kind, items) {
+// target: { type, id } beim Neu-Auslesen eines einzelnen Eintrags (Plan gilt nur dafür).
+export async function buildPlan(kind, items, { target = null } = {}) {
   const settings = await getAiSettings();
   const provider = settings.provider;
   const model = modelFor(settings, provider);
@@ -116,6 +117,7 @@ export async function buildPlan(kind, items) {
 
   const details = {
     kind,
+    target,
     provider,
     providerLabel: getProvider(provider).label,
     model,

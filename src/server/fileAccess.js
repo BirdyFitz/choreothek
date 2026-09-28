@@ -2,13 +2,13 @@
 // Datenquellen und den PDF-Kopien der App -- nie beliebige Pfade aus der Oberfläche.
 import fs from 'fs';
 import path from 'path';
-import { getSetting } from './db.js';
+import { getSetting, assignedFolders } from './db.js';
 import { getUploadsDir } from './paths.js';
 import { zinFolders, ZIN_OVERRIDES_SETTING, MEGAMIX_OVERRIDES_SETTING } from './scan/settings.js';
 import { MEDIA_OVERRIDES_SETTING } from './scan/jams.js';
 
-// Alle Ordner, aus denen Musik/Videos ausgeliefert werden dürfen: Datenquellen und die in der
-// Vorschau von Hand zugeordneten Ordner (die auch außerhalb der Datenquellen liegen können)
+// Alle Ordner, aus denen Musik/Videos ausgeliefert werden dürfen: Datenquellen, die in der
+// Vorschau von Hand zugeordneten Ordner und die Ordner der Einträge (auch außerhalb der Datenquellen)
 export async function mediaRoots() {
   const json = async (key, fallback) => JSON.parse((await getSetting(key)) || JSON.stringify(fallback));
   const roots = [...(await json('media_roots', []))];
@@ -18,6 +18,7 @@ export async function mediaRoots() {
     for (const entry of Object.values(await json(key, {}))) roots.push(...Object.values(entry));
   }
   roots.push(...Object.values(await json(MEDIA_OVERRIDES_SETTING, {})));
+  roots.push(...(await assignedFolders()));
   return roots.filter(Boolean);
 }
 

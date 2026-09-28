@@ -100,6 +100,12 @@ function aiImportRoute(kind, runImport) {
       }
       throw error;
     }
+    // Pläne zum Neu-Auslesen eines einzelnen Eintrags gelten nicht für das Einlesen
+    if (permit.plan.target) {
+      closePermit(permit);
+      finishProgress();
+      return res.status(409).json({ error: t('errors.ai.planWrongKind'), code: 'planWrongKind' });
+    }
     try {
       await rememberConfirmation(permit, { confirmed: confirmed === true, dontAskAgain: dontAskAgain === true });
       const result = await runImport(permit, { onProgress: reportProgress, isCancelled: isCancelRequested });
