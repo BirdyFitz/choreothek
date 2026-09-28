@@ -11,8 +11,13 @@ import {
   replaceCollectionSongs,
   deleteCollectionItem,
   jammerNameCounts,
-  renameJammer
+  renameJammer,
+  getSongWithFolders,
+  setSongMediaOverride
 } from '../db.js';
+import { mediaFor, autoMediaFor, filesOf, parseOverride, pathFromMediaUrl } from '../media.js';
+import { isAllowedFile } from '../fileAccess.js';
+import { categorize } from '../utils/scopedMediaFinder.js';
 import { getUploadsDir } from '../paths.js';
 import { buildPlan, extractWithAi, rememberConfirmation, AiError } from '../ai/aiService.js';
 import { redeemPlan, closePermit, GateError } from '../ai/gate.js';
@@ -106,7 +111,8 @@ router.put('/collection/:type/:id/songs', async (req, res) => {
     const songs = req.body.songs.map((s) => {
       const name = text(s.song_name);
       if (!name) throw new InputError(t('errors.edit.songNameRequired'));
-      const song = { song_name: name, rhythm: text(s.rhythm), position: Number.isInteger(s.position) ? s.position : undefined };
+      // id: bestehender Song (wird aktualisiert, behält seine Zuordnungen von Hand); ohne id neu
+      const song = { id: Number.isInteger(s.id) ? s.id : undefined, song_name: name, rhythm: text(s.rhythm), position: Number.isInteger(s.position) ? s.position : undefined };
       if (type !== 'megamix') song.artist = text(s.artist);
       if (type === 'jam') song.page = pageOrNull(s.page);
       if (type === 'zin') {
@@ -156,6 +162,69 @@ const aiKind = (type) => {
   if (type === 'megamix') throw new InputError(t('errors.edit.noAiForMegamix'));
   return type === 'jam' ? 'jam' : 'zin';
 };
+
+// Musik und Videos eines Eintrags: je Song die Zuordnung (automatisch bzw. von Hand, entfernte
+// automatische Treffer) und alle Dateien in den Ordnern des Eintrags mit ihren Songs
+router.get('/collection/:type/:id/media', async (req, res) => {
+  try {
+    const { type, item } = await itemOf(req);
+    const cache = new Map();
+    const songs = {};
+    let files = [];
+    const usedBy = new Map();
+    for (const s of item.songs) {
+      const song = await getSongWithFolders(type, s.id);
+      if (!files.length) files = filesOf(song, cache);
+      const media = mediaFor(song, cache);
+      const override = parseOverride(song.media_override);
+      const auto = autoMediaFor(song, cache);
+      const autoPaths = new Set([...auto.audio, ...auto.video].map((m) => pathFromMediaUrl(m.url).toLowerCase()));
+      songs[s.id] = {
+        audio: media.audio.map((m) => ({ ...m, path: pathFromMediaUrl(m.url) })),
+        video: media.video.map((m) => ({ ...m, path: pathFromMediaUrl(m.url) })),
+        removed: override.remove.filter((p) => autoPaths.has(p.toLowerCase())).map((p) => ({ path: p, label: path.basename(p) }))
+      };
+      for (const m of [...media.audio, ...media.video]) {
+        const k = pathFromMediaUrl(m.url).toLowerCase();
+        usedBy.set(k, [...(usedBy.get(k) || []), s.id]);
+      }
+    }
+    if (!item.songs.length) files = filesOf({ ...item, source_type: type === 'jam' ? 'jam_session' : type === 'zin' ? 'zin_volume' : 'megamix' }, cache);
+    res.json({ songs, files: files.map((f) => ({ ...f, songs: usedBy.get(f.path.toLowerCase()) || [] })) });
+  } catch (error) {
+    sendError(res, error);
+  }
+});
+
+// Zuordnung eines Songs ändern: add (Datei zuordnen), remove (Zuordnung lösen), restore
+// (entfernten automatischen Treffer wieder zulassen)
+router.post('/collection/:type/:id/songs/:songId/media', async (req, res) => {
+  try {
+    const { type, item } = await itemOf(req);
+    const songId = Number(req.params.songId);
+    if (!item.songs.some((s) => s.id === songId)) throw new InputError(t('errors.edit.notFound'));
+    const { action, path: file } = req.body;
+    if (typeof file !== 'string' || !['add', 'remove', 'restore'].includes(action)) throw new InputError(t('errors.invalidRequest'));
+    const full = path.resolve(file);
+    const same = (p) => p.toLowerCase() === full.toLowerCase();
+    const song = await getSongWithFolders(type, songId);
+    const override = parseOverride(song.media_override);
+    if (action === 'add') {
+      if (!categorize(full) || !(await isAllowedFile(full))) throw new InputError(t('errors.edit.fileNotAllowed'));
+      override.remove = override.remove.filter((p) => !same(p));
+      if (!override.add.some(same)) override.add.push(full);
+    } else if (action === 'remove') {
+      if (override.add.some(same)) override.add = override.add.filter((p) => !same(p));
+      else if (!override.remove.some(same)) override.remove.push(full);
+    } else {
+      override.remove = override.remove.filter((p) => !same(p));
+    }
+    await setSongMediaOverride(type, songId, override);
+    res.json({ success: true });
+  } catch (error) {
+    sendError(res, error);
+  }
+});
 
 // Einzeln neu auslesen, Schritt 1: Plan (was wird gesendet, was kostet es)
 router.post('/collection/:type/:id/plan', async (req, res) => {
@@ -210,6 +279,13 @@ router.post('/collection/:type/:id/reextract', async (req, res) => {
           }))
         ]
       };
+    }
+    // Vorschlags-Songs mit gleichem Titel behalten ihre bisherige Nummer -- so bleiben Zuordnungen
+    // von Hand (Musik/Videos) beim Übernehmen erhalten
+    const byName = new Map(item.songs.map((x) => [x.song_name.trim().toLowerCase(), x.id]));
+    for (const song of proposal.songs) {
+      if (song.id == null) song.id = byName.get(song.song_name.trim().toLowerCase());
+      byName.delete(song.song_name.trim().toLowerCase());
     }
     res.json({ proposal, aiCostUsd: permit.costUsd });
   } catch (error) {

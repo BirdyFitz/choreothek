@@ -13,6 +13,9 @@ import {
   IconUsers
 } from '@tabler/icons-react'
 import AiConfirmDialog from '../components/AiConfirmDialog.jsx'
+import SongFiles from '../components/SongFiles.jsx'
+import Splitter from '../components/Splitter.jsx'
+import { clampPaneWidth } from '../lib/paneWidth.js'
 import { meldeDatenGeaendert, DATEN_GEAENDERT, OPEN_IN_LIBRARY } from '../lib/events.js'
 import { usePersistent } from '../lib/usePersistent.js'
 import { formatUsd } from '../lib/money.js'
@@ -55,6 +58,17 @@ function Editor({ type, id, onChanged }) {
   const [busy, setBusy] = useState('')
   const [message, setMessage] = useState({ type: '', text: '' })
   const [pendingPlan, setPendingPlan] = useState(null)
+  // Dateien je Song (Musik/Videos, Zuordnung von Hand) und der Song, dessen Dateien gezeigt werden
+  const [media, setMedia] = useState(null)
+  const [selectedSong, setSelectedSong] = useState(null)
+
+  const loadMedia = useCallback(async () => {
+    try {
+      setMedia((await axios.get(`/api/collection/${type}/${id}/media`)).data)
+    } catch {
+      setMedia(null)
+    }
+  }, [type, id])
 
   const load = useCallback(async () => {
     const { data } = await axios.get(`/api/collection/${type}/${id}`)
@@ -62,7 +76,8 @@ function Editor({ type, id, onChanged }) {
     setHead(headOf(type, data))
     setSongs(songsOf(data))
     setDirty({ head: false, songs: false })
-  }, [type, id])
+    loadMedia()
+  }, [type, id, loadMedia])
 
   useEffect(() => {
     setMessage({ type: '', text: '' })
@@ -188,7 +203,7 @@ function Editor({ type, id, onChanged }) {
 
       <div className="editor-fields">
         {HEAD_FIELDS[type].map(([k, kind]) => (
-          <div className="field" key={k}>
+          <div className={`field ${kind === 'folder' ? 'field-wide' : ''}`} key={k}>
             <label htmlFor={`head-${k}`}>{t(`library.fields.${k}`)}</label>
             <div className="path-field">
               <input id={`head-${k}`} value={head[k] ?? ''} onChange={(e) => setHeadField(k, e.target.value)} />
@@ -215,7 +230,7 @@ function Editor({ type, id, onChanged }) {
           </thead>
           <tbody>
             {songs.map((s, i) => (
-              <tr key={i} className={isWarmup(s) ? 'warmup' : ''}>
+              <tr key={i} className={`${isWarmup(s) ? 'warmup' : ''} ${selectedSong === i ? 'selected' : ''}`} onClick={() => setSelectedSong(i)}>
                 <td className="muted">{isWarmup(s) ? t('library.warmup') : i + 1 - warmupCount}</td>
                 {SONG_FIELDS[type].map(([k, isNumber]) => (
                   <td key={k}>
@@ -258,6 +273,14 @@ function Editor({ type, id, onChanged }) {
           {busy === 'save' ? <span className="spinner" /> : <IconDeviceFloppy size={16} stroke={1.6} />} {t('library.save')}
         </button>
       </div>
+
+      {selectedSong != null && songs[selectedSong] && (
+        songs[selectedSong].id && !dirty.songs ? (
+          <SongFiles type={type} item={item} song={songs[selectedSong]} media={media} onChanged={loadMedia} />
+        ) : (
+          <p className="muted">{t('library.media.saveFirst')}</p>
+        )
+      )}
 
       {pendingPlan && (
         <AiConfirmDialog
@@ -357,7 +380,17 @@ function JammerRow({ entry, onRename }) {
 }
 
 // Reiter „Bibliothek“: links alle Einträge einer Art, rechts Bearbeiten
+const LIST_WIDTH = { min: 200, max: 600, standard: 300 }
+
 export default function Library() {
+  const [listWidth, setListWidth] = usePersistent('libraryListWidth', LIST_WIDTH.standard)
+  const [windowWidth, setWindowWidth] = useState(() => window.innerWidth)
+  useEffect(() => {
+    const observer = new ResizeObserver(() => setWindowWidth(document.documentElement.clientWidth))
+    observer.observe(document.documentElement)
+    return () => observer.disconnect()
+  }, [])
+  const effList = clampPaneWidth(listWidth, { ...LIST_WIDTH, windowWidth })
   const [type, setType] = usePersistent('libraryType', 'jam')
   const [list, setList] = useState([])
   const [filter, setFilter] = useState('')
@@ -399,7 +432,7 @@ export default function Library() {
 
   return (
     <div className="library">
-      <div className="pane library-list">
+      <div className="pane library-list" style={{ width: effList }}>
         <div className="segmented segmented-3" role="tablist">
           {TYPES.map((id) => (
             <button
@@ -436,6 +469,13 @@ export default function Library() {
           ))}
         </ul>
       </div>
+      <Splitter
+        side="left"
+        width={effList}
+        onChange={(w) => setListWidth(clampPaneWidth(w, { ...LIST_WIDTH, windowWidth }))}
+        onReset={() => setListWidth(LIST_WIDTH.standard)}
+        label={t('library.listWidth')}
+      />
       <div className="pane library-editor" key={`${type}-${selected}`}>
         {selected === 'jammers' ? (
           <JammerNames onChanged={() => loadList()} />

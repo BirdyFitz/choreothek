@@ -202,7 +202,8 @@
       "jammerRequired": "Bitte einen Namen für den Jammer angeben.",
       "songNameRequired": "Jeder Song braucht einen Titel.",
       "pdfMissing": "Die PDF-Kopie in Choreothek fehlt – bitte über „Datenquellen“ neu einlesen.",
-      "noAiForMegamix": "MegaMixe werden ohne KI aus den Dateinamen gelesen."
+      "noAiForMegamix": "MegaMixe werden ohne KI aus den Dateinamen gelesen.",
+      "fileNotAllowed": "Diese Datei liegt nicht in den Ordnern von Choreothek oder ist keine Musik-/Videodatei."
     }
   },
   "ai": {
@@ -451,6 +452,21 @@
         "one": "{count} Jam geändert.",
         "other": "{count} Jams geändert."
       }
+    },
+    "listWidth": "Breite der Liste",
+    "media": {
+      "title": "Dateien zu „{song}“",
+      "saveFirst": "Erst speichern – dann lassen sich die Dateien dieses Songs anzeigen und zuordnen.",
+      "unassign": "Zuordnung lösen (die Datei bleibt erhalten)",
+      "removed": "{file} – Zuordnung gelöst",
+      "restore": "wiederherstellen",
+      "addLabel": "Weitere Datei zuordnen",
+      "choose": "Weitere Musik-/Videodatei aus dem Ordner zuordnen …",
+      "noCandidates": "Keine weiteren Musik-/Videodateien im Ordner",
+      "option": "{file} – {use}",
+      "usedBy": "bei {list}",
+      "unused": "nicht zugeordnet",
+      "add": "Zuordnen"
     }
   },
   "player": {

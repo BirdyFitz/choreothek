@@ -971,7 +971,6 @@ body.resizing video {
 }
 
 .library-list {
-  width: 300px;
   flex: none;
   border-right: 1px solid var(--border);
   padding: 12px;
@@ -1186,4 +1185,57 @@ body.resizing video {
 
 .player-jump input {
   width: 80px;
+}
+
+.editor-fields .field-wide {
+  grid-column: 1 / -1;
+}
+
+.editor-songs tbody tr {
+  cursor: pointer;
+}
+
+.editor-songs tr.selected td {
+  background: var(--selected);
+}
+
+.song-files {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-top: 1px solid var(--border);
+  padding-top: 12px;
+}
+
+.song-files .file-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+}
+
+.song-files .file-item-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: none;
+  background: none;
+  height: 28px;
+  text-align: left;
+}
+
+.song-files .file-item-main span:not(.tag) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.song-files .pdf-frame {
+  height: 520px;
+}
+
+.removed-file {
+  font-size: 12px;
 }

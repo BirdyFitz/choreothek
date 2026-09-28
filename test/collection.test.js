@@ -175,3 +175,47 @@ test('Löschen entfernt Songs und die PDF-Kopie, Originale bleiben', async () =>
   assert.equal((await call('GET', `collection/zin/${zinId}`)).status, 400);
   assert.ok(!fs.existsSync(path.join(getUploadsDir(), '2-live.pdf')));
 });
+
+test('Musik/Videos von Hand zuordnen: entfernen, hinzufügen, wiederherstellen; bleibt beim Speichern', async () => {
+  const folder = path.join(dataDir, 'Jam Medien');
+  fs.mkdirSync(path.join(folder, 'Party'), { recursive: true });
+  for (const f of ['01 Sonnenschein.m4a', 'Sonnenschein - Salsa.mp4', 'VID_1234.mp4', path.join('Party', 'Abend.mp4')]) fs.writeFileSync(path.join(folder, f), '');
+  const id = await insertJam('Medienprobe', null, '9-m.pdf', null, folder);
+  await insertSongs(id, [{ name: 'Sonnenschein', rhythm: 'Salsa', position: 1 }, { name: 'Regen', rhythm: 'Cumbia', position: 2 }]);
+  const item = (await call('GET', `collection/jam/${id}`)).body;
+  const [sonne, regen] = item.songs;
+
+  const first = await call("GET", `collection/jam/${id}/media`);
+  assert.equal(first.status, 200, JSON.stringify(first.body));
+  let media = first.body;
+  assert.deepEqual(media.songs[sonne.id].video.map((v) => v.label), ['Sonnenschein - Salsa.mp4']);
+  assert.equal(media.files.length, 4, 'auch Unterordner');
+  assert.deepEqual(media.files.find((f) => f.label === 'VID_1234.mp4').songs, []);
+
+  const mediaUrl = (p) => `collection/jam/${id}/songs/${p}/media`;
+  const vid = path.join(folder, 'VID_1234.mp4');
+  await call('POST', mediaUrl(sonne.id), { action: 'remove', path: path.join(folder, 'Sonnenschein - Salsa.mp4') });
+  await call('POST', mediaUrl(regen.id), { action: 'add', path: vid });
+  assert.equal((await call('POST', mediaUrl(regen.id), { action: 'add', path: path.join(dataDir, 'fremd.mp4') })).status, 400);
+
+  media = (await call('GET', `collection/jam/${id}/media`)).body;
+  assert.deepEqual(media.songs[sonne.id].video, []);
+  assert.deepEqual(media.songs[sonne.id].removed.map((r) => r.label), ['Sonnenschein - Salsa.mp4']);
+  assert.equal(media.songs[regen.id].video[0].manual, true);
+
+  // Suche zeigt die Zuordnung von Hand; das zugeordnete Video ist nicht mehr „nicht zugeordnet“
+  const rows = await (await fetch(`${session.url}api/search?jam_id=${id}`)).json();
+  assert.deepEqual(rows.find((r) => r.song_name === 'Regen').video_paths.map((v) => v.label), ['VID_1234.mp4']);
+  assert.ok(!rows.some((r) => r.unassigned && r.song_name === 'VID_1234'));
+
+  // Songliste speichern (umbenannt, umsortiert): Zuordnung bleibt am Song
+  await call('PUT', `collection/jam/${id}/songs`, { songs: [{ ...regen, song_name: 'Regenbogen' }, sonne] });
+  media = (await call('GET', `collection/jam/${id}/media`)).body;
+  assert.deepEqual(media.songs[regen.id].video.map((v) => v.label), ['VID_1234.mp4']);
+
+  await call('POST', mediaUrl(sonne.id), { action: 'restore', path: path.join(folder, 'Sonnenschein - Salsa.mp4') });
+  await call('POST', mediaUrl(regen.id), { action: 'remove', path: vid });
+  media = (await call('GET', `collection/jam/${id}/media`)).body;
+  assert.deepEqual(media.songs[sonne.id].video.map((v) => v.label), ['Sonnenschein - Salsa.mp4']);
+  assert.deepEqual(media.songs[regen.id].video, []);
+});

@@ -91,6 +91,12 @@ const MIGRATIONS = [
     error TEXT
   );
   CREATE INDEX idx_ai_calls_provider ON ai_calls(provider, created_at);
+  `,
+  // 3: Musik/Videos je Song von Hand zuordnen bzw. automatische Treffer entfernen (JSON { add, remove })
+  `
+  ALTER TABLE songs ADD COLUMN media_override TEXT;
+  ALTER TABLE zin_volume_songs ADD COLUMN media_override TEXT;
+  ALTER TABLE megamix_songs ADD COLUMN media_override TEXT;
   `
 ];
 
@@ -241,7 +247,7 @@ export async function searchSongs(rhythm, jammerName, megamix, zinVolume, datumV
       cond += ' AND j.id = ?';
     }
     branches.push(`
-      SELECT 'jam_session' AS source_type, j.id AS group_id, s.song_name, s.artist, s.rhythm, s.position,
+      SELECT 'jam_session' AS source_type, j.id AS group_id, s.id AS song_id, s.media_override, s.song_name, s.artist, s.rhythm, s.position,
              s.page, j.pdf_filename,
              NULL AS live_pdf_filename, NULL AS live_page,
              NULL AS oneonone_pdf_filename, NULL AS oneonone_page,
@@ -267,7 +273,7 @@ export async function searchSongs(rhythm, jammerName, megamix, zinVolume, datumV
       cond += ' AND m.edition_label = ?';
     }
     branches.push(`
-      SELECT 'megamix' AS source_type, m.id AS group_id, ms.song_name, NULL AS artist, ms.rhythm, ms.position,
+      SELECT 'megamix' AS source_type, m.id AS group_id, ms.id AS song_id, ms.media_override, ms.song_name, NULL AS artist, ms.rhythm, ms.position,
              NULL AS page, NULL AS pdf_filename,
              NULL AS live_pdf_filename, NULL AS live_page,
              NULL AS oneonone_pdf_filename, NULL AS oneonone_page,
@@ -293,7 +299,7 @@ export async function searchSongs(rhythm, jammerName, megamix, zinVolume, datumV
       cond += ' AND zv.edition_label = ?';
     }
     branches.push(`
-      SELECT 'zin_volume' AS source_type, zv.id AS group_id, zs.song_name, zs.artist, zs.rhythm, zs.position,
+      SELECT 'zin_volume' AS source_type, zv.id AS group_id, zs.id AS song_id, zs.media_override, zs.song_name, zs.artist, zs.rhythm, zs.position,
              NULL AS page, NULL AS pdf_filename,
              zs.live_pdf_filename, zs.live_page, zs.oneonone_pdf_filename, zs.oneonone_page,
              NULL AS jammer_name, NULL AS jam_date, NULL AS jam_datum, NULL AS location, zv.edition_label, zv.created_at,
@@ -508,19 +514,54 @@ export async function updateCollectionHead(type, id, fields) {
   getDb().prepare(`UPDATE ${c.table} SET ${sql} WHERE id = ?`).run(...values, id);
 }
 
-// Songliste komplett ersetzen (in einer Transaktion); Position aus der Reihenfolge, außer sie ist
-// ausdrücklich gesetzt (Warm-up-Songs der Volumes stehen mit Position ≤ 0 vor den übrigen)
+// Songliste übernehmen (in einer Transaktion): Songs mit Id dieses Eintrags werden aktualisiert
+// (ihre Zuordnungen von Hand bleiben erhalten), ohne Id neu angelegt, fehlende gelöscht.
+// Position aus der Reihenfolge, außer sie ist ausdrücklich gesetzt (Warm-up-Songs der Volumes
+// stehen mit Position ≤ 0 vor den übrigen)
 export async function replaceCollectionSongs(type, id, songs) {
   const c = COLLECTION_TYPES[type];
   const cols = c.song;
-  const insert = getDb().prepare(`INSERT INTO ${c.songTable} (${c.fk}, ${cols.join(', ')}) VALUES (?, ${cols.map(() => '?').join(', ')})`);
-  getDb().transaction(() => {
-    getDb().prepare(`DELETE FROM ${c.songTable} WHERE ${c.fk} = ?`).run(id);
+  const conn = getDb();
+  const existing = new Set(conn.prepare(`SELECT id FROM ${c.songTable} WHERE ${c.fk} = ?`).all(id).map((r) => r.id));
+  const insert = conn.prepare(`INSERT INTO ${c.songTable} (${c.fk}, ${cols.join(', ')}) VALUES (?, ${cols.map(() => '?').join(', ')})`);
+  const update = conn.prepare(`UPDATE ${c.songTable} SET ${cols.map((k) => `${k} = ?`).join(', ')} WHERE id = ?`);
+  const remove = conn.prepare(`DELETE FROM ${c.songTable} WHERE id = ?`);
+  conn.transaction(() => {
+    const kept = new Set();
     songs.forEach((song, i) => {
       const row = { ...song, position: Number.isInteger(song.position) ? song.position : i + 1 };
-      insert.run(id, ...cols.map((k) => row[k] ?? null));
+      const values = cols.map((k) => row[k] ?? null);
+      if (existing.has(song.id) && !kept.has(song.id)) {
+        update.run(...values, song.id);
+        kept.add(song.id);
+      } else {
+        insert.run(id, ...values);
+      }
     });
+    for (const songId of existing) if (!kept.has(songId)) remove.run(songId);
   })();
+}
+
+// Ein Song mit den Ordnern seines Eintrags (für Musik/Videos), Form wie ein Suchtreffer
+export async function getSongWithFolders(type, songId) {
+  const sql = {
+    jam: `SELECT 'jam_session' AS source_type, s.id AS song_id, s.jam_id AS group_id, s.song_name, s.media_override,
+                 j.source_folder, NULL AS audio_folder, NULL AS live_video_folder, NULL AS oneonone_video_folder
+          FROM songs s JOIN jams j ON j.id = s.jam_id WHERE s.id = ?`,
+    zin: `SELECT 'zin_volume' AS source_type, s.id AS song_id, s.zin_volume_id AS group_id, s.song_name, s.media_override,
+                 NULL AS source_folder, z.audio_folder, z.live_video_folder, z.oneonone_video_folder
+          FROM zin_volume_songs s JOIN zin_volumes z ON z.id = s.zin_volume_id WHERE s.id = ?`,
+    megamix: `SELECT 'megamix' AS source_type, s.id AS song_id, s.megamix_id AS group_id, s.song_name, s.media_override,
+                     m.source_folder, NULL AS audio_folder, NULL AS live_video_folder, NULL AS oneonone_video_folder
+              FROM megamix_songs s JOIN megamixes m ON m.id = s.megamix_id WHERE s.id = ?`
+  }[type];
+  return getDb().prepare(sql).get(songId) || null;
+}
+
+export async function setSongMediaOverride(type, songId, override) {
+  const c = COLLECTION_TYPES[type];
+  const empty = !override.add.length && !override.remove.length;
+  getDb().prepare(`UPDATE ${c.songTable} SET media_override = ? WHERE id = ?`).run(empty ? null : JSON.stringify(override), songId);
 }
 
 // Löscht einen Eintrag samt Songs; liefert die Namen der PDF-Kopien, die dann niemand mehr nutzt

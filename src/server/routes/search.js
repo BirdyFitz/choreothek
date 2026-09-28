@@ -2,33 +2,10 @@ import fs from 'fs';
 import path from 'path';
 import express from 'express';
 import { getSetting, searchSongs, getJamList, getAllRhythms, getAllJammers, getAllMegaMixEditionLabels, getAllZinVolumeEditionLabels } from '../db.js';
-import {
-  findExactMediaMatches,
-  findSubstringMediaMatches,
-  findUnassignedVideos,
-  fileNameMatchesText
-} from '../utils/scopedMediaFinder.js';
+import { findUnassignedVideos, fileNameMatchesText } from '../utils/scopedMediaFinder.js';
+import { libraryMediaUrl, mediaFor } from '../media.js';
 
 const router = express.Router();
-
-function libraryMediaUrl(folder, filename) {
-  return `/api/library-media?dir=${encodeURIComponent(folder)}&file=${encodeURIComponent(filename)}`;
-}
-
-function mediaFor(song, cache) {
-  if (song.source_type === 'jam_session') {
-    return findSubstringMediaMatches(song.source_folder, song.song_name, libraryMediaUrl, cache);
-  }
-  if (song.source_type === 'megamix') {
-    return findExactMediaMatches([song.source_folder], song.song_name, libraryMediaUrl, cache);
-  }
-  return findExactMediaMatches(
-    [song.audio_folder, song.live_video_folder, song.oneonone_video_folder],
-    song.song_name,
-    libraryMediaUrl,
-    cache
-  );
-}
 
 // Choreo Notes liegen als Kopie in der App (uploads, Name mit Zeitstempel-Präfix). Für das
 // Kontextmenü (Öffnen, Im Explorer anzeigen) wird das Original im Archiv gesucht:
@@ -52,7 +29,7 @@ function withPdfSources(row, choreoRoot, cache) {
 
 function stripInternal(song) {
   // eslint-disable-next-line no-unused-vars
-  const { source_folder, audio_folder, live_video_folder, oneonone_video_folder, ...rest } = song;
+  const { source_folder, audio_folder, live_video_folder, oneonone_video_folder, media_override, ...rest } = song;
   return rest;
 }
 

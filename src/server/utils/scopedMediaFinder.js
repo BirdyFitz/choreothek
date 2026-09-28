@@ -5,7 +5,7 @@ const AUDIO_EXTENSIONS = new Set(['.mp3', '.m4a', '.wav', '.flac', '.ogg']);
 const VIDEO_EXTENSIONS = new Set(['.mp4', '.mov', '.avi', '.mkv']);
 const DIACRITICS_PATTERN = new RegExp('[̀-ͯ]', 'g');
 
-function categorize(filename) {
+export function categorize(filename) {
   const ext = path.extname(filename).toLowerCase();
   if (AUDIO_EXTENSIONS.has(ext)) return 'audio';
   if (VIDEO_EXTENSIONS.has(ext)) return 'video';
@@ -79,7 +79,7 @@ function isCloseEnough(a, b) {
 
 // Dateien eines Ordners (optional inkl. Unterordner). cache (Map, pro Suchanfrage) verhindert,
 // dass derselbe Ordner für jeden Song erneut über das Netz gelesen wird.
-function listFiles(folder, recursive, cache) {
+export function listFiles(folder, recursive, cache) {
   const key = `${recursive ? 'r' : 'f'}:${folder}`;
   if (cache && cache.has(key)) return cache.get(key);
   let files = [];
