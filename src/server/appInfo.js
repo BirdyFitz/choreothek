@@ -64,16 +64,21 @@ export function about() {
   };
 }
 
-// Direkte Abhängigkeiten mit Lizenz, aus den mitgelieferten Paketen gelesen
+// Pakete, die im Oberflächen-Bündel stecken (im Installer nicht als eigenes Paket vorhanden)
+const BUNDLED = { react: 'MIT', 'react-dom': 'MIT', axios: 'MIT', '@tabler/icons-react': 'MIT', electron: 'MIT' };
+
+// Verwendete Pakete mit Lizenz: direkte Abhängigkeiten aus den mitgelieferten Paketen gelesen,
+// dazu die gebündelten Oberflächen-Pakete
 export function thirdPartyLicenses() {
   const pkg = JSON.parse(fs.readFileSync(path.join(appRoot, 'package.json'), 'utf8'));
-  return Object.keys(pkg.dependencies || {})
+  const names = [...new Set([...Object.keys(pkg.dependencies || {}), ...Object.keys(BUNDLED)])];
+  return names
     .map((name) => {
       try {
         const dep = JSON.parse(fs.readFileSync(path.join(appRoot, 'node_modules', name, 'package.json'), 'utf8'));
-        return { name, version: dep.version, license: typeof dep.license === 'string' ? dep.license : dep.license?.type || '?' };
+        return { name, version: dep.version, license: typeof dep.license === 'string' ? dep.license : dep.license?.type || BUNDLED[name] || '?' };
       } catch {
-        return { name, version: null, license: '?' };
+        return { name, version: null, license: BUNDLED[name] || '?' };
       }
     })
     .sort((a, b) => a.name.localeCompare(b.name));

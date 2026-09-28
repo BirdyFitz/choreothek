@@ -3,12 +3,21 @@
 import express from 'express';
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
 import { Worker } from 'worker_threads';
 import { getCollectionItem, getSongWithFolders, insertVideoRun, listVideoRuns, getVideoRun, markVideoRunUndone } from '../db.js';
 import { mediaFor, filesOf, pathFromMediaUrl } from '../media.js';
 import { ffmpegPath } from '../video/ffmpeg.js';
 import { executeItems, undoLog, safeName } from '../video/execute.js';
 import { t } from '../../shared/i18n.js';
+
+// Im installierten Programm liegt der Worker ausgepackt neben dem Archiv (app.asar.unpacked) --
+// Worker-Threads laden dort zuverlässig, aus dem Archiv selbst nicht in jeder Electron-Version
+function workerFile() {
+  const inArchive = fileURLToPath(new URL('../video/analyzeWorker.js', import.meta.url));
+  const unpacked = inArchive.replace(/app\.asar([\\/])/, 'app.asar.unpacked$1');
+  return unpacked !== inArchive && fs.existsSync(unpacked) ? unpacked : inArchive;
+}
 
 const router = express.Router();
 const lower = (p) => path.resolve(p).toLowerCase();
@@ -83,7 +92,7 @@ router.post('/video/:jamId/analyze', async (req, res) => {
     const refs = audio.map((f) => f.path);
     job = { jamId: jam.id, state: 'running', done: 0, total: refs.length + videos.length, current: null, results: [] };
     const current = job;
-    const worker = new Worker(new URL('../video/analyzeWorker.js', import.meta.url), { workerData: { ffmpeg: ffmpegPath(), refs, videos } });
+    const worker = new Worker(workerFile(), { workerData: { ffmpeg: ffmpegPath(), refs, videos } });
     current.worker = worker;
     worker.on('message', (m) => {
       if (m.type === 'progress') Object.assign(current, { done: m.done, total: m.total, current: path.basename(m.current) });

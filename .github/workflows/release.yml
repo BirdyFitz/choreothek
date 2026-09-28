@@ -1,0 +1,56 @@
+# Tests bei jedem Push; Installer und GitHub-Release nur bei einem Versions-Tag (v0.9.0 …).
+# Versionen 0.x erscheinen als „Pre-release“ (Pilotphase), ab 1.0.0 als reguläre Veröffentlichung.
+name: Test und Release
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+
+jobs:
+  test:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - name: npm wie in der Entwicklung (Sperre für Installationsskripte)
+        run: npm install -g npm@11.16.0
+      - run: npm ci
+      - name: ffmpeg bereitstellen (für die Videotests)
+        run: node scripts/ffmpeg.mjs
+      - run: npm run build:renderer
+      - name: Tests
+        run: npm test
+        env:
+          CHOREOTHEK_FFMPEG: build/ffmpeg/ffmpeg.exe
+
+  release:
+    needs: test
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: windows-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm install -g npm@11.16.0
+      - run: npm ci
+      - name: Tag muss zur Version in package.json passen
+        shell: pwsh
+        run: |
+          $version = (Get-Content package.json -Raw | ConvertFrom-Json).version
+          if ("v$version" -ne "${{ github.ref_name }}") { throw "Tag ${{ github.ref_name }} passt nicht zu Version $version" }
+          if ($version.StartsWith('0.')) { "EP_PRE_RELEASE=true" >> $env:GITHUB_ENV }
+      - run: node scripts/ffmpeg.mjs
+      - run: npm run build:renderer
+      - name: Installer bauen und veröffentlichen
+        run: npx electron-builder --win --publish always
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

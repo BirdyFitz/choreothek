@@ -6,3 +6,4 @@ out/
 .env.*
 *.sqlite
 *.sqlite-*
+build/ffmpeg/

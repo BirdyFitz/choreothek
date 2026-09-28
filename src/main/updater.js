@@ -25,7 +25,9 @@ export function initUpdater(getWindow) {
 
   const check = async () => {
     if (!app.isPackaged) return { status: 'dev', current: app.getVersion() };
-    autoUpdater.allowPrerelease = (await getSetting('updates_prerelease')) === '1';
+    // Vorgabe: in der Pilotphase (Version 0.x) Vorabversionen erhalten, sonst nur stabile
+    const setting = await getSetting('updates_prerelease');
+    autoUpdater.allowPrerelease = setting === null ? app.getVersion().startsWith('0.') : setting === '1';
     const result = await autoUpdater.checkForUpdates();
     const version = result?.updateInfo?.version;
     const newer = result?.isUpdateAvailable ?? (version && version !== app.getVersion());
