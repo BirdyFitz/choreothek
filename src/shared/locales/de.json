@@ -204,6 +204,16 @@
       "pdfMissing": "Die PDF-Kopie in Choreothek fehlt – bitte über „Datenquellen“ neu einlesen.",
       "noAiForMegamix": "MegaMixe werden ohne KI aus den Dateinamen gelesen.",
       "fileNotAllowed": "Diese Datei liegt nicht in den Ordnern von Choreothek oder ist keine Musik-/Videodatei."
+    },
+    "video": {
+      "noFolder": "Diese Jam hat keinen Ordner mit Musik und Videos – bitte zuerst in den Kopfdaten zuweisen.",
+      "running": "Es läuft bereits eine Videoanalyse.",
+      "noVideos": "Bitte mindestens ein Video aus dem Jam-Ordner auswählen.",
+      "noMusic": "Im Jam-Ordner liegen keine Musikdateien zum Vergleich.",
+      "songRequired": "Jeder Teil braucht einen Song.",
+      "badTimes": "Beginn und Ende von „{song}“ passen nicht.",
+      "nothingSelected": "Keine Änderung ausgewählt.",
+      "alreadyUndone": "Dieser Lauf wurde schon rückgängig gemacht."
     }
   },
   "ai": {
