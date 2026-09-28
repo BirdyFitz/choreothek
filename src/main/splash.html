@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:">
+<title>Choreothek</title>
+<style>
+  html, body { margin: 0; height: 100%; background: transparent; overflow: hidden; font-family: 'Segoe UI Variable Text', 'Segoe UI', system-ui, sans-serif; user-select: none; }
+  body { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; -webkit-app-region: drag; }
+  .stage { width: 180px; height: 180px; perspective: 700px; display: flex; align-items: center; justify-content: center; }
+  .coin { position: relative; width: 140px; height: 140px; transform-style: preserve-3d; animation: spin 3.2s cubic-bezier(.45,.05,.55,.95) infinite; }
+  .layer, .face { position: absolute; inset: 0; border-radius: 30px; }
+  .layer { background: #0b5745; }
+  .face { background-size: 100% 100%; backface-visibility: hidden; }
+  .front { transform: translateZ(9px); }
+  .back { transform: rotateY(180deg) translateZ(9px); }
+  .shadow { width: 120px; height: 16px; border-radius: 50%; background: rgba(0, 0, 0, .22); filter: blur(6px); animation: breathe 3.2s cubic-bezier(.45,.05,.55,.95) infinite; }
+  .name { font-size: 20px; font-weight: 600; color: #0F6E56; letter-spacing: .02em; }
+  .hint { font-size: 12px; color: #5c5e66; margin-top: -12px; }
+  @keyframes spin { 0% { transform: rotateX(8deg) rotateY(0deg); } 50% { transform: rotateX(-6deg) rotateY(180deg); } 100% { transform: rotateX(8deg) rotateY(360deg); } }
+  @keyframes breathe { 0%, 100% { transform: scaleX(1); opacity: .9; } 25%, 75% { transform: scaleX(.35); opacity: .5; } 50% { transform: scaleX(1); opacity: .9; } }
+  @media (prefers-color-scheme: dark) { .name { color: #9FE1CB; } .hint { color: #a9aab3; } .shadow { background: rgba(0, 0, 0, .5); } }
+  @media (prefers-reduced-motion: reduce) { .coin, .shadow { animation: none; } }
+</style>
+</head>
+<body>
+  <div class="stage"><div class="coin" id="coin"></div></div>
+  <div class="shadow"></div>
+  <div class="name" id="name">Choreothek</div>
+  <div class="hint" id="hint"></div>
+<script>
+  // Logo als Vorder- und Rückseite, dazwischen Schichten als Kante (Dicke der „Münze“)
+  const logo = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="8 8 240 240"><rect x="8" y="8" width="240" height="240" rx="52" fill="#0F6E56"/><path d="M186 80 A72 72 0 1 0 186 176" fill="none" stroke="#fff" stroke-width="30" stroke-linecap="round"/><rect x="130" y="86" width="12" height="70" fill="#9FE1CB"/><path d="M142 86 L166 96 L166 112 L142 102 Z" fill="#9FE1CB"/><ellipse cx="124" cy="156" rx="18" ry="14" fill="#9FE1CB"/></svg>`
+  const url = 'url("data:image/svg+xml;base64,' + btoa(logo) + '")'
+  const coin = document.getElementById('coin')
+  for (let z = -8; z <= 8; z += 1) {
+    const l = document.createElement('div')
+    l.className = 'layer'
+    l.style.transform = `translateZ(${z}px)`
+    l.style.filter = `brightness(${0.8 + Math.abs(z) / 40})`
+    coin.appendChild(l)
+  }
+  for (const side of ['front', 'back']) {
+    const f = document.createElement('div')
+    f.className = `face ${side}`
+    f.style.backgroundImage = url
+    coin.appendChild(f)
+  }
+  // Hinweistext aus dem Hauptprozess (?hint=…)
+  document.getElementById('hint').textContent = new URLSearchParams(location.search).get('hint') || ''
+</script>
+</body>
+</html>

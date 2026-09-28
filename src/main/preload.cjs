@@ -3,6 +3,8 @@ const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('choreothek', {
   getToken: () => ipcRenderer.invoke('choreothek:token'),
+  // Oberfläche ist bedienbar (erste Daten angezeigt) -> Hauptfenster zeigen, Startbild schließen
+  uiReady: () => ipcRenderer.send('choreothek:ui-ready'),
   selectFolder: (startPath) => ipcRenderer.invoke('choreothek:select-folder', startPath || null),
   // target: { dir, file } oder { sourcePath, uploadName }
   showFileMenu: (target) => ipcRenderer.invoke('choreothek:file-menu', target),

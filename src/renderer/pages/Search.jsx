@@ -111,6 +111,8 @@ export default function Search({ showFilters, showDetails }) {
         if (!cancelled) setResults([])
       } finally {
         if (!cancelled) setLoading(false)
+        // Erste Ergebnisse stehen: Hauptfenster zeigen (einmalig, danach ohne Wirkung)
+        window.choreothek?.uiReady?.()
       }
     }, 250)
     return () => {

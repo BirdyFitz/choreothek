@@ -9,7 +9,6 @@ import path from 'path';
 import express from 'express';
 import { initDB, getSetting, setSetting } from './db.js';
 import { setDataDir, getUploadsDir } from './paths.js';
-import { buildMediaIndex } from './utils/mediaFinder.js';
 import searchRoutes from './routes/search.js';
 import settingsRoutes from './routes/settings.js';
 import libraryRoutes from './routes/library.js';
@@ -60,17 +59,9 @@ export async function startServer({ dataDir, rendererDir, port = 0, dbFile } = {
     app.get(/^\/(?!api\/|uploads\/).*/, (req, res) => res.sendFile(path.join(rendererDir, 'index.html')));
   }
 
-  // Jam-Session-Medienindex (Dateizähler in den Einstellungen)
-  const raw = await getSetting('media_roots');
-  if (raw === null) await setSetting('media_roots', JSON.stringify([]));
-  const mediaRoots = raw ? JSON.parse(raw) : [];
-  if (mediaRoots.length > 0) {
-    try {
-      await buildMediaIndex(mediaRoots);
-    } catch (error) {
-      console.error('Media-Index konnte nicht aufgebaut werden:', error.message);
-    }
-  }
+  // Jam-Ordner-Einstellung anlegen. Kein Durchsuchen der Ordner beim Start: Musik und Videos
+  // werden je Anfrage im Ordner des Eintrags gesucht (die Dateizahl zeigt „Ordner speichern“).
+  if ((await getSetting('media_roots')) === null) await setSetting('media_roots', JSON.stringify([]));
 
   const server = await new Promise((resolve, reject) => {
     const s = app.listen(port, '127.0.0.1', () => resolve(s));

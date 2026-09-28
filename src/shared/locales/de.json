@@ -22,7 +22,8 @@
       "filterWidth": "Breite des Filterbereichs",
       "detailsWidth": "Breite des Detailbereichs",
       "hint": "{label} – ziehen zum Verändern, Doppelklick für Standardbreite"
-    }
+    },
+    "starting": "wird gestartet …"
   },
   "filter": {
     "title": "Filter",
