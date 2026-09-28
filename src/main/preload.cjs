@@ -7,5 +7,8 @@ contextBridge.exposeInMainWorld('choreothek', {
   // target: { dir, file } oder { sourcePath, uploadName }
   showFileMenu: (target) => ipcRenderer.invoke('choreothek:file-menu', target),
   // Datei im Windows-Standardprogramm öffnen; target wie bei showFileMenu. Ergebnis: '' oder Fehlertext
-  openFile: (target) => ipcRenderer.invoke('choreothek:open-file', target)
+  openFile: (target) => ipcRenderer.invoke('choreothek:open-file', target),
+  // Sicherung: Speicherort bzw. Sicherungsdatei über Windows-Dialoge; null = abgebrochen
+  chooseBackupTarget: (defaultName) => ipcRenderer.invoke('choreothek:backup-target', defaultName),
+  chooseBackupSource: () => ipcRenderer.invoke('choreothek:backup-source')
 });

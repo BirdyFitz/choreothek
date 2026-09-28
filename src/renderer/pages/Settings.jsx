@@ -3,6 +3,7 @@ import FolderSettings from '../components/FolderSettings.jsx'
 import ImportPreview from '../components/ImportPreview.jsx'
 import ImportCard from '../components/ImportCard.jsx'
 import AiSettings from '../components/AiSettings.jsx'
+import BackupCard from '../components/BackupCard.jsx'
 import { IconWand } from '@tabler/icons-react'
 import { t } from '../../shared/i18n.js'
 
@@ -18,6 +19,7 @@ export default function Settings({ onOpenWizard }) {
         <ImportPreview />
         <ImportCard onAiUsed={() => setAiRefresh((n) => n + 1)} />
         <AiSettings key={aiRefresh} />
+        <BackupCard />
         <div className="button-row">
           <button type="button" className="link" onClick={onOpenWizard}>
             <IconWand size={14} stroke={1.8} /> {t('wizard.open')}

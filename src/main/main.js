@@ -5,6 +5,7 @@ import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron';
 import { startServer } from '../server/server.js';
 import { setSecretStore } from '../server/ai/secrets.js';
 import { createSafeStorageStore } from './secretStore.js';
+import { setBackupAppVersion } from '../server/routes/backup.js';
 import { showFileMenu, openInDefaultApp } from './fileMenu.js';
 import { warmUpPropertiesHelper, stopPropertiesHelper } from './windowsDialogs.js';
 import { t } from '../shared/i18n.js';
@@ -58,6 +59,7 @@ app.on('second-instance', () => {
 app.whenReady().then(async () => {
   if (!isFirstInstance) return;
   setSecretStore(createSafeStorageStore(app.getPath('userData')));
+  setBackupAppVersion(app.getVersion());
   session = await startServer({
     dataDir: app.getPath('userData'),
     rendererDir: path.join(appRoot, 'dist', 'renderer')
@@ -70,6 +72,24 @@ app.whenReady().then(async () => {
     showFileMenu(BrowserWindow.fromWebContents(event.sender), target)
   );
   ipcMain.handle('choreothek:open-file', (event, target) => openInDefaultApp(target));
+  // Sicherung: Ziel wählen („Speichern unter“) bzw. Sicherungsdatei zum Wiederherstellen öffnen
+  ipcMain.handle('choreothek:backup-target', async (event, defaultName) => {
+    const result = await dialog.showSaveDialog(mainWindow, {
+      title: t('backup.saveTitle'),
+      defaultPath: path.join(app.getPath('documents'), defaultName || 'Choreothek-Sicherung.zip'),
+      filters: [{ name: t('backup.fileType'), extensions: ['zip'] }]
+    });
+    return result.canceled ? null : result.filePath;
+  });
+  ipcMain.handle('choreothek:backup-source', async () => {
+    const result = await dialog.showOpenDialog(mainWindow, {
+      title: t('backup.openTitle'),
+      defaultPath: app.getPath('documents'),
+      filters: [{ name: t('backup.fileType'), extensions: ['zip'] }],
+      properties: ['openFile']
+    });
+    return result.canceled ? null : result.filePaths[0];
+  });
   ipcMain.handle('choreothek:select-folder', async (event, startPath) => {
     const result = await dialog.showOpenDialog(mainWindow, {
       title: t('menu.selectFolder'),

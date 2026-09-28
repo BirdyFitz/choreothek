@@ -6,6 +6,9 @@ export function meldeDatenGeaendert() {
   window.dispatchEvent(new Event(DATEN_GEAENDERT))
 }
 
+// Sicherung wurde erstellt (Hinweisleiste „Sicherung fällig“ ausblenden)
+export const SICHERUNG_ERSTELLT = 'choreothek:sicherung-erstellt'
+
 // Eintrag in der Bibliothek öffnen (z. B. „Bearbeiten“ im Detailbereich der Suche): detail { type, id }
 export const OPEN_IN_LIBRARY = 'choreothek:open-in-library'
 

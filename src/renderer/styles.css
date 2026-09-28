@@ -1309,3 +1309,64 @@ body.resizing video {
   gap: 12px;
   align-items: center;
 }
+
+/* ---------- Sicherung ---------- */
+
+.reminder-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 14px;
+  background: var(--warning-soft);
+  color: var(--warning);
+  border-bottom: 1px solid var(--border);
+}
+
+.reminder-bar span:first-of-type {
+  flex: 1;
+}
+
+.reminder-error {
+  color: var(--danger);
+}
+
+/* Videohöhe begrenzt, Bild vollständig eingepasst (Hochkant-Videos schieben die Bedienung nicht weg) */
+.player video.viewer {
+  display: block;
+  object-fit: contain;
+}
+
+.player video.video-size-s {
+  height: 28vh;
+}
+
+.player video.video-size-m {
+  height: 45vh;
+}
+
+.player video.video-size-l {
+  height: 70vh;
+}
+
+.player video:fullscreen {
+  height: 100%;
+  border: none;
+  border-radius: 0;
+}
+
+.player-size {
+  display: inline-flex;
+  gap: 2px;
+  align-items: center;
+}
+
+.player-size button {
+  min-width: 28px;
+  padding: 0 6px;
+}
+
+.player-size button.active {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-color: var(--accent);
+}

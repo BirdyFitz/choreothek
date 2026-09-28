@@ -214,6 +214,13 @@
       "badTimes": "Beginn und Ende von „{song}“ passen nicht.",
       "nothingSelected": "Keine Änderung ausgewählt.",
       "alreadyUndone": "Dieser Lauf wurde schon rückgängig gemacht."
+    },
+    "backup": {
+      "badTarget": "Bitte einen gültigen Speicherort für die .zip-Datei wählen.",
+      "notAZip": "Die Datei ist keine lesbare .zip-Datei.",
+      "notABackup": "Die Datei ist keine Choreothek-Sicherung.",
+      "unexpectedContent": "Die Sicherung enthält unerwartete Dateien und wird nicht verwendet.",
+      "newerVersion": "Die Sicherung stammt aus einer neueren Choreothek-Version – bitte zuerst Choreothek aktualisieren."
     }
   },
   "ai": {
@@ -480,7 +487,7 @@
     }
   },
   "player": {
-    "label": "Player – Leertaste: Start/Pause, Pfeiltasten: 5 Sekunden, A/B: Abschnitt, L: Wiederholen",
+    "label": "Player – Leertaste: Start/Pause, Pfeiltasten: 5 Sekunden, A/B: Abschnitt, L: Wiederholen, F: Vollbild",
     "play": "Abspielen (Leertaste)",
     "pause": "Pause (Leertaste)",
     "position": "Position",
@@ -499,7 +506,19 @@
     "jumpPlaceholder": "z. B. 1:23",
     "openExternal": "Im Standardprogramm öffnen",
     "openedExternally": "Dieses Format kann Choreothek nicht abspielen – die Datei wurde im Standardprogramm von Windows geöffnet.",
-    "cannotPlay": "Dieses Format kann Choreothek nicht abspielen, und die Datei ließ sich auch nicht im Standardprogramm öffnen."
+    "cannotPlay": "Dieses Format kann Choreothek nicht abspielen, und die Datei ließ sich auch nicht im Standardprogramm öffnen.",
+    "size": "Videogröße",
+    "sizes": {
+      "s": "Video klein",
+      "m": "Video mittel",
+      "l": "Video groß"
+    },
+    "sizeShort": {
+      "s": "S",
+      "m": "M",
+      "l": "L"
+    },
+    "fullscreen": "Vollbild (Doppelklick aufs Video oder Taste F, zurück mit Esc)"
   },
   "video": {
     "open": "Videoanalyse",
@@ -567,5 +586,40 @@
       "one": " {count} Datei blieb unverändert, weil sie inzwischen verändert wurde.",
       "other": " {count} Dateien blieben unverändert, weil sie inzwischen verändert wurden."
     }
+  },
+  "backup": {
+    "title": "Sicherung",
+    "hint": "Sichert alle Einträge, Korrekturen, Zuordnungen und Einstellungen sowie die Kopien der Choreo Notes in eine .zip-Datei. Deine Musik- und Videodateien sind nicht enthalten – die liegen ja in deinen Ordnern.",
+    "keysHint": "API-Schlüssel sind aus Sicherheitsgründen nicht enthalten. Nach dem Wiederherstellen trägst du sie unter „KI“ neu ein.",
+    "create": "Sicherung erstellen",
+    "restore": "Sicherung wiederherstellen",
+    "creating": "Sichere …",
+    "restoring": "Stelle wieder her …",
+    "last": "Letzte Sicherung: {date}",
+    "never": "Noch keine Sicherung erstellt.",
+    "reminder": "Alle {days} Tage an eine Sicherung erinnern",
+    "created": "Sicherung gespeichert: {file} ({size}, {jams} Jams, {volumes} ZIN Volumes, {megamixes} MegaMixe).",
+    "restoreConfirm": "Sicherung vom {date} wiederherstellen ({jams} Jams, {volumes} ZIN Volumes, {megamixes} MegaMixe)?\n\nDer jetzige Stand in Choreothek wird dabei ersetzt. Er wird vorher beiseitegelegt, bis zur nächsten Wiederherstellung.",
+    "restored": "Sicherung wiederhergestellt.",
+    "missingTitle": "Diese Ordner gibt es auf diesem PC nicht – bitte unter „Ordner“ neu auswählen:",
+    "missingOverrides": {
+      "one": "Außerdem zeigt {count} Zuordnung von Hand auf einen fehlenden Ordner.",
+      "other": "Außerdem zeigen {count} Zuordnungen von Hand auf fehlende Ordner."
+    },
+    "keysAgain": "API-Schlüssel sind nicht Teil der Sicherung – bitte unter „KI“ neu eintragen, falls du Jams oder Volumes einlesen möchtest.",
+    "kinds": {
+      "jamRoots": "Jam Sessions",
+      "megamixRoot": "MegaMix",
+      "zinMusicRoot": "ZIN Volumes – Musik",
+      "zinChoreoRoot": "ZIN Volumes – Choreo Notes",
+      "zinVideoRoot": "ZIN Volumes – Videos"
+    },
+    "due": "Deine letzte Sicherung ist über {days} Tage her.",
+    "dueNever": "Du hast noch keine Sicherung deiner Choreothek erstellt.",
+    "dueAction": "Jetzt sichern",
+    "dueLater": "Später",
+    "saveTitle": "Sicherung speichern",
+    "openTitle": "Sicherung wiederherstellen",
+    "fileType": "Choreothek-Sicherung"
   }
 }

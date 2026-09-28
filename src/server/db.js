@@ -7,6 +7,7 @@ import { parseJamDate } from './utils/jamDate.js';
 import { getDataDir } from './paths.js';
 
 let db = null;
+let dbFile = null;
 
 // Schema-Stände; neue Stände nur anhängen, nie ändern (PRAGMA user_version = Anzahl ausgeführter)
 const MIGRATIONS = [
@@ -138,7 +139,8 @@ function getDb() {
 // file: Pfad zur Datenbankdatei; Vorgabe <Datenordner>/choreothek.sqlite, ':memory:' für Tests
 export async function initDB(file) {
   if (!db) {
-    db = open(file || path.join(getDataDir(), 'choreothek.sqlite'));
+    dbFile = file || path.join(getDataDir(), 'choreothek.sqlite');
+    db = open(dbFile);
     migrate(db);
   }
   return db;
@@ -632,4 +634,22 @@ export async function getVideoRun(id) {
 
 export async function markVideoRunUndone(id, undoLog) {
   getDb().prepare('UPDATE video_runs SET undone_at = CURRENT_TIMESTAMP, undo_log = ? WHERE id = ?').run(JSON.stringify(undoLog), id);
+}
+
+// ---------- Sicherung ----------
+
+export const SCHEMA_VERSION = MIGRATIONS.length;
+
+export function getDbFile() {
+  return dbFile;
+}
+
+// Stimmige Kopie der Datenbank, auch während die App sie benutzt (SQLite-Sicherungsfunktion)
+export async function snapshotDatabase(target) {
+  await getDb().backup(target);
+}
+
+export async function collectionCounts() {
+  const n = (table) => getDb().prepare(`SELECT COUNT(*) AS n FROM ${table}`).get().n;
+  return { jams: n('jams'), zinVolumes: n('zin_volumes'), megamixes: n('megamixes') };
 }
