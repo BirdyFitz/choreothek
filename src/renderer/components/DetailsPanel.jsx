@@ -3,6 +3,7 @@ import axios from 'axios'
 import { IconMusic, IconMovie, IconFileText, IconInfoCircle, IconDisc, IconPencil } from '@tabler/icons-react'
 import { onMediaContextMenu, onPdfContextMenu } from '../lib/fileMenu.js'
 import { oeffneInBibliothek } from '../lib/events.js'
+import MediaPlayer from './MediaPlayer.jsx'
 import { t } from '../../shared/i18n.js'
 
 // Alle Dateien eines Songs als Liste: Musik, Videos, Choreo Notes
@@ -183,13 +184,13 @@ export default function DetailsPanel({ row, width }) {
 
         {active?.kind === 'audio' && (
           <>
-            <audio key={active.url} className="viewer" style={{ background: 'none', border: 'none' }} controls src={active.url} />
+            <MediaPlayer url={active.url} kind="audio" />
             <MediaInfo file={active} />
           </>
         )}
         {active?.kind === 'video' && (
           <>
-            <video key={active.url} className="viewer" controls src={active.url} />
+            <MediaPlayer url={active.url} kind="video" />
             <MediaInfo file={active} />
           </>
         )}

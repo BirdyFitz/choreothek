@@ -452,5 +452,27 @@
         "other": "{count} Jams geändert."
       }
     }
+  },
+  "player": {
+    "label": "Player – Leertaste: Start/Pause, Pfeiltasten: 5 Sekunden, A/B: Abschnitt, L: Wiederholen",
+    "play": "Abspielen (Leertaste)",
+    "pause": "Pause (Leertaste)",
+    "position": "Position",
+    "speed": "Tempo",
+    "speedValue": "{value}×",
+    "setA": "A setzen",
+    "setB": "B setzen",
+    "setAHint": "Beginn des Abschnitts auf die aktuelle Stelle setzen (Taste A)",
+    "setBHint": "Ende des Abschnitts auf die aktuelle Stelle setzen (Taste B)",
+    "pointAt": "{point} {time}",
+    "loop": "Wiederholen",
+    "loopHint": "Abschnitt A–B immer wieder abspielen (Taste L); ohne B bis zum Ende",
+    "toA": "Zum Beginn des Abschnitts",
+    "clearLoop": "Abschnitt löschen",
+    "jump": "Springen",
+    "jumpPlaceholder": "z. B. 1:23",
+    "openExternal": "Im Standardprogramm öffnen",
+    "openedExternally": "Dieses Format kann Choreothek nicht abspielen – die Datei wurde im Standardprogramm von Windows geöffnet.",
+    "cannotPlay": "Dieses Format kann Choreothek nicht abspielen, und die Datei ließ sich auch nicht im Standardprogramm öffnen."
   }
 }

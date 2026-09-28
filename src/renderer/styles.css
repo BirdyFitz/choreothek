@@ -1088,3 +1088,102 @@ body.resizing video {
 .empty-hint {
   padding: 24px;
 }
+
+/* ---------- Player ---------- */
+
+.player {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  outline: none;
+}
+
+.player:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+  border-radius: var(--radius);
+}
+
+.player-audio {
+  display: none;
+}
+
+.player-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.player-track {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.player-track input[type='range'] {
+  width: 100%;
+  height: 20px;
+  padding: 0;
+  border: none;
+  background: none;
+  accent-color: var(--accent);
+  position: relative;
+}
+
+.player-range {
+  position: absolute;
+  height: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--warning-soft);
+  border: 1px solid var(--warning);
+  border-radius: 3px;
+  pointer-events: none;
+}
+
+.player-time {
+  font-variant-numeric: tabular-nums;
+  color: var(--text-2);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.player-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.player-speed {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-2);
+}
+
+.player-speed select {
+  width: auto;
+}
+
+.player-loop {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.player-loop button.active {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.player-jump {
+  display: inline-flex;
+  gap: 4px;
+}
+
+.player-jump input {
+  width: 80px;
+}

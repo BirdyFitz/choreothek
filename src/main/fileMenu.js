@@ -8,6 +8,14 @@ import { resolveFileTarget, isAppCopy } from '../server/fileAccess.js';
 import { openWithDialog, propertiesDialog, warmUpPropertiesHelper } from './windowsDialogs.js';
 import { t } from '../shared/i18n.js';
 
+// Datei im Windows-Standardprogramm öffnen (Player-Rückfall); nur erlaubte Dateien.
+// Ergebnis: '' bei Erfolg, sonst eine Fehlermeldung
+export async function openInDefaultApp(target) {
+  const file = await resolveFileTarget(target);
+  if (!file) return t('menu.fileNotFound');
+  return shell.openPath(file);
+}
+
 export async function showFileMenu(window, target) {
   warmUpPropertiesHelper(); // falls der Helfer nicht (mehr) läuft: jetzt starten, bis zum Klick ist er meist bereit
   const file = await resolveFileTarget(target);

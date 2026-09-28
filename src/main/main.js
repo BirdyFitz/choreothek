@@ -5,7 +5,7 @@ import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron';
 import { startServer } from '../server/server.js';
 import { setSecretStore } from '../server/ai/secrets.js';
 import { createSafeStorageStore } from './secretStore.js';
-import { showFileMenu } from './fileMenu.js';
+import { showFileMenu, openInDefaultApp } from './fileMenu.js';
 import { warmUpPropertiesHelper, stopPropertiesHelper } from './windowsDialogs.js';
 import { t } from '../shared/i18n.js';
 
@@ -69,6 +69,7 @@ app.whenReady().then(async () => {
   ipcMain.handle('choreothek:file-menu', (event, target) =>
     showFileMenu(BrowserWindow.fromWebContents(event.sender), target)
   );
+  ipcMain.handle('choreothek:open-file', (event, target) => openInDefaultApp(target));
   ipcMain.handle('choreothek:select-folder', async (event, startPath) => {
     const result = await dialog.showOpenDialog(mainWindow, {
       title: t('menu.selectFolder'),
