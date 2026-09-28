@@ -18,11 +18,14 @@ import previewRoutes from './routes/preview.js';
 import collectionRoutes from './routes/collection.js';
 import videoRoutes from './routes/video.js';
 import backupRoutes from './routes/backup.js';
+import aboutRoutes from './routes/about.js';
+import { captureConsoleErrors } from './appInfo.js';
 import { t } from '../shared/i18n.js';
 import mediaRoutes from './routes/media.js';
 
 export async function startServer({ dataDir, rendererDir, port = 0, dbFile } = {}) {
   setDataDir(dataDir);
+  captureConsoleErrors();
   await initDB(dbFile);
 
   const token = crypto.randomBytes(32).toString('hex');
@@ -48,6 +51,7 @@ export async function startServer({ dataDir, rendererDir, port = 0, dbFile } = {
   app.use('/api', collectionRoutes);
   app.use('/api', videoRoutes);
   app.use('/api', backupRoutes);
+  app.use('/api', aboutRoutes);
   app.use('/api', mediaRoutes);
   app.get('/api/health', (req, res) => res.json({ status: 'OK' }));
 

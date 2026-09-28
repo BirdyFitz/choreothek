@@ -4,6 +4,7 @@ import { IconWaveSine, IconPlayerPlay, IconArrowBackUp, IconX, IconCheck } from 
 import MediaPlayer from './MediaPlayer.jsx'
 import { parseTime, formatTime, formatTimePrecise } from '../lib/player.js'
 import { meldeDatenGeaendert } from '../lib/events.js'
+import Help from './Help.jsx'
 import { t } from '../../shared/i18n.js'
 
 const ACTIONS = ['rename', 'cut', 'skip']
@@ -144,7 +145,9 @@ export default function VideoAnalysis({ jamId, onClose }) {
 
       {cand && !drafts.length && !running && (
         <>
-          <span className="field-label">{t('video.choose', { music: cand.audioCount })}</span>
+          <span className="field-label">
+            {t('video.choose', { music: cand.audioCount })} <Help id="video.choose" topic="videoanalyse" />
+          </span>
           <div className="video-list">
             {cand.videos.map((v) => (
               <label className="check" key={v.path}>
@@ -196,13 +199,16 @@ export default function VideoAnalysis({ jamId, onClose }) {
                 ) : d.parts.length === 0 ? (
                   <span className="muted">{t('video.noMatch')}</span>
                 ) : (
-                  <select value={d.action} onChange={(e) => setDraft(i, { action: e.target.value })} aria-label={t('video.action')}>
-                    {ACTIONS.map((a) => (
-                      <option key={a} value={a}>
-                        {t(`video.actions.${a}`)}
-                      </option>
-                    ))}
-                  </select>
+                  <>
+                    <select value={d.action} onChange={(e) => setDraft(i, { action: e.target.value })} aria-label={t('video.action')}>
+                      {ACTIONS.map((a) => (
+                        <option key={a} value={a}>
+                          {t(`video.actions.${a}`)}
+                        </option>
+                      ))}
+                    </select>
+                    <Help id="video.action" topic="videoanalyse" />
+                  </>
                 )}
               </div>
               {d.parts.length > 0 && d.action !== 'skip' && (
@@ -211,9 +217,13 @@ export default function VideoAnalysis({ jamId, onClose }) {
                     <tr>
                       <th />
                       <th>{t('video.song')}</th>
-                      <th>{t('video.start')}</th>
+                      <th>
+                        {t('video.start')} <Help id="video.times" topic="videoanalyse" />
+                      </th>
                       <th>{t('video.end')}</th>
-                      <th>{t('video.hits')}</th>
+                      <th>
+                        {t('video.hits')} <Help id="video.hits" topic="videoanalyse" />
+                      </th>
                       <th />
                     </tr>
                   </thead>
@@ -276,7 +286,9 @@ export default function VideoAnalysis({ jamId, onClose }) {
 
       {runs.length > 0 && (
         <div className="field">
-          <span className="field-label">{t('video.runs')}</span>
+          <span className="field-label">
+            {t('video.runs')} <Help id="video.runs" topic="videoanalyse" />
+          </span>
           <ul className="video-runs">
             {runs.map((r) => (
               <li key={r.id}>

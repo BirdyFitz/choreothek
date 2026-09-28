@@ -3,6 +3,7 @@ import axios from 'axios'
 import { IconFolderOpen, IconX, IconRefresh, IconDeviceFloppy } from '@tabler/icons-react'
 import { DATEN_GEAENDERT } from '../lib/events.js'
 import { usePersistent } from '../lib/usePersistent.js'
+import Help from './Help.jsx'
 import { t } from '../../shared/i18n.js'
 
 const baseName = (p) => (p ? p.split(/[\\/]/).pop() : '')
@@ -94,7 +95,7 @@ function JamPanel({ data, onlyOpen, act }) {
                       t('preview.jams.ownFolder')
                     ) : (
                       <>
-                        <Tag kind="warning">{t('preview.jams.sharedFolder')}</Tag>{' '}
+                        <Tag kind="warning">{t('preview.jams.sharedFolder')}</Tag> <Help id="preview.sharedFolder" topic="vorschau" />{' '}
                         <button
                           type="button"
                           className="link"
@@ -113,7 +114,7 @@ function JamPanel({ data, onlyOpen, act }) {
                     {r.status === 'imported' && <Tag>{t('preview.statusImported')}</Tag>}
                     {r.status === 'noSongs' && (
                       <>
-                        <Tag kind="warning">{t('preview.jams.noSongs')}</Tag>{' '}
+                        <Tag kind="warning">{t('preview.jams.noSongs')}</Tag> <Help id="preview.noSongs" topic="vorschau" />{' '}
                         <button
                           type="button"
                           className="link"
@@ -133,7 +134,9 @@ function JamPanel({ data, onlyOpen, act }) {
       )}
 
       <div className="field">
-        <label htmlFor="ignore-patterns">{t('preview.jams.patterns')}</label>
+        <label htmlFor="ignore-patterns">
+          {t('preview.jams.patterns')} <Help id="preview.patterns" topic="vorschau" />
+        </label>
         <div className="path-field">
           <input id="ignore-patterns" value={patterns} onChange={(e) => setPatterns(e.target.value)} placeholder={t('preview.jams.patternsPlaceholder')} />
           <button type="button" onClick={savePatterns}>
@@ -154,7 +157,9 @@ function Unrecognized({ items, kind, act }) {
   const fieldFor = { music: 'musicFolder', live: 'liveFolder', oneonone: 'oneononeFolder' }
   return (
     <div className="field">
-      <span className="field-label">{t('preview.unrecognized')}</span>
+      <span className="field-label">
+        {t('preview.unrecognized')} <Help id="preview.unrecognized" topic="vorschau" />
+      </span>
       <ul className="unrecognized">
         {items.map((u) => (
           <li key={u.path}>
@@ -337,7 +342,9 @@ export default function ImportPreview() {
     <div className="card">
       <div className="card-head">
         <div>
-          <h2>{t('preview.title')}</h2>
+          <h2>
+            {t('preview.title')} <Help id="preview.title" topic="vorschau" />
+          </h2>
           <p className="hint">{t('preview.hint')}</p>
         </div>
         <button type="button" onClick={load} disabled={loading} title={t('preview.reload')}>
@@ -355,7 +362,9 @@ export default function ImportPreview() {
         </div>
         <label className="check">
           <input type="checkbox" checked={onlyOpen} onChange={(e) => setOnlyOpen(e.target.checked)} />
-          <span>{t('preview.onlyOpen')}</span>
+          <span>
+            {t('preview.onlyOpen')} <Help id="preview.onlyOpen" topic="vorschau" />
+          </span>
         </label>
       </div>
 

@@ -1,18 +1,20 @@
 import { useState } from 'react'
-import { IconWand, IconFolders, IconEye, IconDownload, IconSparkles, IconArchive } from '@tabler/icons-react'
+import { IconWand, IconFolders, IconEye, IconDownload, IconSparkles, IconArchive, IconRefresh } from '@tabler/icons-react'
 import FolderSettings from '../components/FolderSettings.jsx'
 import ImportPreview from '../components/ImportPreview.jsx'
 import ImportCard from '../components/ImportCard.jsx'
 import AiSettings from '../components/AiSettings.jsx'
 import BackupCard from '../components/BackupCard.jsx'
+import UpdatesCard from '../components/Updates.jsx'
 import { usePersistent } from '../lib/usePersistent.js'
 import { t } from '../../shared/i18n.js'
 
-// Menü links: Gruppe „Datenquellen“ mit Ordner, Vorschau, Einlesen; dazu KI und Sicherung
+// Menü links: Gruppe „Datenquellen“ mit Ordner, Vorschau, Einlesen; dazu KI, Sicherung und Updates
 const MENU = [
   { group: 'sources', items: [['folders', IconFolders], ['preview', IconEye], ['import', IconDownload]] },
   { items: [['ai', IconSparkles]] },
-  { items: [['backup', IconArchive]] }
+  { items: [['backup', IconArchive]] },
+  { items: [['updates', IconRefresh]] }
 ]
 
 // Reiter „Einstellungen“
@@ -63,6 +65,9 @@ export default function Settings({ onOpenWizard }) {
           </div>
           <div hidden={section !== 'backup'}>
             <BackupCard />
+          </div>
+          <div hidden={section !== 'updates'}>
+            <UpdatesCard />
           </div>
         </div>
       </div>

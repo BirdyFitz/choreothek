@@ -6,6 +6,8 @@ import { startServer } from '../server/server.js';
 import { setSecretStore } from '../server/ai/secrets.js';
 import { createSafeStorageStore } from './secretStore.js';
 import { setBackupAppVersion } from '../server/routes/backup.js';
+import { setAppInfo } from '../server/appInfo.js';
+import { initUpdater } from './updater.js';
 import { showFileMenu, openInDefaultApp } from './fileMenu.js';
 import { warmUpPropertiesHelper, stopPropertiesHelper } from './windowsDialogs.js';
 import { t } from '../shared/i18n.js';
@@ -39,7 +41,8 @@ function createWindow() {
   // Links nach außen (z. B. Spenden, Anbieter-Seiten) im Standardbrowser öffnen, nie im App-Fenster
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
     if (url.startsWith(session.url)) return { action: 'allow' };
-    if (/^https:\/\//.test(url)) shell.openExternal(url);
+    // Webseiten und E-Mail (Problem melden) im Standardprogramm öffnen
+    if (/^(https:\/\/|mailto:)/.test(url)) shell.openExternal(url);
     return { action: 'deny' };
   });
   mainWindow.webContents.on('will-navigate', (event, url) => {
@@ -60,6 +63,7 @@ app.whenReady().then(async () => {
   if (!isFirstInstance) return;
   setSecretStore(createSafeStorageStore(app.getPath('userData')));
   setBackupAppVersion(app.getVersion());
+  setAppInfo({ version: app.getVersion() });
   session = await startServer({
     dataDir: app.getPath('userData'),
     rendererDir: path.join(appRoot, 'dist', 'renderer')
@@ -100,6 +104,7 @@ app.whenReady().then(async () => {
   });
 
   createWindow();
+  initUpdater(() => mainWindow);
 
   // Helfer für den Eigenschaften-Dialog im Hintergrund vorbereiten (spart beim ersten Klick
   // rund eine Sekunde); verzögert, damit der App-Start nicht gebremst wird

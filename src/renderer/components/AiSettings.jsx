@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import axios from 'axios'
 import { IconKey, IconTrash, IconPlugConnected, IconExternalLink, IconDeviceFloppy } from '@tabler/icons-react'
 import { formatUsd, formatDate } from '../lib/money.js'
+import Help from './Help.jsx'
 import { t } from '../../shared/i18n.js'
 
 // Beträge in Eingabefeldern: Komma oder Punkt als Dezimaltrenner
@@ -118,7 +119,9 @@ export default function AiSettings() {
 
       <div className="field-row">
         <div className="field">
-          <label htmlFor="ai-provider">{t('ai.provider')}</label>
+          <label htmlFor="ai-provider">
+            {t('ai.provider')} <Help id="ai.provider" topic="ki" />
+          </label>
           <select id="ai-provider" value={data.provider} disabled={busy !== ''} onChange={(e) => save({ provider: e.target.value })}>
             {data.providers.map((p) => (
               <option key={p.id} value={p.id}>
@@ -128,7 +131,9 @@ export default function AiSettings() {
           </select>
         </div>
         <div className="field">
-          <label htmlFor="ai-model">{t('ai.model')}</label>
+          <label htmlFor="ai-model">
+            {t('ai.model')} <Help id="ai.model" topic="ki" />
+          </label>
           <select id="ai-model" value={provider.model} disabled={busy !== ''} onChange={(e) => save({ model: e.target.value })}>
             {provider.models.map((m) => (
               <option key={m} value={m}>
@@ -140,7 +145,9 @@ export default function AiSettings() {
       </div>
 
       <div className="field">
-        <label htmlFor="ai-key">{t('ai.key')}</label>
+        <label htmlFor="ai-key">
+          {t('ai.key')} <Help id="ai.key" topic="ki-schluessel" />
+        </label>
         <div className="path-field">
           <input
             id="ai-key"
@@ -182,22 +189,28 @@ export default function AiSettings() {
         <input type="checkbox" checked={provider.privacyAck} disabled={busy !== ''} onChange={(e) => save({ privacyAck: e.target.checked })} />
         <span>
           {t('ai.privacy', { provider: provider.label })}
-          {provider.id === 'google' && <span className="muted"> {t('ai.privacyGoogle')}</span>}
+          {provider.id === 'google' && <span className="muted"> {t('ai.privacyGoogle')}</span>} <Help id="ai.privacy" topic="ki" />
         </span>
       </label>
 
       <label className="check">
         <input type="checkbox" checked={data.askBeforeUse} disabled={busy !== ''} onChange={(e) => save({ askBeforeUse: e.target.checked })} />
-        <span>{t('ai.askBeforeUse')}</span>
+        <span>
+          {t('ai.askBeforeUse')} <Help id="ai.askBeforeUse" topic="kosten" />
+        </span>
       </label>
 
       <div className="field-row">
         <div className="field">
-          <label htmlFor="ai-limit">{t('ai.costLimit')}</label>
+          <label htmlFor="ai-limit">
+            {t('ai.costLimit')} <Help id="ai.costLimit" topic="kosten" />
+          </label>
           <input id="ai-limit" inputMode="decimal" value={limitInput} onChange={(e) => setLimitInput(e.target.value)} disabled={busy !== ''} />
         </div>
         <div className="field">
-          <label htmlFor="ai-warn">{t('ai.balanceWarn')}</label>
+          <label htmlFor="ai-warn">
+            {t('ai.balanceWarn')} <Help id="ai.balanceWarn" topic="kosten" />
+          </label>
           <input id="ai-warn" inputMode="decimal" value={warnInput} onChange={(e) => setWarnInput(e.target.value)} disabled={busy !== ''} />
         </div>
         <div className="field field-end">
@@ -211,7 +224,9 @@ export default function AiSettings() {
       </span>
 
       <div className="field">
-        <label htmlFor="ai-balance">{t('ai.balance', { provider: provider.label })}</label>
+        <label htmlFor="ai-balance">
+          {t('ai.balance', { provider: provider.label })} <Help id="ai.balance" topic="kosten" />
+        </label>
         <div className="path-field">
           <input id="ai-balance" inputMode="decimal" value={balanceInput} onChange={(e) => setBalanceInput(e.target.value)} placeholder={t('ai.balancePlaceholder')} disabled={busy !== ''} />
           <button type="button" onClick={saveBalance} disabled={busy !== '' || !balanceInput.trim()}>
@@ -234,7 +249,9 @@ export default function AiSettings() {
       </div>
 
       <div className="field">
-        <span className="field-label">{t('ai.costsTitle')}</span>
+        <span className="field-label">
+          {t('ai.costsTitle')} <Help id="ai.costs" topic="kosten" />
+        </span>
         {costs.length === 0 ? (
           <span className="muted">{t('ai.costsNone')}</span>
         ) : (

@@ -3,6 +3,7 @@ import axios from 'axios'
 import { IconArchive, IconRestore, IconKey } from '@tabler/icons-react'
 import { meldeDatenGeaendert, SICHERUNG_ERSTELLT } from '../lib/events.js'
 import { formatDate } from '../lib/money.js'
+import Help from './Help.jsx'
 import { t } from '../../shared/i18n.js'
 
 const REMINDER_DAYS = 30
@@ -89,7 +90,9 @@ export default function BackupCard() {
   return (
     <div className="card">
       <div>
-        <h2>{t('backup.title')}</h2>
+        <h2>
+          {t('backup.title')} <Help id="backup.title" topic="sicherung" />
+        </h2>
         <p className="hint">{t('backup.hint')}</p>
       </div>
       {message.text && <div className={`alert ${message.type}`}>{message.text}</div>}
@@ -131,7 +134,9 @@ export default function BackupCard() {
       {status && (
         <label className="check">
           <input type="checkbox" checked={status.reminder} onChange={(e) => setReminder(e.target.checked)} />
-          <span>{t('backup.reminder', { days: REMINDER_DAYS })}</span>
+          <span>
+            {t('backup.reminder', { days: REMINDER_DAYS })} <Help id="backup.reminder" topic="sicherung" />
+          </span>
         </label>
       )}
     </div>

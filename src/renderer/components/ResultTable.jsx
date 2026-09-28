@@ -1,5 +1,6 @@
 import { IconArrowUp, IconArrowDown, IconArrowsSort, IconMusic, IconMovie, IconFileText, IconMoodEmpty } from '@tabler/icons-react'
 import { onMediaContextMenu, onPdfContextMenu } from '../lib/fileMenu.js'
+import Help from './Help.jsx'
 import { t } from '../../shared/i18n.js'
 
 // Spalten der Ergebnisliste; key passt zu SORT_COLUMNS in lib/sortRows.js
@@ -51,6 +52,7 @@ export default function ResultTable({ rows, sort, onSort, selectedKey, onSelect,
               const dir = sort?.key === key ? sort.dir : null
               return (
                 <th key={key} aria-sort={dir === 'asc' ? 'ascending' : dir === 'desc' ? 'descending' : 'none'}>
+                  <div className="th-inner">
                   <button
                     className="sort-header"
                     onClick={() => onSort(key)}
@@ -63,11 +65,16 @@ export default function ResultTable({ rows, sort, onSort, selectedKey, onSelect,
                       <SortIcon dir={dir} />
                     </span>
                   </button>
+                  <Help id={`columns.${key}`} topic="suchen" />
+                  </div>
                 </th>
               )
             })}
             <th>
-              <span style={{ padding: '0 10px' }}>{t('results.columns.media')}</span>
+              <div className="th-inner">
+                <span style={{ padding: '0 4px 0 10px' }}>{t('results.columns.media')}</span>
+                <Help id="columns.media" topic="suchen" />
+              </div>
             </th>
           </tr>
         </thead>

@@ -4,6 +4,7 @@ import { IconRefresh, IconSparkles } from '@tabler/icons-react'
 import { meldeDatenGeaendert } from '../lib/events.js'
 import { formatUsd } from '../lib/money.js'
 import AiConfirmDialog from './AiConfirmDialog.jsx'
+import Help from './Help.jsx'
 import { t } from '../../shared/i18n.js'
 
 // Karte „Einlesen“: MegaMix direkt, Jams/ZIN Volumes über die KI (Plan, Meldung, Fortschritt).
@@ -118,7 +119,9 @@ export default function ImportCard({ onAiUsed }) {
     <>
       <div className="card">
         <div>
-          <h2>{t('sources.importTitle')}</h2>
+          <h2>
+            {t('sources.importTitle')} <Help id="import.title" topic="einlesen" />
+          </h2>
           <p className="hint">{t('sources.importHint')}</p>
         </div>
         {reimportMessage.text && <div className={`alert ${reimportMessage.type}`}>{reimportMessage.text}</div>}

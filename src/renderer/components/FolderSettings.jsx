@@ -2,13 +2,18 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { IconFolderOpen, IconX, IconPlus, IconDeviceFloppy } from '@tabler/icons-react'
 import { meldeDatenGeaendert } from '../lib/events.js'
+import Help from './Help.jsx'
 import { t } from '../../shared/i18n.js'
 
 // Ein Pfad-Feld mit „Durchsuchen“ (Windows-Ordnerdialog)
-function PathField({ id, label, hint, value, onChange, onBrowse, onRemove, disabled, placeholder }) {
+function PathField({ id, label, hint, help, value, onChange, onBrowse, onRemove, disabled, placeholder }) {
   return (
     <div className="field">
-      {label && <label htmlFor={id}>{label}</label>}
+      {label && (
+        <label htmlFor={id}>
+          {label} {help && <Help id={help} topic="ordner" />}
+        </label>
+      )}
       <div className="path-field">
         <input id={id} type="text" value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} disabled={disabled} />
         <button type="button" onClick={onBrowse} disabled={disabled} title={t('sources.browseTitle')}>
@@ -106,7 +111,9 @@ export default function FolderSettings({ onSaved, saveLabel }) {
       {message.text && <div className={`alert ${message.type}`}>{message.text}</div>}
 
       <div className="field">
-        <span className="field-label">{t('sources.jamRoots')}</span>
+        <span className="field-label">
+          {t('sources.jamRoots')} <Help id="sources.jamRoots" topic="ordner" />
+        </span>
         {jamRoots.map((root, idx) => (
           <PathField
             key={idx}
@@ -129,6 +136,7 @@ export default function FolderSettings({ onSaved, saveLabel }) {
       <PathField
         id="megamix-root-input"
         label={t('sources.megamixRoot')}
+        help="sources.megamixRoot"
         value={megamixRoot}
         onChange={setMegamixRoot}
         onBrowse={() => browse(megamixRoot, setMegamixRoot)}
@@ -139,6 +147,7 @@ export default function FolderSettings({ onSaved, saveLabel }) {
       <PathField
         id="zin-volumes-mp3-root-input"
         label={t('sources.zinMp3Root')}
+        help="sources.zinMp3Root"
         value={zinVolumesMp3Root}
         onChange={setZinVolumesMp3Root}
         onBrowse={() => browse(zinVolumesMp3Root, setZinVolumesMp3Root)}
@@ -149,6 +158,7 @@ export default function FolderSettings({ onSaved, saveLabel }) {
       <PathField
         id="zin-volumes-choreo-root-input"
         label={t('sources.zinChoreoRoot')}
+        help="sources.zinChoreoRoot"
         value={zinVolumesChoreoRoot}
         onChange={setZinVolumesChoreoRoot}
         onBrowse={() => browse(zinVolumesChoreoRoot, setZinVolumesChoreoRoot)}
@@ -159,6 +169,7 @@ export default function FolderSettings({ onSaved, saveLabel }) {
       <PathField
         id="zin-volumes-video-root-input"
         label={t('sources.zinVideoRoot')}
+        help="sources.zinVideoRoot"
         hint={t('sources.zinVideoRootHint')}
         value={zinVolumesVideoRoot}
         onChange={setZinVolumesVideoRoot}

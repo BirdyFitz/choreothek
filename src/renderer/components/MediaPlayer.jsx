@@ -3,6 +3,7 @@ import { IconPlayerPlay, IconPlayerPause, IconRepeat, IconExternalLink, IconPlay
 import { parseTime, formatTime, loopJump, SPEEDS } from '../lib/player.js'
 import { usePersistent } from '../lib/usePersistent.js'
 import { openInDefaultApp } from '../lib/fileMenu.js'
+import Help from './Help.jsx'
 import { t } from '../../shared/i18n.js'
 
 // Player für Musik und Videos: Tempo 0,5–1× (Tonhöhe bleibt), Abschnitt A–B wiederholen,
@@ -197,6 +198,7 @@ export default function MediaPlayer({ url, kind, seekTo }) {
           <div className="player-controls">
             <label className="player-speed">
               <span>{t('player.speed')}</span>
+              <Help id="player.speed" topic="player" />
               <select value={speed} onChange={(e) => setSpeed(Number(e.target.value))}>
                 {SPEEDS.map((s) => (
                   <option key={s} value={s}>
@@ -207,6 +209,7 @@ export default function MediaPlayer({ url, kind, seekTo }) {
             </label>
 
             <div className="player-loop">
+              <Help id="player.loop" topic="player" />
               <button type="button" onClick={() => setPoint('a')} title={t('player.setAHint')}>
                 {a != null ? t('player.pointAt', { point: 'A', time: formatTime(a) }) : t('player.setA')}
               </button>
@@ -237,6 +240,7 @@ export default function MediaPlayer({ url, kind, seekTo }) {
 
             {kind === 'video' && (
               <div className="player-size" role="group" aria-label={t('player.size')}>
+                <Help id="player.size" topic="player" />
                 {['s', 'm', 'l'].map((size) => (
                   <button
                     key={size}
@@ -266,6 +270,7 @@ export default function MediaPlayer({ url, kind, seekTo }) {
               <button type="submit" disabled={parseTime(jumpText) == null}>
                 {t('player.jump')}
               </button>
+              <Help id="player.jump" topic="player" />
             </form>
           </div>
         </>

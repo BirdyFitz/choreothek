@@ -1432,3 +1432,187 @@ body.resizing video {
 .settings .page {
   min-width: 0;
 }
+
+/* ---------- Hilfe (?) ---------- */
+
+.help-btn {
+  display: inline-grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  min-width: 0;
+  padding: 0;
+  margin-left: 2px;
+  border-radius: 50%;
+  border: 1px solid var(--border-strong);
+  background: var(--panel);
+  color: var(--text-3);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  vertical-align: middle;
+  cursor: help;
+  flex: none;
+}
+
+.help-btn:hover,
+.help-btn[aria-expanded='true'] {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.help-bubble {
+  position: fixed;
+  z-index: 200;
+  background: var(--panel);
+  color: var(--text);
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.2);
+  padding: 10px 12px;
+  font-size: 12px;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: normal;
+  line-height: 1.45;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  white-space: normal;
+  text-align: left;
+}
+
+.help-bubble a {
+  color: var(--accent);
+  align-self: flex-start;
+}
+
+/* ---------- Hilfe-Menü, Dialoge Problem melden / Über ---------- */
+
+.topbar-help {
+  margin-left: auto;
+  position: relative;
+}
+
+.topbar-right ~ .topbar-help {
+  margin-left: 8px;
+}
+
+.help-menu-list {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 4px);
+  z-index: 150;
+  background: var(--panel);
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.2);
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  min-width: 200px;
+}
+
+.help-menu-list a,
+.help-menu-list button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  padding: 0 10px;
+  border: none;
+  background: none;
+  border-radius: var(--radius);
+  color: var(--text);
+  text-decoration: none;
+  justify-content: flex-start;
+  font-size: 13px;
+}
+
+.help-menu-list a:hover,
+.help-menu-list button:hover {
+  background: var(--hover);
+}
+
+a.button {
+  font: inherit;
+  color: var(--text);
+  background: var(--panel);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  height: 30px;
+  padding: 0 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+a.button:hover {
+  background: var(--hover);
+}
+
+a.button.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-text);
+}
+
+.problem-report {
+  font-family: Consolas, 'Cascadia Mono', monospace;
+  font-size: 11px;
+  white-space: pre-wrap;
+  background: var(--panel-alt);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 8px 10px;
+  max-height: 180px;
+  overflow: auto;
+}
+
+textarea {
+  height: auto;
+  padding: 6px 8px;
+  resize: vertical;
+}
+
+.about-props dd {
+  text-align: left;
+}
+
+.about-donate {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+  padding: 10px 12px;
+  border-radius: var(--radius);
+  background: var(--accent-soft);
+}
+
+.license-list {
+  margin: 6px 0 0 18px;
+  font-size: 12px;
+  color: var(--text-2);
+  max-height: 160px;
+  overflow: auto;
+}
+
+.modal details summary {
+  cursor: pointer;
+  color: var(--text-2);
+}
+
+/* Spaltenkopf: Sortierknopf und „?“ in einer Zeile */
+.th-inner {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding-right: 4px;
+}
+
+.th-inner .sort-header {
+  flex: 1;
+  min-width: 0;
+}

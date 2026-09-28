@@ -3,6 +3,7 @@ import axios from 'axios'
 import { IconMusic, IconMovie, IconFileText, IconX, IconArrowBackUp, IconLink } from '@tabler/icons-react'
 import MediaPlayer from './MediaPlayer.jsx'
 import { onMediaContextMenu, onPdfContextMenu } from '../lib/fileMenu.js'
+import Help from './Help.jsx'
 import { t } from '../../shared/i18n.js'
 
 const ICONS = { audio: IconMusic, video: IconMovie, pdf: IconFileText }
@@ -44,7 +45,9 @@ export default function SongFiles({ type, item, song, media, onChanged }) {
 
   return (
     <div className="song-files">
-      <span className="field-label">{t('library.media.title', { song: song.song_name })}</span>
+      <span className="field-label">
+        {t('library.media.title', { song: song.song_name })} <Help id="library.media" topic="bibliothek" />
+      </span>
       {error && <div className="alert error">{error}</div>}
 
       <div className="file-list">

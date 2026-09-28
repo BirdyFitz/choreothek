@@ -20,6 +20,7 @@
     "@tabler/icons-react": "^3.48.0",
     "axios": "^1.20.0",
     "better-sqlite3": "^13.0.3",
+    "electron-updater": "^6.8.9",
     "express": "^4.22.3",
     "music-metadata": "^11.16.1",
     "openai": "^7.23.0",

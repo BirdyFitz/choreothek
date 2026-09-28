@@ -78,3 +78,14 @@ test('Platzhalter und Mehrzahl', () => {
 test('unbekannter Schlüssel liefert den Schlüssel selbst (fällt auf, statt leer zu bleiben)', () => {
   assert.equal(t('gibt.es.nicht'), 'gibt.es.nicht')
 })
+
+test('jede Hilfe (?) hat einen Text', () => {
+  const ids = [...code.matchAll(/<Help id="([\w.]+)"/g), ...code.matchAll(/\bhelp="([\w.]+)"/g)].map((m) => `help.${m[1]}`)
+  const missing = [...new Set(ids)].filter((k) => !allKeys.includes(k))
+  assert.deepEqual(missing, [])
+  for (const col of ['song', 'artist', 'rhythm', 'source', 'date', 'location', 'media']) assert.ok(allKeys.includes(`help.columns.${col}`), col)
+  for (const f of ['jammer_name', 'jam_date', 'location', 'source_folder', 'audio_folder', 'live_video_folder', 'oneonone_video_folder', 'song_name', 'artist', 'rhythm', 'page', 'live_page', 'oneonone_page']) {
+    assert.ok(allKeys.includes(`help.fields.${f}`), f)
+  }
+  assert.ok(ids.length >= 40, `nur ${ids.length} Hilfen`)
+})

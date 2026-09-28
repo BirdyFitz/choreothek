@@ -21,6 +21,7 @@ import { clampPaneWidth } from '../lib/paneWidth.js'
 import { meldeDatenGeaendert, DATEN_GEAENDERT, OPEN_IN_LIBRARY } from '../lib/events.js'
 import { usePersistent } from '../lib/usePersistent.js'
 import { formatUsd } from '../lib/money.js'
+import Help from '../components/Help.jsx'
 import { t } from '../../shared/i18n.js'
 
 const TYPES = ['jam', 'zin', 'megamix']
@@ -206,6 +207,7 @@ function Editor({ type, id, onChanged }) {
       <div className="editor-head">
         <h2>{labelOf(type, item)}</h2>
         <div className="button-row">
+          <Help id="library.actions" topic="bibliothek" />
           {type === 'jam' && (
             <button type="button" onClick={() => setVideoMode(true)} disabled={busy !== '' || isDirty} title={t('video.openHint')}>
               <IconWaveSine size={16} stroke={1.6} /> {t('video.open')}
@@ -227,7 +229,9 @@ function Editor({ type, id, onChanged }) {
       <div className="editor-fields">
         {HEAD_FIELDS[type].map(([k, kind]) => (
           <div className={`field ${kind === 'folder' ? 'field-wide' : ''}`} key={k}>
-            <label htmlFor={`head-${k}`}>{t(`library.fields.${k}`)}</label>
+            <label htmlFor={`head-${k}`}>
+              {t(`library.fields.${k}`)} <Help id={`fields.${k}`} topic="bibliothek" />
+            </label>
             <div className="path-field">
               <input id={`head-${k}`} value={head[k] ?? ''} onChange={(e) => setHeadField(k, e.target.value)} />
               {kind === 'folder' && (
@@ -246,7 +250,9 @@ function Editor({ type, id, onChanged }) {
             <tr>
               <th>#</th>
               {SONG_FIELDS[type].map(([k]) => (
-                <th key={k}>{t(`library.fields.${k}`)}</th>
+                <th key={k}>
+                  {t(`library.fields.${k}`)} <Help id={`fields.${k}`} topic="bibliothek" />
+                </th>
               ))}
               <th />
             </tr>
@@ -347,7 +353,9 @@ function JammerNames({ onChanged }) {
   if (!data) return null
   return (
     <div className="editor">
-      <h2>{t('library.jammers.title')}</h2>
+      <h2>
+        {t('library.jammers.title')} <Help id="library.jammers" topic="bibliothek" />
+      </h2>
       <p className="hint">{t('library.jammers.hint')}</p>
       {message.text && <div className={`alert ${message.type}`}>{message.text}</div>}
 
@@ -473,7 +481,10 @@ export default function Library() {
             </button>
           ))}
         </div>
-        <input value={filter} onChange={(e) => setFilter(e.target.value)} placeholder={t('library.filter')} aria-label={t('library.filter')} />
+        <div className="path-field">
+          <input value={filter} onChange={(e) => setFilter(e.target.value)} placeholder={t('library.filter')} aria-label={t('library.filter')} />
+          <Help id="library.list" topic="bibliothek" />
+        </div>
         {type === 'jam' && (
           <button type="button" className={`link ${selected === 'jammers' ? 'active' : ''}`} onClick={() => setSelected('jammers')}>
             <IconUsers size={14} stroke={1.8} /> {t('library.jammers.open')}

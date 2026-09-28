@@ -5,6 +5,8 @@ import Search from './pages/Search.jsx'
 import Settings from './pages/Settings.jsx'
 import Library from './pages/Library.jsx'
 import BackupReminder from './components/BackupReminder.jsx'
+import HelpMenu from './components/HelpMenu.jsx'
+import { UpdateBar } from './components/Updates.jsx'
 import { OPEN_IN_LIBRARY } from './lib/events.js'
 import SetupWizard from './pages/SetupWizard.jsx'
 import { usePersistent } from './lib/usePersistent.js'
@@ -76,7 +78,11 @@ export default function App() {
             </button>
           </div>
         )}
+        <div className="topbar-help">
+          <HelpMenu />
+        </div>
       </header>
+      <UpdateBar />
       {!wizard && <BackupReminder />}
 
       {wizard && (

@@ -4,6 +4,7 @@ import { IconMusic, IconMovie, IconFileText, IconInfoCircle, IconDisc, IconPenci
 import { onMediaContextMenu, onPdfContextMenu } from '../lib/fileMenu.js'
 import { oeffneInBibliothek } from '../lib/events.js'
 import MediaPlayer from './MediaPlayer.jsx'
+import Help from './Help.jsx'
 import { t } from '../../shared/i18n.js'
 
 // Alle Dateien eines Songs als Liste: Musik, Videos, Choreo Notes
@@ -145,6 +146,7 @@ export default function DetailsPanel({ row, width }) {
             <IconPencil size={16} stroke={1.6} /> {t('details.edit')}
           </button>
         )}
+        {libraryType && <Help id="details.edit" topic="bibliothek" />}
       </div>
       <div className="details">
         <div>
@@ -159,7 +161,9 @@ export default function DetailsPanel({ row, width }) {
 
         {files.length > 0 ? (
           <div>
-            <div className="section-title">{t('details.files')}</div>
+            <div className="section-title">
+              {t('details.files')} <Help id="details.files" topic="suchen" />
+            </div>
             <div className="file-list">
               {files.map((f, i) => {
                 const Icon = ICONS[f.kind]

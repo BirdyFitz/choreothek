@@ -632,7 +632,165 @@
       "preview": "Vorschau",
       "import": "Einlesen",
       "ai": "KI",
-      "backup": "Sicherung"
+      "backup": "Sicherung",
+      "updates": "Updates"
     }
+  },
+  "help": {
+    "label": "Hilfe",
+    "more": "Mehr erfahren",
+    "filter": {
+      "song": "Findet Songs, deren Titel diesen Text enthält. Groß-/Kleinschreibung und Akzente spielen keine Rolle („cafe“ findet „Café“). Die Liste aktualisiert sich beim Tippen.",
+      "rhythm": "Findet Songs mit diesem Rhythmus, auch als Teil: „sal“ findet Salsa, Salsa Choke und „Cumbia / Salsa“. Beim Tippen erscheinen die vorhandenen Rhythmen als Vorschläge.",
+      "source": "Schränkt die Suche auf eine Quelle ein: Jam Sessions, MegaMixe oder ZIN Volumes. „Alle“ durchsucht alles.",
+      "jammer": "Zeigt nur Songs aus Jams dieses Jammers. Unterschiedliche Schreibweisen desselben Namens führst du in der Bibliothek unter „Jammer-Schreibweisen vereinheitlichen“ zusammen.",
+      "location": "Findet Jams, deren Ort diesen Text enthält – z. B. eine Stadt oder den Namen der Halle.",
+      "period": "Zeigt nur Jams in diesem Zeitraum. Jams ohne erkanntes Datum fallen dabei heraus. MegaMixe und ZIN Volumes haben kein Datum.",
+      "jam": "Zeigt nur die Songs einer bestimmten Jam. Die Auswahl richtet sich nach Jammer, Ort und Zeitraum.",
+      "megamix": "Zeigt nur die Songs eines MegaMix.",
+      "zin": "Zeigt nur die Songs eines ZIN Volumes, inklusive der Warm-up-Songs."
+    },
+    "columns": {
+      "song": "Titel des Songs, wie er in den Choreo Notes bzw. im Dateinamen steht. Klick auf die Überschrift sortiert.",
+      "artist": "Interpret laut Choreo Notes (bei MegaMixen nicht vorhanden).",
+      "rhythm": "Rhythmus bzw. Tanzstil laut Choreo Notes oder Dateiname.",
+      "source": "Woher der Song stammt: Jammer der Jam Session, MegaMix oder ZIN Volume.",
+      "date": "Datum der Jam. Sortiert wird nach dem erkannten Datum, auch wenn es in den Choreo Notes anders geschrieben ist.",
+      "location": "Ort der Jam laut Choreo Notes.",
+      "media": "Was es zu diesem Song gibt: Musik, Video und Choreo Notes. Rechtsklick auf eine Datei im Detailbereich öffnet weitere Möglichkeiten."
+    },
+    "details": {
+      "files": "Alle Dateien zum gewählten Song: Musik und Videos aus dem Ordner der Jam bzw. Edition und die passende Seite der Choreo Notes. Klick zeigt die Datei, Rechtsklick öffnet sie z. B. im Explorer.",
+      "edit": "Öffnet die Jam bzw. Edition dieses Songs in der Bibliothek – dort korrigierst du Angaben, Songs und die Zuordnung von Musik und Videos."
+    },
+    "player": {
+      "speed": "Spielt langsamer ab, ohne dass sich die Tonhöhe ändert – zum Üben schwieriger Stellen. Das Tempo bleibt für die nächsten Dateien eingestellt.",
+      "loop": "Wiederholt einen Abschnitt: an der gewünschten Stelle „A setzen“, am Ende „B setzen“ – dann läuft der Abschnitt immer wieder. Ohne B bis zum Ende. Tasten: A, B, L.",
+      "size": "Größe des Videos (S, M, L) und Vollbild. Hochkant-Videos passen so ins Fenster, ohne dass die Bedienung verschwindet. Vollbild auch per Doppelklick oder Taste F, zurück mit Esc.",
+      "jump": "Springt zu einer Stelle, z. B. „1:23“ oder „83“ (Sekunden)."
+    },
+    "library": {
+      "list": "Alle eingelesenen Jams, MegaMixe bzw. ZIN Volumes. Das Feld filtert nach Name, Datum und Ort. Die Breite der Liste lässt sich an der Trennlinie ziehen.",
+      "actions": "Videoanalyse: Handy-Videos per Tonvergleich den Songs zuordnen. Neu auslesen: die Choreo Notes noch einmal von der KI lesen lassen – das Ergebnis erscheint zum Prüfen. Löschen: entfernt den Eintrag aus Choreothek, deine Dateien bleiben.",
+      "jammers": "Ähnliche Schreibweisen (Groß-/Kleinschreibung, „&“ oder „und“) stehen zusammen. Wähle die richtige und führe sie zusammen – oder benenne einen Namen direkt um. Die Jams bleiben erhalten.",
+      "media": "Musik, Videos und Choreo Notes dieses Songs. Choreothek ordnet Dateien über ihre Namen zu. Stimmt etwas nicht, löse die Zuordnung (✕) oder ordne eine andere Datei aus dem Ordner zu."
+    },
+    "fields": {
+      "jammer_name": "Name der Person, die die Jam geleitet hat. Mehrere Namen z. B. mit „&“ verbinden.",
+      "jam_date": "Datum der Jam in beliebiger Schreibweise („3. Mai 2025“, „2025-05-03“). Choreothek erkennt daraus das Datum für Sortierung und Zeitraum.",
+      "location": "Ort der Jam, z. B. Halle und Stadt.",
+      "source_folder": "Ordner, in dem Musik und Videos dieser Jam liegen. Unterordner werden mit durchsucht, außer „Originale“.",
+      "audio_folder": "Ordner mit der Musik dieses ZIN Volumes.",
+      "live_video_folder": "Ordner mit den Live-Videos dieses ZIN Volumes.",
+      "oneonone_video_folder": "Ordner mit den 1on1-Videos dieses ZIN Volumes.",
+      "song_name": "Titel des Songs. Nach ihm werden Musik und Videos im Ordner zugeordnet.",
+      "artist": "Interpret des Songs.",
+      "rhythm": "Rhythmus bzw. Tanzstil, z. B. Salsa oder Reggaeton.",
+      "page": "Seite der Choreo Notes, auf der die Schrittfolge dieses Songs steht.",
+      "live_page": "Seite im Live-Teil der Choreo Notes.",
+      "oneonone_page": "Seite im 1on1-Teil der Choreo Notes."
+    },
+    "sources": {
+      "jamRoots": "Ordner, in denen deine Jam Sessions liegen – am besten je Jam ein Unterordner mit PDF, Musik und Videos. Unterordner werden mit durchsucht. Mehrere Ordner sind möglich.",
+      "megamixRoot": "Ordner mit den MegaMixen, je MegaMix ein Unterordner mit den MP3s. Die Nummer wird aus dem Ordner- oder Dateinamen gelesen.",
+      "zinMp3Root": "Ordner mit der Musik der ZIN Volumes, je Volume ein Unterordner (z. B. „ZIN 100“).",
+      "zinChoreoRoot": "Ordner mit den Choreo-Notes-PDFs der ZIN Volumes. Die Volume-Nummer wird aus dem Dateinamen gelesen (z. B. „100 Choreo Notes.pdf“).",
+      "zinVideoRoot": "Ordner mit den Live- und 1on1-Videos der ZIN Volumes (z. B. „zin-volume-100-live-class“). Leer lassen, wenn sie im Ordner über den Choreo Notes liegen."
+    },
+    "preview": {
+      "title": "Zeigt vor dem Einlesen, was Choreothek in deinen Ordnern erkennt, was schon eingelesen ist und was fehlt. Nichts wird verändert oder gesendet.",
+      "onlyOpen": "Blendet alles aus, was vollständig erkannt und eingelesen ist – übrig bleiben Neues und Hinweise.",
+      "patterns": "PDFs, deren Name einen dieser Begriffe enthält, gelten nicht als Jam – z. B. Handouts von Ausbildungen oder Teilnahmebestätigungen. Sie werden nie an die KI gesendet.",
+      "unrecognized": "Ordner ohne erkennbare Nummer. Gib die Nummer des Volumes bzw. MegaMix ein und ordne den Ordner als Musik, Live oder 1on1 zu.",
+      "sharedFolder": "Mehrere Jams liegen im selben Ordner. Damit Musik und Videos nicht falsch zugeordnet werden, bekommt keine automatisch einen Medienordner – ordne ihn hier von Hand zu.",
+      "noSongs": "Aus dieser PDF konnte die KI keine Songs lesen. Sie wird beim Einlesen übersprungen, damit keine Kosten entstehen. „Erneut versuchen“ schickt sie beim nächsten Einlesen wieder an die KI."
+    },
+    "import": {
+      "title": "MegaMixe liest Choreothek ohne KI aus den Dateinamen. Jam Sessions und ZIN Volumes liest die KI aus den Choreo Notes – vorher erscheint eine Meldung mit den geschätzten Kosten. Bereits Eingelesenes wird übersprungen."
+    },
+    "ai": {
+      "provider": "Welcher KI-Dienst die Choreo Notes ausliest. Du brauchst dort ein eigenes Konto mit API-Schlüssel; die Kosten rechnet der Anbieter direkt mit dir ab.",
+      "model": "Das KI-Modell des Anbieters. Vorbelegt ist das Modell mit dem besten Verhältnis aus Genauigkeit und Kosten im Test.",
+      "key": "Dein persönlicher Zugangsschlüssel beim KI-Anbieter. Er wird verschlüsselt gespeichert, nur für dein Windows-Konto lesbar, und verlässt deinen PC nur Richtung Anbieter. „Speichern und testen“ prüft ihn kostenlos.",
+      "privacy": "Zum Auslesen gehen die Choreo-Notes-PDFs an den gewählten Anbieter. Ohne diese Bestätigung liest Choreothek nichts mit der KI.",
+      "askBeforeUse": "Vor jeder KI-Nutzung erscheint eine Meldung mit Anbieter, Umfang und geschätzten Kosten. Auch ausgeschaltet kommt sie, wenn die Kosten über der Grenze liegen, das Guthaben knapp wird oder Anbieter bzw. Modell gewechselt wurden.",
+      "costLimit": "Ab diesen geschätzten Kosten je Einlesen fragt Choreothek immer nach – auch wenn „Nachfragen“ aus ist.",
+      "balanceWarn": "Fällt das geschätzte Guthaben unter diesen Betrag, fragt Choreothek vor der KI-Nutzung nach.",
+      "balance": "Trag hier ein, wie viel du beim Anbieter aufgeladen hast. Choreothek zieht die geschätzten Kosten ab und zeigt, wie viel ungefähr noch übrig ist. Den echten Kontostand kann Choreothek beim Anbieter nicht abfragen.",
+      "costs": "Geschätzte Kosten je Monat und Anbieter, berechnet aus den Angaben der Anbieter und einer Preistabelle. Maßgeblich ist immer die Abrechnung des Anbieters."
+    },
+    "video": {
+      "choose": "Choreothek vergleicht den Ton der gewählten Videos mit den Musikdateien im Jam-Ordner – wie eine Musikerkennungs-App, aber auf deinem PC. Vorgewählt sind Videos, die noch keinem Song zugeordnet sind.",
+      "action": "Umbenennen: der Songname kommt vor den Dateinamen. In Songs schneiden: je Song entsteht eine eigene Datei, das Original wandert in den Unterordner „Originale“. Nicht ändern: das Video bleibt, wie es ist.",
+      "times": "Beginn und Ende des Teils im Video, z. B. „2:31,6“. Geschnitten wird ohne Neukodieren – ein Teil beginnt deshalb bis zu 1–2 Sekunden früher.",
+      "hits": "Wie viele Merkmale des Tons übereinstimmen. Ab 30 gilt die Zuordnung als sicher; darunter bitte mit „▶“ nachhören.",
+      "runs": "Jede Ausführung wird protokolliert. „Rückgängig“ löscht die geschnittenen Teile, nimmt Umbenennungen zurück und holt Originale zurück – solange die Dateien nicht inzwischen verändert wurden."
+    },
+    "backup": {
+      "title": "Die Sicherung enthält alle Einträge, Korrekturen, Zuordnungen und Einstellungen sowie die Kopien der Choreo Notes. Deine Musik und Videos und die API-Schlüssel sind nicht enthalten. Wiederherstellen ersetzt den jetzigen Stand – er wird vorher beiseitegelegt.",
+      "reminder": "Erinnert beim Start per Hinweisleiste, wenn die letzte Sicherung länger als 30 Tage her ist."
+    },
+    "updates": {
+      "title": "Neue Versionen kommen von der offiziellen Download-Seite (GitHub). Choreothek installiert nichts ohne deine Zustimmung; deine Daten bleiben beim Update erhalten.",
+      "prerelease": "Vorabversionen enthalten neue Funktionen früher, können aber noch Fehler haben. Für Pilot-Tester gedacht."
+    }
+  },
+  "helpMenu": {
+    "title": "Hilfe",
+    "guide": "Anleitung",
+    "problem": "Problem melden",
+    "about": "Über Choreothek"
+  },
+  "problem": {
+    "title": "Problem melden",
+    "hint": "Beschreib kurz, was passiert ist. Choreothek hängt Versionsangaben und die letzten Fehlermeldungen an – ohne API-Schlüssel, Pfade sind gekürzt. Du siehst unten genau, was gesendet wird.",
+    "describe": "Was ist passiert?",
+    "placeholder": "z. B. Beim Einlesen der Jams erscheint eine Fehlermeldung …",
+    "report": "Bericht",
+    "subject": "Choreothek – Problem",
+    "mail": "E-Mail schreiben",
+    "copy": "Bericht kopieren",
+    "copied": "Kopiert",
+    "github": "Auf GitHub melden",
+    "githubHint": "Öffnet ein neues GitHub-Issue mit dem Bericht – dort ist er öffentlich sichtbar.",
+    "privacy": "„E-Mail schreiben“ öffnet dein Mailprogramm mit einer Nachricht an {mail} – gesendet wird erst, wenn du dort auf „Senden“ klickst. GitHub-Issues sind öffentlich."
+  },
+  "about": {
+    "title": "Über Choreothek",
+    "close": "Schließen",
+    "description": "Choreothek macht dein eigenes Archiv aus Jam Sessions, MegaMixen und ZIN Volumes durchsuchbar und zeigt Choreo Notes, Musik und Videos. Freie Software – kostenlos, ohne Werbung und ohne Nutzungsdaten.",
+    "version": "Version",
+    "license": "Lizenz",
+    "source": "Quellcode",
+    "website": "Webseite",
+    "system": "System",
+    "systemValue": "{os}, Electron {electron}",
+    "donateText": "Choreothek ist kostenlos. Wenn sie dir hilft, freue ich mich über einen Kaffee.",
+    "donate": "Choreothek unterstützen",
+    "thirdParty": "Verwendete Software und Lizenzen",
+    "licenseItem": "{name} {version} – {license}",
+    "ffmpeg": "ffmpeg – LGPL/GPL (Ton lesen, Videos schneiden)",
+    "trademark": "Zumba® ist eine eingetragene Marke von Zumba Fitness, LLC. Choreothek ist ein unabhängiges Projekt und steht in keiner Verbindung zu Zumba Fitness.",
+    "licenseName": "GPL-3.0",
+    "repoLabel": "github.com/BirdyFitz/choreothek",
+    "siteLabel": "choreothek.eu"
+  },
+  "updates": {
+    "title": "Updates",
+    "hint": "Choreothek sieht beim Start nach, ob es eine neue Version gibt, und fragt dich, bevor etwas heruntergeladen oder installiert wird.",
+    "check": "Jetzt nach Updates suchen",
+    "prerelease": "Vorabversionen erhalten (Testversionen vor der offiziellen Veröffentlichung)",
+    "result": {
+      "dev": "Entwicklungsfassung ({current}) – Updates gibt es nur in der installierten App.",
+      "none": "Choreothek ist aktuell (Version {current}).",
+      "available": "Version {version} ist verfügbar (installiert: {current}). Oben erscheint die Leiste zum Installieren.",
+      "error": "Nachsehen fehlgeschlagen: {message}"
+    },
+    "available": "Choreothek {version} ist verfügbar.",
+    "install": "Herunterladen und installieren",
+    "downloading": "Lade herunter … {percent} %",
+    "ready": "Version {version} ist bereit.",
+    "restart": "Neu starten und installieren",
+    "error": "Update fehlgeschlagen: {message}"
   }
 }

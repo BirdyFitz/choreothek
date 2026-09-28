@@ -1,4 +1,5 @@
 import { IconSearch, IconFilterOff } from '@tabler/icons-react'
+import Help from './Help.jsx'
 import { t } from '../../shared/i18n.js'
 
 const QUELLEN = ['', 'jam', 'megamix', 'zin']
@@ -24,7 +25,7 @@ export default function FilterPanel({ width, filters, set, setQuelle, lists, fil
       </div>
       <div className="filters">
         <div className="field">
-          <label htmlFor="f-song">{t('filter.song')}</label>
+          <label htmlFor="f-song">{t('filter.song')} <Help id="filter.song" topic="suchen" /></label>
           <div className="input-icon">
             <IconSearch size={15} stroke={1.8} />
             <input
@@ -39,7 +40,7 @@ export default function FilterPanel({ width, filters, set, setQuelle, lists, fil
         </div>
 
         <div className="field">
-          <label htmlFor="f-rhythm">{t('filter.rhythm')}</label>
+          <label htmlFor="f-rhythm">{t('filter.rhythm')} <Help id="filter.rhythm" topic="suchen" /></label>
           <input
             id="f-rhythm"
             type="search"
@@ -56,7 +57,7 @@ export default function FilterPanel({ width, filters, set, setQuelle, lists, fil
         </div>
 
         <div className="field">
-          <span className="field-label">{t('filter.source')}</span>
+          <span className="field-label">{t('filter.source')} <Help id="filter.source" topic="suchen" /></span>
           <div className="segmented" role="radiogroup" aria-label={t('filter.source')}>
             {QUELLEN.map((value) => (
               <button
@@ -76,7 +77,7 @@ export default function FilterPanel({ width, filters, set, setQuelle, lists, fil
           <div className="filter-group">
             <span className="filter-group-title">{t('filter.jamGroup')}</span>
             <div className="field">
-              <label htmlFor="f-jammer">{t('filter.jammer')}</label>
+              <label htmlFor="f-jammer">{t('filter.jammer')} <Help id="filter.jammer" topic="suchen" /></label>
               <select id="f-jammer" value={filters.jammer} onChange={(e) => set('jammer', e.target.value)}>
                 <option value="">{t('filter.jammerAll')}</option>
                 {lists.jammers.map((j) => (
@@ -87,7 +88,7 @@ export default function FilterPanel({ width, filters, set, setQuelle, lists, fil
               </select>
             </div>
             <div className="field">
-              <label htmlFor="f-ort">{t('filter.location')}</label>
+              <label htmlFor="f-ort">{t('filter.location')} <Help id="filter.location" topic="suchen" /></label>
               <input
                 id="f-ort"
                 type="search"
@@ -97,14 +98,14 @@ export default function FilterPanel({ width, filters, set, setQuelle, lists, fil
               />
             </div>
             <div className="field">
-              <span className="field-label">{t('filter.period')}</span>
+              <span className="field-label">{t('filter.period')} <Help id="filter.period" topic="suchen" /></span>
               <div className="field-row">
                 <input type="date" aria-label={t('filter.periodFrom')} value={filters.datumVon} onChange={(e) => set('datumVon', e.target.value)} />
                 <input type="date" aria-label={t('filter.periodTo')} value={filters.datumBis} onChange={(e) => set('datumBis', e.target.value)} />
               </div>
             </div>
             <div className="field">
-              <label htmlFor="f-jam">{t('filter.jam', { count: filteredJams.length })}</label>
+              <label htmlFor="f-jam">{t('filter.jam', { count: filteredJams.length })} <Help id="filter.jam" topic="suchen" /></label>
               <select id="f-jam" value={filters.jamId} onChange={(e) => set('jamId', e.target.value)}>
                 <option value="">{t('filter.jamAll')}</option>
                 {filteredJams.map((j) => (
@@ -120,7 +121,7 @@ export default function FilterPanel({ width, filters, set, setQuelle, lists, fil
         {showMegamix && (
           <div className="filter-group">
             <div className="field">
-              <label htmlFor="f-megamix">{t('filter.megamix')}</label>
+              <label htmlFor="f-megamix">{t('filter.megamix')} <Help id="filter.megamix" topic="suchen" /></label>
               <select id="f-megamix" value={filters.megamix} onChange={(e) => set('megamix', e.target.value)}>
                 <option value="">{t('filter.megamixAll')}</option>
                 {lists.megamixes.map((m) => (
@@ -136,7 +137,7 @@ export default function FilterPanel({ width, filters, set, setQuelle, lists, fil
         {showZin && (
           <div className="filter-group">
             <div className="field">
-              <label htmlFor="f-zin">{t('filter.zin')}</label>
+              <label htmlFor="f-zin">{t('filter.zin')} <Help id="filter.zin" topic="suchen" /></label>
               <select id="f-zin" value={filters.zinVolume} onChange={(e) => set('zinVolume', e.target.value)}>
                 <option value="">{t('filter.zinAll')}</option>
                 {lists.zinVolumes.map((v) => (
