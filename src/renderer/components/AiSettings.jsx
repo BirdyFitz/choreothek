@@ -10,7 +10,7 @@ const parseAmount = (text) => {
   return text !== '' && Number.isFinite(n) && n >= 0 ? n : null
 }
 
-// Karte „KI“ in den Datenquellen: Anbieter, Modell, Schlüssel, Datenschutz, Nachfragen,
+// Bereich „KI“ in den Einstellungen: Anbieter, Modell, Schlüssel, Datenschutz, Nachfragen,
 // Kostengrenze, Guthaben und Kostenübersicht. Schlüssel werden nur gesendet, nie angezeigt.
 export default function AiSettings() {
   const [data, setData] = useState(null)

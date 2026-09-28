@@ -5,7 +5,7 @@ import { createBackupInteractive } from './BackupCard.jsx'
 import { SICHERUNG_ERSTELLT } from '../lib/events.js'
 import { t } from '../../shared/i18n.js'
 
-// Hinweisleiste beim Start, wenn eine Sicherung fällig ist (abschaltbar unter Datenquellen → Sicherung).
+// Hinweisleiste beim Start, wenn eine Sicherung fällig ist (abschaltbar unter Einstellungen → Sicherung).
 // „Später“ blendet sie bis zum nächsten Start aus.
 export default function BackupReminder() {
   const [status, setStatus] = useState(null)

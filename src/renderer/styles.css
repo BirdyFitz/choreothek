@@ -642,7 +642,7 @@ body.resizing video {
   background: var(--panel);
 }
 
-/* ---------- Seiten ohne Dreiteilung (Datenquellen) ---------- */
+/* ---------- Seiten ohne Dreiteilung (Einstellungen) ---------- */
 
 .page {
   flex: 1;
@@ -1369,4 +1369,66 @@ body.resizing video {
   background: var(--accent-soft);
   color: var(--accent);
   border-color: var(--accent);
+}
+
+/* ---------- Einstellungen: Menü links ---------- */
+
+.settings {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+  min-width: 0;
+}
+
+.settings-menu {
+  width: 210px;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px 10px;
+  border-right: 1px solid var(--border);
+  background: var(--panel-alt);
+}
+
+.settings-menu .spacer {
+  flex: 1;
+}
+
+.settings-menu-block {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.settings-menu-group {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-3);
+  padding: 0 8px 2px;
+}
+
+.settings-menu-block button:not(.link) {
+  justify-content: flex-start;
+  border: none;
+  background: none;
+  height: 30px;
+  padding: 0 8px;
+  border-radius: var(--radius);
+  gap: 8px;
+}
+
+.settings-menu-block button.sub {
+  padding-left: 16px;
+}
+
+.settings-menu-block button.active {
+  background: var(--selected);
+  font-weight: 600;
+}
+
+.settings .page {
+  min-width: 0;
 }

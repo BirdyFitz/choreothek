@@ -16,7 +16,7 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('search')
   const [showFilters, setShowFilters] = usePersistent('showFilters', true)
   const [showDetails, setShowDetails] = usePersistent('showDetails', true)
-  // Einrichtungsassistent beim ersten Start (oder auf Wunsch aus „Datenquellen“)
+  // Einrichtungsassistent beim ersten Start (oder auf Wunsch aus „Einstellungen“)
   const [wizard, setWizard] = useState(false)
 
   // „Bearbeiten“ im Detailbereich wechselt in die Bibliothek (die den Eintrag selbst öffnet)
@@ -48,8 +48,8 @@ export default function App() {
           <button className={`tab ${activeTab === 'library' ? 'active' : ''}`} onClick={() => setActiveTab('library')}>
             {t('app.tabs.library')}
           </button>
-          <button className={`tab ${activeTab === 'sources' ? 'active' : ''}`} onClick={() => setActiveTab('sources')}>
-            {t('app.tabs.sources')}
+          <button className={`tab ${activeTab === 'settings' ? 'active' : ''}`} onClick={() => setActiveTab('settings')}>
+            {t('app.tabs.settings')}
           </button>
         </nav>
         )}
@@ -95,7 +95,7 @@ export default function App() {
       <div className="main" style={{ display: !wizard && activeTab === 'library' ? 'flex' : 'none' }}>
         <Library />
       </div>
-      <div className="main" style={{ display: !wizard && activeTab === 'sources' ? 'flex' : 'none' }}>
+      <div className="main" style={{ display: !wizard && activeTab === 'settings' ? 'flex' : 'none' }}>
         <Settings onOpenWizard={() => setWizard(true)} />
       </div>
     </div>

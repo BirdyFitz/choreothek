@@ -19,7 +19,7 @@ export async function createBackupInteractive() {
   return data
 }
 
-// Karte „Sicherung“ in den Datenquellen
+// Bereich „Sicherung“ in den Einstellungen
 export default function BackupCard() {
   const [status, setStatus] = useState(null)
   const [busy, setBusy] = useState('')

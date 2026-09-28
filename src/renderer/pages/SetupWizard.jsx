@@ -10,7 +10,7 @@ import { t } from '../../shared/i18n.js'
 const STEPS = ['welcome', 'folders', 'ai', 'import']
 
 // Einrichtungsassistent (erster Start): Willkommen, Ordner, KI, Vorschau und Einlesen.
-// Nutzt dieselben Bausteine wie „Datenquellen“; jeder Schritt lässt sich überspringen.
+// Nutzt dieselben Bausteine wie „Einstellungen“; jeder Schritt lässt sich überspringen.
 export default function SetupWizard({ onFinish }) {
   const [step, setStep] = useState(0)
   const id = STEPS[step]

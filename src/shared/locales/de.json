@@ -8,7 +8,7 @@
     "tabs": {
       "search": "Suchen",
       "library": "Bibliothek",
-      "sources": "Datenquellen"
+      "settings": "Einstellungen"
     },
     "toggle": {
       "filter": "Filter",
@@ -78,7 +78,7 @@
     "sortNone": "Klicken, um aufsteigend zu sortieren",
     "unassignedTag": "nicht zugeordnet",
     "emptyTitle": "Keine Songs gefunden.",
-    "emptyHint": "Filter lockern oder in „Datenquellen“ Ordner einlesen."
+    "emptyHint": "Filter lockern oder unter „Einstellungen“ Ordner einlesen."
   },
   "details": {
     "title": "Details",
@@ -165,9 +165,9 @@
     "forbidden": "Nicht erlaubt",
     "fileNotFound": "Datei nicht gefunden",
     "folderNotFound": "Ordner nicht gefunden: {path}",
-    "noMegamixFolder": "Kein MegaMix-Ordner eingestellt (Datenquellen → Ordner).",
-    "noJamFolder": "Kein Jam-Session-Ordner eingestellt (Datenquellen → Ordner).",
-    "noChoreoFolder": "Kein Ordner für die Choreo Notes der ZIN Volumes eingestellt (Datenquellen → Ordner).",
+    "noMegamixFolder": "Kein MegaMix-Ordner eingestellt (Einstellungen → Datenquellen → Ordner).",
+    "noJamFolder": "Kein Jam-Session-Ordner eingestellt (Einstellungen → Datenquellen → Ordner).",
+    "noChoreoFolder": "Kein Ordner für die Choreo Notes der ZIN Volumes eingestellt (Einstellungen → Datenquellen → Ordner).",
     "noSongsRecognized": "{file}: keine Songs erkannt – wird künftig übersprungen",
     "unexpectedFilename": "Unerwartetes Dateinamensformat: „{file}“",
     "unknownMegamixEdition": "Mega-Mix-Edition nicht erkennbar in „{label}“",
@@ -177,8 +177,8 @@
       "confirmationRequired": "Die KI-Nutzung wurde nicht bestätigt.",
       "noPermit": "KI-Aufruf ohne Freigabe abgelehnt.",
       "noCallsLeft": "Mehr KI-Aufrufe als bestätigt – abgebrochen.",
-      "noKey": "Kein API-Schlüssel für den gewählten KI-Anbieter gespeichert (Datenquellen → KI).",
-      "privacyAck": "Bitte zuerst unter Datenquellen → KI den Hinweis zur Datenübermittlung bestätigen.",
+      "noKey": "Kein API-Schlüssel für den gewählten KI-Anbieter gespeichert (Einstellungen → KI).",
+      "privacyAck": "Bitte zuerst unter Einstellungen → KI den Hinweis zur Datenübermittlung bestätigen.",
       "keyInvalid": "Der API-Schlüssel wurde vom Anbieter abgelehnt.",
       "noCredit": "Beim Anbieter ist kein Guthaben mehr vorhanden oder das Ausgabenlimit erreicht.",
       "modelNotFound": "Das gewählte Modell ist beim Anbieter nicht verfügbar.",
@@ -201,7 +201,7 @@
       "invalidPage": "Seitenzahlen müssen ganze Zahlen ab 1 sein.",
       "jammerRequired": "Bitte einen Namen für den Jammer angeben.",
       "songNameRequired": "Jeder Song braucht einen Titel.",
-      "pdfMissing": "Die PDF-Kopie in Choreothek fehlt – bitte über „Datenquellen“ neu einlesen.",
+      "pdfMissing": "Die PDF-Kopie in Choreothek fehlt – bitte unter Einstellungen → Datenquellen → Einlesen neu einlesen.",
       "noAiForMegamix": "MegaMixe werden ohne KI aus den Dateinamen gelesen.",
       "fileNotAllowed": "Diese Datei liegt nicht in den Ordnern von Choreothek oder ist keine Musik-/Videodatei."
     },
@@ -302,7 +302,7 @@
       "firstUse": "du die KI zum ersten Mal nutzt"
     },
     "privacy": "Die PDFs gehen an {provider}. Musik, Videos und die Datenbank bleiben auf deinem PC.",
-    "dontAskAgain": "Nicht mehr fragen (wieder einschaltbar unter Datenquellen → KI)",
+    "dontAskAgain": "Nicht mehr fragen (wieder einschaltbar unter Einstellungen → KI)",
     "cancel": "Abbrechen",
     "confirm": "KI nutzen und einlesen"
   },
@@ -400,7 +400,7 @@
       "megamixNoAi": "MegaMixe liest Choreothek ohne KI aus den Dateinamen."
     },
     "ai": {
-      "hint": "Wähle einen KI-Anbieter und hinterlege deinen Schlüssel. Du kannst diesen Schritt auch überspringen und die KI später unter „Datenquellen“ einrichten."
+      "hint": "Wähle einen KI-Anbieter und hinterlege deinen Schlüssel. Du kannst diesen Schritt auch überspringen und die KI später unter „Einstellungen → KI“ einrichten."
     },
     "import": {
       "hint": "Prüfe, was erkannt wurde, ordne Fehlendes von Hand zu und starte dann das Einlesen. Vor jeder KI-Nutzung erscheint eine Meldung mit den geschätzten Kosten."
@@ -590,7 +590,7 @@
   "backup": {
     "title": "Sicherung",
     "hint": "Sichert alle Einträge, Korrekturen, Zuordnungen und Einstellungen sowie die Kopien der Choreo Notes in eine .zip-Datei. Deine Musik- und Videodateien sind nicht enthalten – die liegen ja in deinen Ordnern.",
-    "keysHint": "API-Schlüssel sind aus Sicherheitsgründen nicht enthalten. Nach dem Wiederherstellen trägst du sie unter „KI“ neu ein.",
+    "keysHint": "API-Schlüssel sind aus Sicherheitsgründen nicht enthalten. Nach dem Wiederherstellen trägst du sie unter Einstellungen → KI neu ein.",
     "create": "Sicherung erstellen",
     "restore": "Sicherung wiederherstellen",
     "creating": "Sichere …",
@@ -601,12 +601,12 @@
     "created": "Sicherung gespeichert: {file} ({size}, {jams} Jams, {volumes} ZIN Volumes, {megamixes} MegaMixe).",
     "restoreConfirm": "Sicherung vom {date} wiederherstellen ({jams} Jams, {volumes} ZIN Volumes, {megamixes} MegaMixe)?\n\nDer jetzige Stand in Choreothek wird dabei ersetzt. Er wird vorher beiseitegelegt, bis zur nächsten Wiederherstellung.",
     "restored": "Sicherung wiederhergestellt.",
-    "missingTitle": "Diese Ordner gibt es auf diesem PC nicht – bitte unter „Ordner“ neu auswählen:",
+    "missingTitle": "Diese Ordner gibt es auf diesem PC nicht – bitte unter Einstellungen → Datenquellen → Ordner neu auswählen:",
     "missingOverrides": {
       "one": "Außerdem zeigt {count} Zuordnung von Hand auf einen fehlenden Ordner.",
       "other": "Außerdem zeigen {count} Zuordnungen von Hand auf fehlende Ordner."
     },
-    "keysAgain": "API-Schlüssel sind nicht Teil der Sicherung – bitte unter „KI“ neu eintragen, falls du Jams oder Volumes einlesen möchtest.",
+    "keysAgain": "API-Schlüssel sind nicht Teil der Sicherung – bitte unter Einstellungen → KI neu eintragen, falls du Jams oder Volumes einlesen möchtest.",
     "kinds": {
       "jamRoots": "Jam Sessions",
       "megamixRoot": "MegaMix",
@@ -621,5 +621,18 @@
     "saveTitle": "Sicherung speichern",
     "openTitle": "Sicherung wiederherstellen",
     "fileType": "Choreothek-Sicherung"
+  },
+  "settings": {
+    "menu": "Bereiche der Einstellungen",
+    "groups": {
+      "sources": "Datenquellen"
+    },
+    "sections": {
+      "folders": "Ordner",
+      "preview": "Vorschau",
+      "import": "Einlesen",
+      "ai": "KI",
+      "backup": "Sicherung"
+    }
   }
 }
