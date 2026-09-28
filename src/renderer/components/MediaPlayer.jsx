@@ -8,7 +8,8 @@ import { t } from '../../shared/i18n.js'
 // Player für Musik und Videos: Tempo 0,5–1× (Tonhöhe bleibt), Abschnitt A–B wiederholen,
 // Sprung zu einer Zeit, Tastatur. Kann das Format nicht abgespielt werden (z. B. HEVC-Handyvideos),
 // öffnet sich die Datei automatisch im Windows-Standardprogramm.
-export default function MediaPlayer({ url, kind }) {
+// seekTo: { time, n } -- von außen an eine Stelle springen und abspielen (n macht wiederholte Sprünge eindeutig)
+export default function MediaPlayer({ url, kind, seekTo }) {
   const media = useRef(null)
   const [playing, setPlaying] = useState(false)
   const [time, setTime] = useState(0)
@@ -34,6 +35,17 @@ export default function MediaPlayer({ url, kind }) {
   useEffect(() => {
     if (media.current) media.current.playbackRate = speed
   }, [speed, url])
+
+  useEffect(() => {
+    const el = media.current
+    if (!el || !seekTo) return
+    const go = () => {
+      el.currentTime = seekTo.time
+      el.play().catch(() => {})
+    }
+    if (el.readyState >= 1) go()
+    else el.addEventListener('loadedmetadata', go, { once: true })
+  }, [seekTo])
 
   const openExternally = useCallback(async () => {
     const error = await openInDefaultApp(url)

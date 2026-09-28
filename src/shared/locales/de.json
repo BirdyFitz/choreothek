@@ -500,5 +500,72 @@
     "openExternal": "Im Standardprogramm öffnen",
     "openedExternally": "Dieses Format kann Choreothek nicht abspielen – die Datei wurde im Standardprogramm von Windows geöffnet.",
     "cannotPlay": "Dieses Format kann Choreothek nicht abspielen, und die Datei ließ sich auch nicht im Standardprogramm öffnen."
+  },
+  "video": {
+    "open": "Videoanalyse",
+    "openHint": "Handy-Videos dieser Jam per Tonvergleich den Songs zuordnen, umbenennen oder in Songs schneiden",
+    "title": "Videoanalyse",
+    "close": "Videoanalyse schließen",
+    "hint": "Choreothek vergleicht den Ton der Videos mit den Musikdateien im Jam-Ordner – auf deinem PC, ohne KI und ohne dass etwas gesendet wird. Verändert wird erst nach deiner Prüfung und Bestätigung; jeder Lauf lässt sich rückgängig machen.",
+    "loadError": "Videos der Jam konnten nicht geladen werden",
+    "analyzeError": "Die Analyse konnte nicht gestartet werden",
+    "executeError": "Fehler beim Ausführen",
+    "choose": "Videos auswählen (Vergleich mit {music} Musikdateien im Jam-Ordner)",
+    "usedBy": "– bei {list}",
+    "unassigned": "– nicht zugeordnet",
+    "noVideos": "Im Jam-Ordner liegen keine Videos.",
+    "analyze": {
+      "one": "{count} Video analysieren",
+      "other": "{count} Videos analysieren"
+    },
+    "progress": "{done} von {total} – {current}",
+    "reviewHint": "Bitte prüfen: Songs und Grenzen lassen sich ändern, Teile abwählen. „▶“ spielt das Video ab dieser Stelle. Beim Schneiden ohne Neukodieren beginnt ein Teil bis zu 1–2 Sekunden früher.",
+    "error": "Fehler: {error}",
+    "noMatch": "kein passender Song gefunden – bleibt unverändert",
+    "action": "Aktion",
+    "actions": {
+      "rename": "umbenennen",
+      "cut": "in Songs schneiden",
+      "skip": "nicht ändern"
+    },
+    "song": "Song",
+    "start": "Beginn",
+    "end": "Ende",
+    "hits": "Treffer",
+    "sure": "sicher",
+    "unsure": "unsicher",
+    "use": "Teil übernehmen",
+    "playFrom": "Video ab dieser Stelle abspielen",
+    "discard": "Verwerfen",
+    "execute": {
+      "one": "{count} Video ändern",
+      "other": "{count} Videos ändern"
+    },
+    "invalid": "Jeder gewählte Teil braucht einen Song und gültige Zeiten (Ende nach Beginn).",
+    "confirm": "Diese Videos werden verändert (Originale geschnittener Videos wandern in den Unterordner „Originale“):\n\n{list}\n\nFortfahren?",
+    "executed": {
+      "one": "{count} Video geändert.",
+      "other": "{count} Videos geändert."
+    },
+    "problems": " Nicht geändert: {list}",
+    "status": {
+      "missing": "Datei nicht mehr vorhanden",
+      "targetExists": "Zieldatei gibt es schon",
+      "cutFailed": "Schnitt fehlgeschlagen",
+      "doneOriginalKept": "geschnitten, Original blieb liegen (gleichnamige Datei in „Originale“)"
+    },
+    "runs": "Bisherige Läufe",
+    "runLabel": {
+      "one": "{date}: {count} Video geändert",
+      "other": "{date}: {count} Videos geändert"
+    },
+    "runUndone": "rückgängig gemacht",
+    "undo": "Rückgängig",
+    "undoConfirm": "Diesen Lauf rückgängig machen? Geschnittene Teile werden gelöscht, Umbenennungen zurückgenommen und Originale zurückgeholt.",
+    "undone": "Rückgängig gemacht.",
+    "undoSkipped": {
+      "one": " {count} Datei blieb unverändert, weil sie inzwischen verändert wurde.",
+      "other": " {count} Dateien blieben unverändert, weil sie inzwischen verändert wurden."
+    }
   }
 }

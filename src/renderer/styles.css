@@ -1239,3 +1239,73 @@ body.resizing video {
 .removed-file {
   font-size: 12px;
 }
+
+/* ---------- Videoanalyse ---------- */
+
+.video-analysis {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.video-analysis h2 {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.video-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.video-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.video-card-head {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.video-card-head select {
+  width: auto;
+}
+
+.video-parts td {
+  padding: 2px 4px;
+}
+
+.video-parts input {
+  height: 26px;
+}
+
+.video-parts input[type='checkbox'] {
+  width: 16px;
+  height: 16px;
+}
+
+.video-parts input.num {
+  width: 80px;
+}
+
+.video-runs {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.video-runs li {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}

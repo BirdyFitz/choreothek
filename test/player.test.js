@@ -33,3 +33,11 @@ test('Tempo von 0,5 bis 1', () => {
   assert.equal(Math.min(...SPEEDS), 0.5)
   assert.equal(Math.max(...SPEEDS), 1)
 })
+
+test('Schnittgrenzen genau anzeigen und zurücklesen', async () => {
+  const { formatTimePrecise } = await import('../src/renderer/lib/player.js')
+  assert.equal(formatTimePrecise(151.6), '2:31,6')
+  assert.equal(formatTimePrecise(120), '2:00')
+  assert.equal(parseTime(formatTimePrecise(151.6)), 151.6)
+  assert.equal(parseTime(formatTimePrecise(59.95)), 60)
+})

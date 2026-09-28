@@ -10,10 +10,12 @@ import {
   IconSparkles,
   IconTrash,
   IconFolderOpen,
-  IconUsers
+  IconUsers,
+  IconWaveSine
 } from '@tabler/icons-react'
 import AiConfirmDialog from '../components/AiConfirmDialog.jsx'
 import SongFiles from '../components/SongFiles.jsx'
+import VideoAnalysis from '../components/VideoAnalysis.jsx'
 import Splitter from '../components/Splitter.jsx'
 import { clampPaneWidth } from '../lib/paneWidth.js'
 import { meldeDatenGeaendert, DATEN_GEAENDERT, OPEN_IN_LIBRARY } from '../lib/events.js'
@@ -61,6 +63,8 @@ function Editor({ type, id, onChanged }) {
   // Dateien je Song (Musik/Videos, Zuordnung von Hand) und der Song, dessen Dateien gezeigt werden
   const [media, setMedia] = useState(null)
   const [selectedSong, setSelectedSong] = useState(null)
+  // Videoanalyse (nur Jams) statt Songtabelle anzeigen
+  const [videoMode, setVideoMode] = useState(false)
 
   const loadMedia = useCallback(async () => {
     try {
@@ -183,11 +187,30 @@ function Editor({ type, id, onChanged }) {
   const isDirty = dirty.head || dirty.songs
   const warmupCount = songs.filter((x) => isWarmup(x)).length
 
+  if (videoMode) {
+    return (
+      <div className="editor">
+        <VideoAnalysis
+          jamId={id}
+          onClose={() => {
+            setVideoMode(false)
+            loadMedia()
+          }}
+        />
+      </div>
+    )
+  }
+
   return (
     <div className="editor">
       <div className="editor-head">
         <h2>{labelOf(type, item)}</h2>
         <div className="button-row">
+          {type === 'jam' && (
+            <button type="button" onClick={() => setVideoMode(true)} disabled={busy !== '' || isDirty} title={t('video.openHint')}>
+              <IconWaveSine size={16} stroke={1.6} /> {t('video.open')}
+            </button>
+          )}
           {type !== 'megamix' && (
             <button type="button" onClick={startReextract} disabled={busy !== ''} title={t('library.reextractHint')}>
               {busy === 'ai' ? <span className="spinner" /> : <IconSparkles size={16} stroke={1.6} />} {t('library.reextract')}

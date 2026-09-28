@@ -32,3 +32,10 @@ export function loopJump(current, a, b, duration) {
   if (!Number.isFinite(end) || end - start < 0.2) return null
   return current >= end || current < start - 0.5 ? start : null
 }
+
+// Sekunden -> "m:ss,s" (Zehntel nur wenn nötig) -- für Schnittgrenzen, die parseTime genau zurückliest
+export function formatTimePrecise(seconds) {
+  const rounded = Math.round(seconds * 10) / 10
+  const tenths = Math.round(rounded * 10) % 10
+  return tenths ? `${formatTime(rounded)},${tenths}` : formatTime(rounded)
+}
