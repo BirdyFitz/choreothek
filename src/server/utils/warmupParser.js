@@ -3,7 +3,7 @@ import fs from 'fs';
 // Die Warm-up-Medley (i.d.R. 3 Songs, gemeinsame Choreo auf Seite 1 der LIVE-PDF) wird
 // nicht aus der Choreo-Notes-PDF extrahiert (Claude bekäme nur einen zusammengesetzten
 // Titel wie "PODEROSA / SELVA / ARE YOU READY" ohne klare Song-Grenzen), sondern direkt aus
-// den MP3-Dateinamen im ZIN-Volumes-Audio-Ordner, wo jeder Warm-up-Song als eigene Datei
+// den MP3-Dateinamen im Musikordner des Volumes, wo jeder Warm-up-Song als eigene Datei
 // mit Rhythmus "Warm-up" vorliegt (z.B. "01 La Fiesta - Warm-up.mp3").
 export function findWarmupSongs(audioFolder) {
   if (!audioFolder) return [];

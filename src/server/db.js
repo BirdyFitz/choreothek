@@ -109,6 +109,11 @@ const MIGRATIONS = [
     undone_at TEXT,
     undo_log TEXT
   );
+  `,
+  // 5: Bezeichnungen der Volumes ohne Markenkürzel („… Volume 100“ -> „Volume 100“)
+  `
+  UPDATE zin_volumes SET edition_label = 'Volume ' || edition_number
+  WHERE edition_number IS NOT NULL AND edition_label <> 'Volume ' || edition_number;
   `
 ];
 
@@ -216,7 +221,7 @@ const contains = (column) => `lower_de(${column}) LIKE lower_de(?)`;
 
 // rhythm: Teilstring, Groß-/Kleinschreibung egal ("sal" findet alle Salsa-Varianten).
 // datumVon/datumBis (YYYY-MM-DD) und ort gibt es nur bei Jam Sessions -- sind sie gesetzt,
-// werden MegaMix und ZIN Volumes nicht mit durchsucht.
+// werden MegaMix und Volumes nicht mit durchsucht.
 // song: Teilstring im Songtitel, alle drei Quellen. jamId: genau eine Jam Session.
 // quelle: 'jam' | 'megamix' | 'zin' schränkt auf eine Quellenart ein (leer = alle).
 export async function searchSongs(rhythm, jammerName, megamix, zinVolume, datumVon, datumBis, ort, song, jamId, quelle) {

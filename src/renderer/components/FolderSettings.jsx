@@ -30,7 +30,7 @@ function PathField({ id, label, hint, help, value, onChange, onBrowse, onRemove,
   )
 }
 
-// Karte „Ordner“: Jam-Ordner, MegaMix, ZIN Volumes (Musik, Choreo Notes, Videos).
+// Karte „Ordner“: Jam-Ordner, MegaMix, Volumes (Musik, Choreo Notes, Videos).
 // onSaved wird nach erfolgreichem Speichern aufgerufen (z. B. „weiter“ im Assistenten).
 export default function FolderSettings({ onSaved, saveLabel }) {
   const [jamRoots, setJamRoots] = useState([''])

@@ -53,7 +53,7 @@ router.get('/preview', async (req, res) => {
       return {
         editions: scan.editions.map((e) => ({
           ...e,
-          imported: imported.has(`ZIN Volume ${e.number}`),
+          imported: imported.has(`Volume ${e.number}`),
           assigned: Object.keys(overrides[e.number] || {})
         })),
         unrecognized: scan.unrecognized

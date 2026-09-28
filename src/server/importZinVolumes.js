@@ -7,7 +7,7 @@ import { scanZinFromSettings, zinFolders } from './scan/settings.js';
 import { findWarmupSongs } from './utils/warmupParser.js';
 import { t } from '../shared/i18n.js';
 
-const label = (editionNumber) => `ZIN Volume ${editionNumber}`;
+const label = (editionNumber) => `Volume ${editionNumber}`;
 
 async function scanZin() {
   const { choreoRoot } = await zinFolders();

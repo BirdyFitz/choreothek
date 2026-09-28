@@ -1,4 +1,4 @@
-// Erkennung der ZIN Volumes und MegaMixe in den eingestellten Ordnern (Vorschau vor dem Einlesen).
+// Erkennung der Volumes und MegaMixe in den eingestellten Ordnern (Vorschau vor dem Einlesen).
 // Nummern werden tolerant aus Ordner- und Dateinamen gelesen; was nicht erkannt wird, landet in
 // „unrecognized“ und kann in der Vorschau von Hand einer Edition zugeordnet werden (overrides).
 import fs from 'fs';
@@ -26,7 +26,7 @@ const samePath = (a, b) => Boolean(a && b) && path.resolve(a).toLowerCase() === 
 
 // Nummer eines Ordners: aus dem Ordnernamen, sonst aus den Dateinamen darin -- aber nur, wenn
 // mindestens die Hälfte der Dateien dieselbe Nummer trägt (ein Sammelordner mit einer einzelnen
-// „Zin_34“-Datei ist nicht Volume 34)
+// „…_34“-Datei ist nicht Volume 34)
 function folderNumber(folder, pattern) {
   const own = editionNumber(path.basename(folder));
   if (own != null) return own;

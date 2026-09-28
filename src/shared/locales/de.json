@@ -51,8 +51,8 @@
     "jamNoDate": "ohne Datum",
     "megamix": "MegaMix",
     "megamixAll": "Alle MegaMixe",
-    "zin": "ZIN Volume",
-    "zinAll": "Alle ZIN Volumes"
+    "zin": "Volume",
+    "zinAll": "Alle Volumes"
   },
   "results": {
     "songs": {
@@ -114,14 +114,14 @@
     "foldersTitle": "Ordner",
     "foldersHint": "Ordner auf deinem PC, aus denen Choreothek Songs einliest und Musik, Videos und Choreo Notes zuordnet.",
     "jamRoots": "Jam Sessions (inkl. Unterordner, je Jam ein Ordner mit PDF, Musik und Videos)",
-    "jamRootPlaceholder": "z. B. D:\\Zumba\\Jam Sessions",
+    "jamRootPlaceholder": "z. B. D:\\Tanz\\Jam Sessions",
     "addJamRoot": "weiteren Jam-Session-Ordner",
     "megamixRoot": "MegaMix (MP3s)",
-    "megamixRootPlaceholder": "z. B. D:\\Zumba\\Musik\\MegaMix",
-    "zinMp3Root": "ZIN Volumes – Musik",
-    "zinMp3RootPlaceholder": "z. B. D:\\Zumba\\Musik\\ZIN Volumes",
-    "zinChoreoRoot": "ZIN Volumes – Choreo Notes (PDFs)",
-    "zinChoreoRootPlaceholder": "z. B. D:\\Zumba\\ZIN Volumes\\Choreo Notes",
+    "megamixRootPlaceholder": "z. B. D:\\Tanz\\Musik\\MegaMix",
+    "zinMp3Root": "Volumes – Musik",
+    "zinMp3RootPlaceholder": "z. B. D:\\Tanz\\Musik\\Volumes",
+    "zinChoreoRoot": "Volumes – Choreo Notes (PDFs)",
+    "zinChoreoRootPlaceholder": "z. B. D:\\Tanz\\Volumes\\Choreo Notes",
     "browse": "Durchsuchen",
     "browseTitle": "Ordner auswählen",
     "remove": "Ordner entfernen",
@@ -133,7 +133,7 @@
     "importHint": "Liest neue Jams bzw. Editionen aus den gespeicherten Ordnern ein und trägt fehlende Ordner nach. Bereits eingelesene werden übersprungen.",
     "importMegamix": "MegaMixe einlesen",
     "importJams": "Jam Sessions einlesen",
-    "importZin": "ZIN Volumes einlesen",
+    "importZin": "Volumes einlesen",
     "importing": "Lese ein …",
     "importResultJams": "{imported} neue Jam(s) mit {songs} Songs eingelesen, {skipped} übersprungen",
     "importResultEditions": "{imported} neue Edition(en) mit {songs} Songs eingelesen, {skipped} übersprungen",
@@ -142,9 +142,9 @@
     "importError": "Fehler beim Einlesen",
     "importUsesAi": "Nutzt die KI – vorher erscheint eine Meldung mit den geschätzten Kosten",
     "importAiCost": " KI-Kosten ca. {amount} (geschätzt).",
-    "zinVideoRoot": "ZIN Volumes – Videos",
+    "zinVideoRoot": "Volumes – Videos",
     "zinVideoRootHint": "Leer lassen: Videos werden im Ordner über den Choreo Notes gesucht.",
-    "zinVideoRootPlaceholder": "z. B. D:ZumbaZIN VolumesVideos",
+    "zinVideoRootPlaceholder": "z. B. D:\\Tanz\\Volumes\\Videos",
     "progress": "{done} von {total} – {current}",
     "progressStart": "Bereite vor …",
     "cancel": "Abbrechen",
@@ -167,7 +167,7 @@
     "folderNotFound": "Ordner nicht gefunden: {path}",
     "noMegamixFolder": "Kein MegaMix-Ordner eingestellt (Einstellungen → Datenquellen → Ordner).",
     "noJamFolder": "Kein Jam-Session-Ordner eingestellt (Einstellungen → Datenquellen → Ordner).",
-    "noChoreoFolder": "Kein Ordner für die Choreo Notes der ZIN Volumes eingestellt (Einstellungen → Datenquellen → Ordner).",
+    "noChoreoFolder": "Kein Ordner für die Choreo Notes der Volumes eingestellt (Einstellungen → Datenquellen → Ordner).",
     "noSongsRecognized": "{file}: keine Songs erkannt – wird künftig übersprungen",
     "unexpectedFilename": "Unerwartetes Dateinamensformat: „{file}“",
     "unknownMegamixEdition": "Mega-Mix-Edition nicht erkennbar in „{label}“",
@@ -225,7 +225,7 @@
   },
   "ai": {
     "title": "KI",
-    "hint": "Zum Einlesen von Jam Sessions und ZIN Volumes liest eine KI die Choreo-Notes-PDFs aus. Dafür brauchst du einen eigenen API-Schlüssel bei einem der Anbieter; die Kosten rechnet der Anbieter direkt mit dir ab.",
+    "hint": "Zum Einlesen von Jam Sessions und Volumes liest eine KI die Choreo-Notes-PDFs aus. Dafür brauchst du einen eigenen API-Schlüssel bei einem der Anbieter; die Kosten rechnet der Anbieter direkt mit dir ab.",
     "loadError": "KI-Einstellungen konnten nicht geladen werden",
     "saveError": "Fehler beim Speichern",
     "saved": "Gespeichert.",
@@ -284,8 +284,8 @@
       "other": "{count} Jams"
     },
     "unitsZin": {
-      "one": "{count} ZIN Volume",
-      "other": "{count} ZIN Volumes"
+      "one": "{count} Volume",
+      "other": "{count} Volumes"
     },
     "item": "{label} ({pages} S.)",
     "cost": "Kosten",
@@ -315,7 +315,7 @@
     "save": "Speichern",
     "tabs": {
       "jams": "Jam Sessions",
-      "zin": "ZIN Volumes",
+      "zin": "Volumes",
       "megamix": "MegaMix"
     },
     "onlyOpen": "Nur Neues und Hinweise zeigen",
@@ -393,10 +393,10 @@
     },
     "welcome": {
       "title": "Willkommen bei Choreothek",
-      "text": "Choreothek macht dein eigenes Archiv aus Jam Sessions, MegaMixen und ZIN Volumes durchsuchbar – nach Song, Rhythmus, Jammer, Ort und Datum – und zeigt dazu Choreo Notes, Musik und Videos.",
+      "text": "Choreothek macht dein eigenes Archiv aus Jam Sessions, MegaMixen und Volumes durchsuchbar – nach Song, Rhythmus, Jammer, Ort und Datum – und zeigt dazu Choreo Notes, Musik und Videos.",
       "privacy": "Deine Daten bleiben auf deinem PC. Nur zum Auslesen der Choreo-Notes-PDFs werden diese an den KI-Anbieter gesendet, den du selbst auswählst – und nie ohne vorherige Meldung.",
-      "needFolders": "Du wählst die Ordner, in denen deine Jam Sessions, MegaMixe und ZIN Volumes liegen.",
-      "needKey": "Für Jam Sessions und ZIN Volumes brauchst du einen eigenen API-Schlüssel bei Anthropic, OpenAI oder Google. Die Kosten rechnet der Anbieter direkt mit dir ab.",
+      "needFolders": "Du wählst die Ordner, in denen deine Jam Sessions, MegaMixe und Volumes liegen.",
+      "needKey": "Für Jam Sessions und Volumes brauchst du einen eigenen API-Schlüssel bei Anthropic, OpenAI oder Google. Die Kosten rechnet der Anbieter direkt mit dir ab.",
       "megamixNoAi": "MegaMixe liest Choreothek ohne KI aus den Dateinamen."
     },
     "ai": {
@@ -415,7 +415,7 @@
   "library": {
     "types": {
       "jam": "Jams",
-      "zin": "ZIN Volumes",
+      "zin": "Volumes",
       "megamix": "MegaMix"
     },
     "filter": "Filtern …",
@@ -598,8 +598,8 @@
     "last": "Letzte Sicherung: {date}",
     "never": "Noch keine Sicherung erstellt.",
     "reminder": "Alle {days} Tage an eine Sicherung erinnern",
-    "created": "Sicherung gespeichert: {file} ({size}, {jams} Jams, {volumes} ZIN Volumes, {megamixes} MegaMixe).",
-    "restoreConfirm": "Sicherung vom {date} wiederherstellen ({jams} Jams, {volumes} ZIN Volumes, {megamixes} MegaMixe)?\n\nDer jetzige Stand in Choreothek wird dabei ersetzt. Er wird vorher beiseitegelegt, bis zur nächsten Wiederherstellung.",
+    "created": "Sicherung gespeichert: {file} ({size}, {jams} Jams, {volumes} Volumes, {megamixes} MegaMixe).",
+    "restoreConfirm": "Sicherung vom {date} wiederherstellen ({jams} Jams, {volumes} Volumes, {megamixes} MegaMixe)?\n\nDer jetzige Stand in Choreothek wird dabei ersetzt. Er wird vorher beiseitegelegt, bis zur nächsten Wiederherstellung.",
     "restored": "Sicherung wiederhergestellt.",
     "missingTitle": "Diese Ordner gibt es auf diesem PC nicht – bitte unter Einstellungen → Datenquellen → Ordner neu auswählen:",
     "missingOverrides": {
@@ -610,9 +610,9 @@
     "kinds": {
       "jamRoots": "Jam Sessions",
       "megamixRoot": "MegaMix",
-      "zinMusicRoot": "ZIN Volumes – Musik",
-      "zinChoreoRoot": "ZIN Volumes – Choreo Notes",
-      "zinVideoRoot": "ZIN Volumes – Videos"
+      "zinMusicRoot": "Volumes – Musik",
+      "zinChoreoRoot": "Volumes – Choreo Notes",
+      "zinVideoRoot": "Volumes – Videos"
     },
     "due": "Deine letzte Sicherung ist über {days} Tage her.",
     "dueNever": "Du hast noch keine Sicherung deiner Choreothek erstellt.",
@@ -642,19 +642,19 @@
     "filter": {
       "song": "Findet Songs, deren Titel diesen Text enthält. Groß-/Kleinschreibung und Akzente spielen keine Rolle („cafe“ findet „Café“). Die Liste aktualisiert sich beim Tippen.",
       "rhythm": "Findet Songs mit diesem Rhythmus, auch als Teil: „sal“ findet Salsa, Salsa Choke und „Cumbia / Salsa“. Beim Tippen erscheinen die vorhandenen Rhythmen als Vorschläge.",
-      "source": "Schränkt die Suche auf eine Quelle ein: Jam Sessions, MegaMixe oder ZIN Volumes. „Alle“ durchsucht alles.",
+      "source": "Schränkt die Suche auf eine Quelle ein: Jam Sessions, MegaMixe oder Volumes. „Alle“ durchsucht alles.",
       "jammer": "Zeigt nur Songs aus Jams dieses Jammers. Unterschiedliche Schreibweisen desselben Namens führst du in der Bibliothek unter „Jammer-Schreibweisen vereinheitlichen“ zusammen.",
       "location": "Findet Jams, deren Ort diesen Text enthält – z. B. eine Stadt oder den Namen der Halle.",
-      "period": "Zeigt nur Jams in diesem Zeitraum. Jams ohne erkanntes Datum fallen dabei heraus. MegaMixe und ZIN Volumes haben kein Datum.",
+      "period": "Zeigt nur Jams in diesem Zeitraum. Jams ohne erkanntes Datum fallen dabei heraus. MegaMixe und Volumes haben kein Datum.",
       "jam": "Zeigt nur die Songs einer bestimmten Jam. Die Auswahl richtet sich nach Jammer, Ort und Zeitraum.",
       "megamix": "Zeigt nur die Songs eines MegaMix.",
-      "zin": "Zeigt nur die Songs eines ZIN Volumes, inklusive der Warm-up-Songs."
+      "zin": "Zeigt nur die Songs eines Volumes, inklusive der Warm-up-Songs."
     },
     "columns": {
       "song": "Titel des Songs, wie er in den Choreo Notes bzw. im Dateinamen steht. Klick auf die Überschrift sortiert.",
       "artist": "Interpret laut Choreo Notes (bei MegaMixen nicht vorhanden).",
       "rhythm": "Rhythmus bzw. Tanzstil laut Choreo Notes oder Dateiname.",
-      "source": "Woher der Song stammt: Jammer der Jam Session, MegaMix oder ZIN Volume.",
+      "source": "Woher der Song stammt: Jammer der Jam Session, MegaMix oder Volume.",
       "date": "Datum der Jam. Sortiert wird nach dem erkannten Datum, auch wenn es in den Choreo Notes anders geschrieben ist.",
       "location": "Ort der Jam laut Choreo Notes.",
       "media": "Was es zu diesem Song gibt: Musik, Video und Choreo Notes. Rechtsklick auf eine Datei im Detailbereich öffnet weitere Möglichkeiten."
@@ -670,7 +670,7 @@
       "jump": "Springt zu einer Stelle, z. B. „1:23“ oder „83“ (Sekunden)."
     },
     "library": {
-      "list": "Alle eingelesenen Jams, MegaMixe bzw. ZIN Volumes. Das Feld filtert nach Name, Datum und Ort. Die Breite der Liste lässt sich an der Trennlinie ziehen.",
+      "list": "Alle eingelesenen Jams, MegaMixe bzw. Volumes. Das Feld filtert nach Name, Datum und Ort. Die Breite der Liste lässt sich an der Trennlinie ziehen.",
       "actions": "Videoanalyse: Handy-Videos per Tonvergleich den Songs zuordnen. Neu auslesen: die Choreo Notes noch einmal von der KI lesen lassen – das Ergebnis erscheint zum Prüfen. Löschen: entfernt den Eintrag aus Choreothek, deine Dateien bleiben.",
       "jammers": "Ähnliche Schreibweisen (Groß-/Kleinschreibung, „&“ oder „und“) stehen zusammen. Wähle die richtige und führe sie zusammen – oder benenne einen Namen direkt um. Die Jams bleiben erhalten.",
       "media": "Musik, Videos und Choreo Notes dieses Songs. Choreothek ordnet Dateien über ihre Namen zu. Stimmt etwas nicht, löse die Zuordnung (✕) oder ordne eine andere Datei aus dem Ordner zu."
@@ -680,9 +680,9 @@
       "jam_date": "Datum der Jam in beliebiger Schreibweise („3. Mai 2025“, „2025-05-03“). Choreothek erkennt daraus das Datum für Sortierung und Zeitraum.",
       "location": "Ort der Jam, z. B. Halle und Stadt.",
       "source_folder": "Ordner, in dem Musik und Videos dieser Jam liegen. Unterordner werden mit durchsucht, außer „Originale“.",
-      "audio_folder": "Ordner mit der Musik dieses ZIN Volumes.",
-      "live_video_folder": "Ordner mit den Live-Videos dieses ZIN Volumes.",
-      "oneonone_video_folder": "Ordner mit den 1on1-Videos dieses ZIN Volumes.",
+      "audio_folder": "Ordner mit der Musik dieses Volumes.",
+      "live_video_folder": "Ordner mit den Live-Videos dieses Volumes.",
+      "oneonone_video_folder": "Ordner mit den 1on1-Videos dieses Volumes.",
       "song_name": "Titel des Songs. Nach ihm werden Musik und Videos im Ordner zugeordnet.",
       "artist": "Interpret des Songs.",
       "rhythm": "Rhythmus bzw. Tanzstil, z. B. Salsa oder Reggaeton.",
@@ -693,9 +693,9 @@
     "sources": {
       "jamRoots": "Ordner, in denen deine Jam Sessions liegen – am besten je Jam ein Unterordner mit PDF, Musik und Videos. Unterordner werden mit durchsucht. Mehrere Ordner sind möglich.",
       "megamixRoot": "Ordner mit den MegaMixen, je MegaMix ein Unterordner mit den MP3s. Die Nummer wird aus dem Ordner- oder Dateinamen gelesen.",
-      "zinMp3Root": "Ordner mit der Musik der ZIN Volumes, je Volume ein Unterordner (z. B. „ZIN 100“).",
-      "zinChoreoRoot": "Ordner mit den Choreo-Notes-PDFs der ZIN Volumes. Die Volume-Nummer wird aus dem Dateinamen gelesen (z. B. „100 Choreo Notes.pdf“).",
-      "zinVideoRoot": "Ordner mit den Live- und 1on1-Videos der ZIN Volumes (z. B. „zin-volume-100-live-class“). Leer lassen, wenn sie im Ordner über den Choreo Notes liegen."
+      "zinMp3Root": "Ordner mit der Musik der Volumes, je Volume ein Unterordner (z. B. „Volume 100“).",
+      "zinChoreoRoot": "Ordner mit den Choreo-Notes-PDFs der Volumes. Die Volume-Nummer wird aus dem Dateinamen gelesen (z. B. „100 Choreo Notes.pdf“).",
+      "zinVideoRoot": "Ordner mit den Live- und 1on1-Videos der Volumes (z. B. „volume-100-live-class“). Leer lassen, wenn sie im Ordner über den Choreo Notes liegen."
     },
     "preview": {
       "title": "Zeigt vor dem Einlesen, was Choreothek in deinen Ordnern erkennt, was schon eingelesen ist und was fehlt. Nichts wird verändert oder gesendet.",
@@ -706,7 +706,7 @@
       "noSongs": "Aus dieser PDF konnte die KI keine Songs lesen. Sie wird beim Einlesen übersprungen, damit keine Kosten entstehen. „Erneut versuchen“ schickt sie beim nächsten Einlesen wieder an die KI."
     },
     "import": {
-      "title": "MegaMixe liest Choreothek ohne KI aus den Dateinamen. Jam Sessions und ZIN Volumes liest die KI aus den Choreo Notes – vorher erscheint eine Meldung mit den geschätzten Kosten. Bereits Eingelesenes wird übersprungen."
+      "title": "MegaMixe liest Choreothek ohne KI aus den Dateinamen. Jam Sessions und Volumes liest die KI aus den Choreo Notes – vorher erscheint eine Meldung mit den geschätzten Kosten. Bereits Eingelesenes wird übersprungen."
     },
     "ai": {
       "provider": "Welcher KI-Dienst die Choreo Notes ausliest. Du brauchst dort ein eigenes Konto mit API-Schlüssel; die Kosten rechnet der Anbieter direkt mit dir ab.",
@@ -758,7 +758,7 @@
   "about": {
     "title": "Über Choreothek",
     "close": "Schließen",
-    "description": "Choreothek macht dein eigenes Archiv aus Jam Sessions, MegaMixen und ZIN Volumes durchsuchbar und zeigt Choreo Notes, Musik und Videos. Freie Software – kostenlos, ohne Werbung und ohne Nutzungsdaten.",
+    "description": "Choreothek macht dein eigenes Archiv aus Jam Sessions, MegaMixen und Volumes durchsuchbar und zeigt Choreo Notes, Musik und Videos. Freie Software – kostenlos, ohne Werbung und ohne Nutzungsdaten.",
     "version": "Version",
     "license": "Lizenz",
     "source": "Quellcode",

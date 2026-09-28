@@ -1,5 +1,5 @@
 // Grundtest: Server startet mit leerer SQLite-Datenbank, Schutz greift, Suche funktioniert.
-// Testdaten sind frei erfunden (kein ZIN-Material, keine realen Personen).
+// Testdaten sind frei erfunden (kein fremdes Trainingsmaterial, keine realen Personen).
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'fs';

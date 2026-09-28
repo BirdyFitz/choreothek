@@ -22,7 +22,7 @@ Wenn das Jam-Datum nicht vorhanden ist, nutze null. Wenn keine Location angegebe
 
 export function zinPrompt(documentCount) {
   const documentList = Array.from({ length: documentCount }, (_, i) => `Dokument ${i + 1}`).join(', ');
-  return `Du bist ein PDF-Parser für ZIN-Volume-Choreo-Notes (Zumba-Instructor-Trainingsmaterial). Dir liegen ${documentCount} PDF(s) vor (${documentList}).
+  return `Du bist ein PDF-Parser für Choreo Notes eines Trainings-Volumes für Tanz-Instruktoren. Dir liegen ${documentCount} PDF(s) vor (${documentList}).
 
 Diese Choreo-Notes enthalten pro Song üblicherweise zwei Abschnitte:
 - Einen "LIVE"-Abschnitt (volle Kursversion): beginnt mit einer Warm-up-Medley aus mehreren Songs in einem Track, gefolgt von den Kern-Songs, endet mit einem einzelnen Cooldown-Song.
@@ -31,7 +31,7 @@ Diese Choreo-Notes enthalten pro Song üblicherweise zwei Abschnitte:
 Diese beiden Abschnitte können entweder hintereinander in einer gemeinsamen PDF stehen, oder auf zwei separate PDFs verteilt sein (in der Reihenfolge, in der sie dir hier übergeben wurden).
 
 Extrahiere:
-1. Die Volume-Nummer (steht z.B. als "ZIN 100" im Dokument).
+1. Die Volume-Nummer (steht z.B. als Nummer im Titel oder in der Kopfzeile des Dokuments).
 2. Für jeden Kern-Song (NICHT die Warm-up-Medley, die mehrere Songnamen in einem Track kombiniert): Songname, Interpret ("ARTIST"), Rhythmus ("GENRE"), die Seitenzahl im LIVE-Abschnitt und die Seitenzahl im 1ON1-Abschnitt (falls vorhanden).
 3. Den Cooldown-Song NUR mit LIVE-Seite (er hat normalerweise keinen 1ON1-Abschnitt).
 4. Gib für jede Seitenzahl auch an, aus welchem der ${documentCount} Dokument(e) sie stammt (1-indiziert, "live_source"/"oneonone_source").

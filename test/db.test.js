@@ -71,3 +71,12 @@ test('Suche: Umlaute ohne Groß-/Kleinschreibung, Quelle, Zeitraum', async () =>
   const imZeitraum = await db.searchSongs(undefined, undefined, undefined, undefined, '2024-05-01', '2024-05-31')
   assert.deepEqual(imZeitraum.map((r) => r.song_name), ['Probelied'])
 })
+
+test('Migration 5: Bezeichnungen der Volumes ohne Kürzel', async () => {
+  const conn = await db.initDB(file)
+  conn.prepare("INSERT INTO zin_volumes (edition_number, edition_label) VALUES (42, 'XYZ Volume 42')").run()
+  conn.pragma('user_version = 4')
+  db.closeDB()
+  await db.initDB(file)
+  assert.deepEqual(await db.getAllZinVolumeEditionLabels(), ['Volume 42'])
+})

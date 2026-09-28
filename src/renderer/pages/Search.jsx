@@ -122,7 +122,7 @@ export default function Search({ showFilters, showDetails }) {
   const set = (key, value) =>
     setFilters((f) => {
       const next = { ...f, [key]: value }
-      // Die Gruppen schließen sich gegenseitig aus: Jam-Filter, MegaMix-Edition, ZIN-Volume.
+      // Die Gruppen schließen sich gegenseitig aus: Jam-Filter, MegaMix-Edition, Volume.
       // Wer in einer Gruppe etwas wählt, leert die anderen (sonst gäbe es keine Treffer).
       if (JAM_FILTERS.includes(key) && value) {
         next.megamix = ''

@@ -13,7 +13,7 @@ export function categorize(filename) {
 }
 
 // Erwartet Dateinamen wie "<id>-Mega Mix 79 - 01 Bam Bam - Merengue Urbano.mp3" oder
-// "<id>-ZIN 100 Live - 02 Zeta.mp4" / "<id>-ZIN 100 1on1 - 01 Zeta - L Foot - Cues Off.mp4".
+// "<id>-<Kürzel> 100 Live - 02 Zeta.mp4" / "<id>-<Kürzel> 100 1on1 - 01 Zeta - L Foot - Cues Off.mp4".
 // Der Songname steht nach der Tracknummer im zweiten Segment — aber je nach Dateiart können
 // danach noch 0 (Live-Video), 1 (MP3: Rhythmus) oder 2 (1on1-Video: "L Foot - Cues Off")
 // weitere Segmente folgen, und der Songname selbst kann eigene " - " enthalten
@@ -138,9 +138,9 @@ export function findExactMediaMatches(folders, songName, urlBuilder, cache) {
 }
 
 // Für Jam-Session-Ordner: Dateinamen dort sind uneinheitlich (Handy-Aufnahmen, individuelle
-// Benennung) und lassen sich nicht wie bei MegaMix/ZIN Volume in Songnamen zerlegen. Deshalb
+// Benennung) und lassen sich nicht wie bei MegaMix/Volume in Songnamen zerlegen. Deshalb
 // wird der Songname im ganzen Dateinamen gesucht -- begrenzt auf den einen Ordner der Jam
-// (inkl. Unterordner wie "Party"), nie archivweit. Beide Seiten werden wie bei ZIN normalisiert
+// (inkl. Unterordner wie "Party"), nie archivweit. Beide Seiten werden wie bei den Volumes normalisiert
 // (Akzente, Satzzeichen, Klammern, "&"/"feat."):
 //   1. als ganze Wörter im Dateinamen ("la guaracha oh oh oh" in "03 la guaracha oh oh oh live")
 //   2. ohne Leerzeichen, ab 4 Zeichen ("mi gente" in "MiGente.mp4", "r l p" in "RLP.mp4")
@@ -191,7 +191,7 @@ export function findSubstringMediaMatches(folder, songName, urlBuilder, cache) {
   return splitByCategory(exact.length > 0 ? exact : fuzzy);
 }
 
-// Videos in den Ordnern einer Jam bzw. eines ZIN Volumes, die keinem Song zugeordnet wurden
+// Videos in den Ordnern einer Jam bzw. eines Volumes, die keinem Song zugeordnet wurden
 // (z.B. Warm-up-Video, anders benannte Handy-Aufnahmen). matchedUrls: URLs aller Treffer.
 export function findUnassignedVideos(folders, recursive, matchedUrls, urlBuilder, cache) {
   const result = [];

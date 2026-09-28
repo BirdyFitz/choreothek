@@ -62,7 +62,7 @@ before(async () => {
   await insertJam('erika  beispiel', null, '4-x.pdf', null, null);
   await insertJam('Erika Beispiel und Max Muster', null, '5-y.pdf', null, null);
   await insertJam('Erika Beispiel & Max Muster', null, '6-z.pdf', null, null);
-  zinId = await insertZinVolume(5, 'ZIN Volume 5', null, null, null);
+  zinId = await insertZinVolume(5, 'Volume 5', null, null, null);
   await insertZinVolumeSongs(zinId, [
     { name: 'Aufwärmen', rhythm: 'Warm-up', position: -1, live_pdf_filename: '2-live.pdf', live_page: 1 },
     { name: 'Kernsong', rhythm: 'Salsa', position: 1, live_pdf_filename: '2-live.pdf', live_page: 3, oneonone_pdf_filename: '3-1on1.pdf', oneonone_page: 2 }

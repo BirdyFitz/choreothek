@@ -7,7 +7,7 @@ import AiConfirmDialog from './AiConfirmDialog.jsx'
 import Help from './Help.jsx'
 import { t } from '../../shared/i18n.js'
 
-// Karte „Einlesen“: MegaMix direkt, Jams/ZIN Volumes über die KI (Plan, Meldung, Fortschritt).
+// Karte „Einlesen“: MegaMix direkt, Jams/Volumes über die KI (Plan, Meldung, Fortschritt).
 // onAiUsed wird nach jedem KI-Einlesen aufgerufen (KI-Karte zeigt dann neue Kosten).
 export default function ImportCard({ onAiUsed }) {
   const [reimporting, setReimporting] = useState('')

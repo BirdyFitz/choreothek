@@ -127,7 +127,7 @@ router.post('/import-cancel', (req, res) => res.json({ success: requestCancel() 
 router.post('/reimport/jam-sessions', aiImportRoute('jam', (permit, opts) => importJamSessions(permit, opts)));
 router.post('/reimport/zin-volumes', aiImportRoute('zin', (permit, opts) => importZinVolumes(permit, opts)));
 
-// Liefert Audio-/Videodateien aus den gezielt zugeordneten MegaMix-/ZIN-Volume-Ordnern aus.
+// Liefert Audio-/Videodateien aus den gezielt zugeordneten MegaMix-/Volume-Ordnern aus.
 // dir muss unterhalb eines der konfigurierten Datenquellen-Roots liegen (Path-Traversal-Schutz).
 router.get('/library-media', async (req, res) => {
   try {

@@ -9,7 +9,7 @@ const router = express.Router();
 
 // Choreo Notes liegen als Kopie in der App (uploads, Name mit Zeitstempel-Präfix). Für das
 // Kontextmenü (Öffnen, Im Explorer anzeigen) wird das Original im Archiv gesucht:
-// Jam: <Jam-Ordner>/<Name>, ZIN Volume: <Choreo-Notes-Ordner>/<Name>. Nicht gefunden -> null.
+// Jam: <Jam-Ordner>/<Name>, Volume: <Choreo-Notes-Ordner>/<Name>. Nicht gefunden -> null.
 function originalPdf(folder, uploadName, cache) {
   if (!folder || !uploadName) return null;
   const candidate = path.join(folder, uploadName.replace(/^\d+-/, ''));
@@ -33,7 +33,7 @@ function stripInternal(song) {
   return rest;
 }
 
-// Nicht zugeordnete Videos je Jam / ZIN Volume als eigene Zeilen (unassigned: true), damit
+// Nicht zugeordnete Videos je Jam / Volume als eigene Zeilen (unassigned: true), damit
 // sie trotzdem anklickbar sind. Nur ohne Rhythmusfilter (Dateien haben keinen Rhythmus);
 // mit Songfilter nur Videos, deren Dateiname den Suchtext enthält. MegaMix hat keine Videos.
 async function unassignedVideoRows(query, results, mediaByRow, cache) {
@@ -162,7 +162,7 @@ router.get('/zin-volumes', async (req, res) => {
     const zinVolumes = await getAllZinVolumeEditionLabels();
     res.json(zinVolumes);
   } catch (error) {
-    console.error('ZIN-Volumes-Fehler:', error);
+    console.error('Volumes-Fehler:', error);
     res.status(500).json({ error: error.message });
   }
 });

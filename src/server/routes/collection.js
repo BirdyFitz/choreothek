@@ -1,4 +1,4 @@
-// Bibliothek: Jams, ZIN Volumes und MegaMixe anzeigen und bearbeiten (Kopfdaten, Songs, Löschen),
+// Bibliothek: Jams, Volumes und MegaMixe anzeigen und bearbeiten (Kopfdaten, Songs, Löschen),
 // einzeln neu auslesen (KI, nur mit Plan und Meldung) und Jammer-Schreibweisen vereinheitlichen.
 import express from 'express';
 import fs from 'fs';
