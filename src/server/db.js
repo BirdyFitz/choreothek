@@ -97,6 +97,17 @@ const MIGRATIONS = [
   ALTER TABLE songs ADD COLUMN media_override TEXT;
   ALTER TABLE zin_volume_songs ADD COLUMN media_override TEXT;
   ALTER TABLE megamix_songs ADD COLUMN media_override TEXT;
+  `,
+  // 4: Läufe der Videoanalyse (Protokoll je Lauf, für „Rückgängig“)
+  `
+  CREATE TABLE video_runs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    jam_id INTEGER REFERENCES jams(id) ON DELETE SET NULL,
+    created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+    log TEXT NOT NULL,
+    undone_at TEXT,
+    undo_log TEXT
+  );
   `
 ];
 
@@ -599,4 +610,26 @@ export async function assignedFolders() {
     .all()
     .map((r) => r.f)
     .filter(Boolean);
+}
+
+// ---------- Videoanalyse: Läufe ----------
+
+export async function insertVideoRun(jamId, log) {
+  return Number(getDb().prepare('INSERT INTO video_runs (jam_id, log) VALUES (?, ?)').run(jamId, JSON.stringify(log)).lastInsertRowid);
+}
+
+export async function listVideoRuns(jamId) {
+  return getDb()
+    .prepare('SELECT id, jam_id, created_at, log, undone_at FROM video_runs WHERE jam_id = ? ORDER BY id DESC')
+    .all(jamId)
+    .map((r) => ({ ...r, log: JSON.parse(r.log) }));
+}
+
+export async function getVideoRun(id) {
+  const r = getDb().prepare('SELECT * FROM video_runs WHERE id = ?').get(id);
+  return r ? { ...r, log: JSON.parse(r.log) } : null;
+}
+
+export async function markVideoRunUndone(id, undoLog) {
+  getDb().prepare('UPDATE video_runs SET undone_at = CURRENT_TIMESTAMP, undo_log = ? WHERE id = ?').run(JSON.stringify(undoLog), id);
 }

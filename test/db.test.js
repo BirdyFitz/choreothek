@@ -30,7 +30,7 @@ test('neue Datenbank: alle Migrationen laufen, Schema-Stand wird vermerkt', asyn
   const tables = raw.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' ORDER BY name").all().map((r) => r.name)
   raw.close()
   assert.ok(version >= 1)
-  assert.deepEqual(tables, ['ai_calls', 'jams', 'megamix_songs', 'megamixes', 'settings', 'songs', 'zin_volume_songs', 'zin_volumes'])
+  assert.deepEqual(tables, ['ai_calls', 'jams', 'megamix_songs', 'megamixes', 'settings', 'songs', 'video_runs', 'zin_volume_songs', 'zin_volumes'])
 })
 
 test('erneutes Öffnen: Daten bleiben, Migrationen laufen nicht doppelt', async () => {
