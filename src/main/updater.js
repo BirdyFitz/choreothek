@@ -12,6 +12,9 @@ export function initUpdater(getWindow) {
   let available = null;
 
   if (app.isPackaged) {
+    // Kein eigenes Protokoll der Bibliothek: „noch kein Release“ oder „offline“ sind beim Start normal;
+    // Fehler bei einer vom Nutzer ausgelösten Prüfung zeigt die Oberfläche
+    autoUpdater.logger = null;
     autoUpdater.autoDownload = false;
     autoUpdater.autoInstallOnAppQuit = false;
     autoUpdater.on('update-available', (info) => {
