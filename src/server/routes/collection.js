@@ -19,6 +19,7 @@ import { mediaFor, autoMediaFor, filesOf, parseOverride, pathFromMediaUrl } from
 import { isAllowedFile } from '../fileAccess.js';
 import { categorize } from '../utils/scopedMediaFinder.js';
 import { getUploadsDir } from '../paths.js';
+import { zinFolders } from '../scan/settings.js';
 import { buildPlan, extractWithAi, rememberConfirmation, AiError } from '../ai/aiService.js';
 import { redeemPlan, closePermit, GateError } from '../ai/gate.js';
 import { t } from '../../shared/i18n.js';
@@ -70,9 +71,23 @@ router.get('/collection/:type', async (req, res) => {
   }
 });
 
+// Original-PDFs im Archiv zu den PDF-Kopien der App (für das Kontextmenü: Öffnen, Explorer …):
+// Jam: <Jam-Ordner>/<Name>, Volume: <Choreo-Notes-Ordner>/<Name>; nicht gefunden -> fehlt
+async function pdfSources(type, item) {
+  const folder = type === 'jam' ? item.source_folder : (await zinFolders()).choreoRoot;
+  const names = type === 'jam' ? [item.pdf_filename] : item.songs.flatMap((s) => [s.live_pdf_filename, s.oneonone_pdf_filename]);
+  const result = {};
+  for (const name of new Set(names.filter(Boolean))) {
+    const original = folder && path.join(folder, name.replace(/^\d+-/, ''));
+    if (original && fs.existsSync(original)) result[name] = original;
+  }
+  return result;
+}
+
 router.get('/collection/:type/:id', async (req, res) => {
   try {
-    res.json((await itemOf(req)).item);
+    const { type, item } = await itemOf(req);
+    res.json({ ...item, pdf_sources: type === 'megamix' ? {} : await pdfSources(type, item) });
   } catch (error) {
     sendError(res, error);
   }

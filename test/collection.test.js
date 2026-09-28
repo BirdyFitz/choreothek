@@ -219,3 +219,12 @@ test('Musik/Videos von Hand zuordnen: entfernen, hinzufügen, wiederherstellen; 
   assert.deepEqual(media.songs[sonne.id].video.map((v) => v.label), ['Sonnenschein - Salsa.mp4']);
   assert.deepEqual(media.songs[regen.id].video, []);
 });
+
+test('Einzelansicht nennt die Original-PDF im Archiv (Kontextmenü)', async () => {
+  const folder = path.join(dataDir, 'Jam mit PDF');
+  fs.mkdirSync(folder, { recursive: true });
+  fs.writeFileSync(path.join(folder, 'Notes.pdf'), '');
+  const id = await insertJam('PDF-Probe', null, '12-Notes.pdf', null, folder);
+  const item = (await call('GET', `collection/jam/${id}`)).body;
+  assert.deepEqual(item.pdf_sources, { '12-Notes.pdf': path.join(folder, 'Notes.pdf') });
+});

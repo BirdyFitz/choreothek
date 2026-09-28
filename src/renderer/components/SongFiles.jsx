@@ -2,7 +2,7 @@ import { useState } from 'react'
 import axios from 'axios'
 import { IconMusic, IconMovie, IconFileText, IconX, IconArrowBackUp, IconLink } from '@tabler/icons-react'
 import MediaPlayer from './MediaPlayer.jsx'
-import { onMediaContextMenu } from '../lib/fileMenu.js'
+import { onMediaContextMenu, onPdfContextMenu } from '../lib/fileMenu.js'
 import { t } from '../../shared/i18n.js'
 
 const ICONS = { audio: IconMusic, video: IconMovie, pdf: IconFileText }
@@ -52,7 +52,7 @@ export default function SongFiles({ type, item, song, media, onChanged }) {
           const Icon = ICONS[f.kind]
           return (
             <div key={`${f.kind}-${f.url || f.page}-${i}`} className={`file-item ${f === current ? 'active' : ''}`}>
-              <button type="button" className="file-item-main" onClick={() => setActive(i)} onContextMenu={f.url ? onMediaContextMenu(f.url) : undefined} title={f.label}>
+              <button type="button" className="file-item-main" onClick={() => setActive(i)} onContextMenu={f.url ? onMediaContextMenu(f.url) : onPdfContextMenu(item.pdf_sources?.[f.pdf] || null, f.pdf)} title={f.label}>
                 <Icon size={16} stroke={1.6} />
                 <span>{f.label}</span>
                 {f.manual && <span className="tag accent">{t('preview.manual')}</span>}
