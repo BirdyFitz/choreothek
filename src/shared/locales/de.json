@@ -7,6 +7,7 @@
     "name": "Choreothek",
     "tabs": {
       "search": "Suchen",
+      "library": "Bibliothek",
       "sources": "Datenquellen"
     },
     "toggle": {
@@ -105,7 +106,9 @@
       "size": "Größe",
       "modified": "Geändert",
       "folder": "Ordner"
-    }
+    },
+    "edit": "Bearbeiten",
+    "editHint": "Jam bzw. Edition dieses Songs in der Bibliothek bearbeiten"
   },
   "sources": {
     "foldersTitle": "Ordner",
@@ -390,5 +393,64 @@
     "back": "Zurück",
     "saveAndNext": "Speichern und weiter",
     "finish": "Fertig"
+  },
+  "library": {
+    "types": {
+      "jam": "Jams",
+      "zin": "ZIN Volumes",
+      "megamix": "MegaMix"
+    },
+    "filter": "Filtern …",
+    "empty": "Links einen Eintrag auswählen, um Angaben und Songs zu bearbeiten.",
+    "loadError": "Eintrag konnte nicht geladen werden",
+    "saveError": "Fehler beim Speichern",
+    "saved": "Gespeichert.",
+    "save": "Speichern",
+    "discard": "Verwerfen",
+    "addSong": "Song hinzufügen",
+    "removeSong": "Song entfernen",
+    "up": "Nach oben",
+    "down": "Nach unten",
+    "warmup": "Warm-up",
+    "delete": "Löschen",
+    "deleteConfirm": "„{label}“ mit allen Songs aus Choreothek löschen? Deine Dateien bleiben unverändert.",
+    "deleteConfirmJam": "Jam „{label}“ mit allen Songs aus Choreothek löschen? Deine Dateien bleiben unverändert. Beim nächsten Einlesen wird die PDF wieder angeboten – soll sie dauerhaft wegbleiben, trag sie in der Vorschau in die Ignorierliste ein.",
+    "reextract": "Neu auslesen",
+    "reextractHint": "Die Choreo Notes noch einmal von der KI auslesen lassen – das Ergebnis erscheint zum Prüfen, gespeichert wird erst mit „Speichern“",
+    "proposal": "Vorschlag der KI übernommen (Kosten ca. {amount}) – bitte prüfen, dann „Speichern“ oder „Verwerfen“.",
+    "fields": {
+      "jammer_name": "Jammer",
+      "jam_date": "Datum",
+      "location": "Ort",
+      "source_folder": "Ordner mit Musik und Videos",
+      "audio_folder": "Musik",
+      "live_video_folder": "Live-Videos",
+      "oneonone_video_folder": "1on1-Videos",
+      "song_name": "Titel",
+      "artist": "Interpret",
+      "rhythm": "Rhythmus",
+      "page": "Seite",
+      "live_page": "Seite Live",
+      "oneonone_page": "Seite 1on1"
+    },
+    "jammers": {
+      "open": "Jammer-Schreibweisen vereinheitlichen",
+      "title": "Jammer-Schreibweisen",
+      "hint": "Derselbe Jammer steht manchmal unterschiedlich geschrieben in den Choreo Notes. Hier führst du die Schreibweisen zusammen – die Jams bleiben erhalten, nur der Name wird angeglichen.",
+      "similar": "Ähnliche Schreibweisen",
+      "noSimilar": "Keine ähnlichen Schreibweisen gefunden.",
+      "nameCount": "{name} ({count})",
+      "merge": "Zu gewählter Schreibweise zusammenführen",
+      "all": "Alle Namen",
+      "jams": {
+        "one": "{count} Jam",
+        "other": "{count} Jams"
+      },
+      "rename": "Umbenennen",
+      "renamed": {
+        "one": "{count} Jam geändert.",
+        "other": "{count} Jams geändert."
+      }
+    }
   }
 }

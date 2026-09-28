@@ -961,3 +961,130 @@ body.resizing video {
 .wizard-nav .spacer {
   flex: 1;
 }
+
+/* ---------- Bibliothek ---------- */
+
+.library {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+}
+
+.library-list {
+  width: 300px;
+  flex: none;
+  border-right: 1px solid var(--border);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: var(--panel-alt);
+}
+
+.library-list button.link.active {
+  font-weight: 600;
+}
+
+.library-items {
+  list-style: none;
+  overflow-y: auto;
+  flex: 1;
+  margin: 0 -4px;
+}
+
+.library-items button {
+  width: 100%;
+  height: auto;
+  border: none;
+  background: none;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
+  padding: 6px 8px;
+  border-radius: var(--radius);
+}
+
+.library-items button .muted {
+  font-size: 11px;
+}
+
+.library-items button.selected {
+  background: var(--selected);
+}
+
+.library-editor {
+  flex: 1;
+  min-width: 0; /* sonst wächst der Bereich mit dem breitesten Inhalt statt umzubrechen */
+  overflow-y: auto;
+  padding: 18px 22px;
+}
+
+.editor {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 1000px;
+}
+
+.editor h2 {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.editor-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.editor-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 10px 16px;
+}
+
+.editor-songs {
+  max-height: none;
+}
+
+.editor-songs td {
+  padding: 2px 4px;
+}
+
+.editor-songs input {
+  height: 26px;
+}
+
+.editor-songs input.num {
+  width: 70px;
+}
+
+.editor-songs tr.warmup td {
+  background: var(--panel-alt);
+}
+
+.row-actions {
+  white-space: nowrap;
+}
+
+.button-row .spacer {
+  flex: 1;
+}
+
+.jammer-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  align-items: center;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.empty-hint {
+  padding: 24px;
+}

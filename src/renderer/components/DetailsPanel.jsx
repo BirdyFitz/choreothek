@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import axios from 'axios'
-import { IconMusic, IconMovie, IconFileText, IconInfoCircle, IconDisc } from '@tabler/icons-react'
+import { IconMusic, IconMovie, IconFileText, IconInfoCircle, IconDisc, IconPencil } from '@tabler/icons-react'
 import { onMediaContextMenu, onPdfContextMenu } from '../lib/fileMenu.js'
+import { oeffneInBibliothek } from '../lib/events.js'
 import { t } from '../../shared/i18n.js'
 
 // Alle Dateien eines Songs als Liste: Musik, Videos, Choreo Notes
@@ -24,6 +25,8 @@ function filesOf(row) {
 }
 
 const ICONS = { audio: IconMusic, video: IconMovie, pdf: IconFileText }
+// Art des Eintrags in der Bibliothek je Quelle eines Suchtreffers
+const LIBRARY_TYPE = { jam_session: 'jam', zin_volume: 'zin', megamix: 'megamix' }
 
 function formatDuration(sec) {
   if (!sec && sec !== 0) return null
@@ -130,10 +133,17 @@ export default function DetailsPanel({ row, width }) {
     ? [row.jammer_name, row.jam_datum ? row.jam_datum.split('-').reverse().join('.') : row.jam_date, row.location].filter(Boolean).join(' · ')
     : row.edition_label
 
+  const libraryType = !row.unassigned && LIBRARY_TYPE[row.source_type]
+
   return (
     <aside className="pane pane-details" aria-label={t('details.title')} style={{ width }}>
       <div className="pane-header">
         <span className="pane-title">{t('details.title')}</span>
+        {libraryType && (
+          <button type="button" className="ghost" onClick={() => oeffneInBibliothek(libraryType, row.group_id)} title={t('details.editHint')}>
+            <IconPencil size={16} stroke={1.6} /> {t('details.edit')}
+          </button>
+        )}
       </div>
       <div className="details">
         <div>
