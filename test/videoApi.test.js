@@ -68,7 +68,8 @@ before(async () => {
     ['-v', 'error', '-f', 'lavfi', '-i', 'testsrc=size=160x120:rate=10:duration=55',
       '-ss', '10', '-t', '30', '-i', path.join(jam, '01 Sonnenschein.wav'), '-ss', '5', '-t', '25', '-i', path.join(jam, '02 Nachtzug.wav'),
       '-filter_complex', '[1:a][2:a]concat=n=2:v=0:a=1[a]', '-map', '0:v', '-map', '[a]', '-g', '10',
-      '-c:v', 'libx264', '-preset', 'ultrafast', '-c:a', 'aac', '-shortest', path.join(jam, 'VID_0001.mp4')],
+      // mpeg4 statt libx264: auch in der LGPL-Fassung von ffmpeg enthalten (Installer, GitHub Actions)
+      '-c:v', 'mpeg4', '-c:a', 'aac', '-shortest', path.join(jam, 'VID_0001.mp4')],
     { windowsHide: true }
   );
   if (r.status !== 0) throw new Error(String(r.stderr));

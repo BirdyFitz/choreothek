@@ -17,7 +17,8 @@ function makeVideo(file, seconds) {
   const r = spawnSync(
     ffmpegPath(),
     ['-v', 'error', '-f', 'lavfi', '-i', `testsrc=size=160x120:rate=10:duration=${seconds}`, '-f', 'lavfi', '-i', `sine=frequency=440:duration=${seconds}`,
-      '-g', '10', '-c:v', 'libx264', '-preset', 'ultrafast', '-c:a', 'aac', '-shortest', file],
+      // mpeg4 statt libx264: auch in der LGPL-Fassung von ffmpeg enthalten (Installer, GitHub Actions)
+      '-g', '10', '-c:v', 'mpeg4', '-c:a', 'aac', '-shortest', file],
     { windowsHide: true }
   );
   if (r.status !== 0) throw new Error(String(r.stderr));
