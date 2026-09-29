@@ -18,8 +18,9 @@ const DEFAULT_OUTPUT_PER_CALL = 1500;
 const PROMPT_TOKENS = 1000;
 const UNKNOWN_PAGES = 10;
 
+// Vorschlag Google mit Gemini 3.8 Flash: gute Ergebnisse, ca. 2 Cent je Choreo-Notes-PDF (Stand 09/2026)
 export const DEFAULT_AI_SETTINGS = {
-  provider: 'anthropic',
+  provider: 'google',
   models: {},
   privacyAck: {},
   askBeforeUse: true,

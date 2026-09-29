@@ -49,7 +49,7 @@ before(async () => {
     }
   });
   await call('POST', 'ai/key', { provider: 'anthropic', key: 'sk-test' });
-  await call('POST', 'ai/settings', { privacyAck: true });
+  await call('POST', 'ai/settings', { provider: 'anthropic', privacyAck: true });
 
   await pdf('1-jam.pdf', 3);
   await pdf('2-live.pdf', 5);

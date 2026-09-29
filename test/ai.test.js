@@ -81,7 +81,12 @@ after(() => {
 beforeEach(async () => {
   calls = [];
   answer = () => jamAnswer();
-  await saveAiSettings({ ...DEFAULT_AI_SETTINGS });
+  // Die Attrappe ersetzt Anthropic; vorgeschlagen wird sonst Google
+  await saveAiSettings({ ...DEFAULT_AI_SETTINGS, provider: 'anthropic' });
+});
+
+test('vorgeschlagener Anbieter ist Google (Gemini 3.8 Flash)', () => {
+  assert.equal(DEFAULT_AI_SETTINGS.provider, 'google');
 });
 
 test('ohne Erlaubnis kein KI-Aufruf', async () => {
