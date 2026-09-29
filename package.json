@@ -15,7 +15,9 @@
     "test": "cross-env ELECTRON_RUN_AS_NODE=1 electron test/run.js",
     "ffmpeg:local": "node scripts/ffmpeg.mjs --local",
     "dist": "vite build && electron-builder --win --publish never",
-    "icon": "electron scripts/icon.mjs"
+    "icon": "electron scripts/icon.mjs",
+    "screenshots": "vite build && electron scripts/screenshots.mjs",
+    "website": "node website/build.mjs"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.128.0",

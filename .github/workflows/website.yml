@@ -1,0 +1,65 @@
+# Webseite choreothek.eu bauen und per SFTP hochladen – bei Änderungen an website/ (oder der Version
+# in package.json, die auf der Seite steht) und von Hand über „Run workflow“.
+# Zugangsdaten nur als Repository-Secrets (Settings → Secrets and variables → Actions):
+#   SFTP_HOST         z. B. ssh.strato.de
+#   SFTP_USER         SFTP-Benutzer
+#   SFTP_PASSWORD     SFTP-Passwort
+#   SFTP_KNOWN_HOSTS  Schlüssel des Servers, einmalig ermittelt mit: ssh-keyscan <SFTP_HOST>
+# Optional als Variable (nicht geheim): SFTP_DIR = Zielordner auf dem Webspace (Vorgabe: .)
+# Lädt alle Dateien der Seite hoch (überschreibt sie); auf dem Webspace wird nichts gelöscht.
+name: Webseite
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'website/**'
+      - 'package.json'
+      - '.github/workflows/website.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: website
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Webseite bauen
+        run: node website/build.mjs
+      - name: Zugangsdaten vorhanden?
+        id: secrets
+        env:
+          HOST: ${{ secrets.SFTP_HOST }}
+          KNOWN: ${{ secrets.SFTP_KNOWN_HOSTS }}
+        run: |
+          if [ -z "$HOST" ] || [ -z "$KNOWN" ]; then
+            echo "::warning::SFTP-Secrets fehlen – Webseite gebaut, aber nicht hochgeladen."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Hochladen per SFTP
+        if: steps.secrets.outputs.ready == 'true'
+        env:
+          SFTP_HOST: ${{ secrets.SFTP_HOST }}
+          SFTP_USER: ${{ secrets.SFTP_USER }}
+          LFTP_PASSWORD: ${{ secrets.SFTP_PASSWORD }}
+          SFTP_KNOWN_HOSTS: ${{ secrets.SFTP_KNOWN_HOSTS }}
+          SFTP_DIR: ${{ vars.SFTP_DIR || '.' }}
+        run: |
+          sudo apt-get install -y -qq lftp > /dev/null
+          mkdir -p ~/.ssh && chmod 700 ~/.ssh
+          printf '%s\n' "$SFTP_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+          # Serverschlüssel wird gegen known_hosts geprüft (kein automatisches Vertrauen)
+          lftp -c "set sftp:auto-confirm no; set net:max-retries 2; set net:timeout 30; \
+            open --env-password -u \"$SFTP_USER\" sftp://$SFTP_HOST; \
+            mirror --reverse --no-perms --verbose website/dist \"$SFTP_DIR\""
