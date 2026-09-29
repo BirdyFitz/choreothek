@@ -1,5 +1,11 @@
 # Seiten auch ohne .html erreichbar – die App verlinkt https://choreothek.eu/anleitung#…
 RewriteEngine On
+
+# Immer https und ohne www
+RewriteCond %{HTTPS} off [OR]
+RewriteCond %{HTTP_HOST} ^www\. [NC]
+RewriteRule ^ https://choreothek.eu%{REQUEST_URI} [R=301,L]
+
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME}.html -f
 RewriteRule ^([a-z-]+)/?$ $1.html [L]
