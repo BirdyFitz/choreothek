@@ -22,6 +22,8 @@ jobs:
       - run: npm ci
       - name: ffmpeg bereitstellen (für die Videotests)
         run: node scripts/ffmpeg.mjs
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: npm run build:renderer
       - name: Tests
         run: npm test
@@ -49,6 +51,8 @@ jobs:
           if ("v$version" -ne "${{ github.ref_name }}") { throw "Tag ${{ github.ref_name }} passt nicht zu Version $version" }
           if ($version.StartsWith('0.')) { "EP_PRE_RELEASE=true" >> $env:GITHUB_ENV }
       - run: node scripts/ffmpeg.mjs
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: npm run build:renderer
       # Electron lädt sein Programm erst beim ersten Aufruf; der Installer braucht node_modules/electron/dist
       - name: Electron bereitstellen

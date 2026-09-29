@@ -32,10 +32,18 @@ function local() {
   console.log(`ffmpeg aus ${dir} nach ${target} kopiert`);
 }
 
+// GitHub-API: ohne Anmeldung teilen sich alle CI-Rechner ein kleines Limit (403/429) -> in CI mit
+// dem Workflow-Token (GH_TOKEN) abfragen und bei Ablehnung einige Male nachfassen
 async function json(url) {
-  const res = await fetch(url, { headers: { 'User-Agent': 'choreothek-build', Accept: 'application/vnd.github+json' } });
-  if (!res.ok) throw new Error(`${url}: ${res.status}`);
-  return res.json();
+  const headers = { 'User-Agent': 'choreothek-build', Accept: 'application/vnd.github+json' };
+  if (process.env.GH_TOKEN) headers.Authorization = `Bearer ${process.env.GH_TOKEN}`;
+  for (let attempt = 1; ; attempt++) {
+    const res = await fetch(url, { headers });
+    if (res.ok) return res.json();
+    if (attempt >= 4 || ![403, 429, 500, 502, 503].includes(res.status)) throw new Error(`${url}: ${res.status}`);
+    console.log(`${url}: ${res.status} – neuer Versuch in ${attempt * 15} s`);
+    await new Promise((r) => setTimeout(r, attempt * 15000));
+  }
 }
 
 async function download() {
