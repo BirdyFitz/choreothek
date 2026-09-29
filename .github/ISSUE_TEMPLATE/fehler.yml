@@ -1,0 +1,34 @@
+name: Fehler melden
+description: Etwas funktioniert nicht wie erwartet
+labels: [fehler]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Danke für deine Meldung! Am einfachsten geht es in der App über **Hilfe → Problem melden** – dann
+        sind Version und letzte Fehlermeldungen schon dabei. Bitte keine API-Schlüssel, Namen oder
+        Dateiinhalte hier eintragen: Issues sind öffentlich.
+  - type: textarea
+    id: was
+    attributes:
+      label: Was ist passiert?
+      placeholder: z. B. Beim Einlesen der Jams erscheint eine Fehlermeldung …
+    validations:
+      required: true
+  - type: textarea
+    id: erwartet
+    attributes:
+      label: Was hättest du erwartet?
+  - type: textarea
+    id: schritte
+    attributes:
+      label: Wie kommt man dorthin?
+      placeholder: |
+        1. Einstellungen → Datenquellen → Einlesen
+        2. …
+  - type: input
+    id: version
+    attributes:
+      label: Choreothek-Version
+      description: steht unter Hilfe → Über Choreothek
+      placeholder: z. B. 0.9.1

@@ -1,0 +1,15 @@
+name: Idee oder Wunsch
+description: Etwas fehlt oder könnte einfacher sein
+labels: [idee]
+body:
+  - type: textarea
+    id: wunsch
+    attributes:
+      label: Was wünschst du dir?
+    validations:
+      required: true
+  - type: textarea
+    id: wozu
+    attributes:
+      label: Wobei würde es dir helfen?
+      placeholder: z. B. Beim Vorbereiten meiner Stunde suche ich oft …

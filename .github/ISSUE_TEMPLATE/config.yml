@@ -1,0 +1,9 @@
+# Leere Issues bleiben erlaubt: „Problem melden“ in der App öffnet ein Issue mit vorausgefülltem Bericht
+blank_issues_enabled: true
+contact_links:
+  - name: Anleitung
+    url: https://choreothek.eu/anleitung
+    about: Schritt für Schritt – vielleicht ist deine Frage dort schon beantwortet.
+  - name: Lieber per E-Mail
+    url: mailto:support@choreothek.eu
+    about: Nicht öffentlich – z. B. wenn du Dateien oder persönliche Angaben schicken möchtest.

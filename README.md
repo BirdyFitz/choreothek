@@ -3,7 +3,8 @@
 Dein Nachschlagewerk für Songs, Rhythmen und Choreos – eine Windows-App für Tanz-Instruktorinnen und
 -Instruktoren, die ihr eigenes Archiv aus Jam Sessions, Mixen und Volumes durchsuchbar machen möchten.
 
-> **Stand:** Vorabversion 0.9 für den Pilotbetrieb.
+> **Stand:** Vorabversion 0.9 für den Pilotbetrieb. Webseite und Anleitung: [choreothek.eu](https://choreothek.eu) ·
+> [Schritt für Schritt](https://choreothek.eu/anleitung)
 
 ## Installation
 
