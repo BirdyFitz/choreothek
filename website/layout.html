@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{title}}</title>
+<meta name="description" content="{{description}}">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="index.html"><img src="logo.svg" alt="" width="28" height="28"> Choreothek</a>
+    <nav aria-label="Hauptmenü">
+      <a href="index.html" data-nav="start">Start</a>
+      <a href="anleitung.html" data-nav="anleitung">Anleitung</a>
+      <a class="nav-download" href="{{download}}">Herunterladen</a>
+    </nav>
+  </div>
+</header>
+<main>
+{{content}}
+</main>
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <nav aria-label="Rechtliches und Kontakt">
+      <a href="impressum.html" data-nav="impressum">Impressum</a>
+      <a href="datenschutz.html" data-nav="datenschutz">Datenschutz</a>
+      <a href="https://github.com/BirdyFitz/choreothek">Quellcode (GPL-3.0)</a>
+      <a href="mailto:support@choreothek.eu">support@choreothek.eu</a>
+    </nav>
+    <p class="fine">Choreothek {{version}} · freie Software · ohne Werbung und ohne Nutzungsdaten. Zumba® ist eine eingetragene Marke von Zumba Fitness, LLC. Choreothek ist ein unabhängiges Projekt und steht in keiner Verbindung zu Zumba Fitness.</p>
+  </div>
+</footer>
+</body>
+</html>
