@@ -50,6 +50,9 @@ jobs:
           if ($version.StartsWith('0.')) { "EP_PRE_RELEASE=true" >> $env:GITHUB_ENV }
       - run: node scripts/ffmpeg.mjs
       - run: npm run build:renderer
+      # Electron lädt sein Programm erst beim ersten Aufruf; der Installer braucht node_modules/electron/dist
+      - name: Electron bereitstellen
+        run: node node_modules/electron/install.js
       - name: Installer bauen und veröffentlichen
         run: npx electron-builder --win --publish always
         env:
