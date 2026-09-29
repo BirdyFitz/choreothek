@@ -53,6 +53,21 @@ jobs:
       # Electron lädt sein Programm erst beim ersten Aufruf; der Installer braucht node_modules/electron/dist
       - name: Electron bereitstellen
         run: node node_modules/electron/install.js
+      # Release vorher anlegen: electron-builder lädt Installer und Blockmap gleichzeitig hoch und legte
+      # sonst zwei Releases für denselben Tag an (Wettlauf beim Anlegen); so lädt er nur noch hinein
+      - name: Release anlegen
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          $tag = "${{ github.ref_name }}"
+          gh release view $tag 2>$null
+          if ($LASTEXITCODE -ne 0) {
+            $notes = "Installer: Choreothek-Setup-$($tag.TrimStart('v')).exe herunterladen und starten. Windows zeigt eventuell eine SmartScreen-Warnung (der Installer ist nicht kostenpflichtig signiert): Weitere Informationen -> Trotzdem ausführen."
+            $releaseArgs = @('release', 'create', $tag, '--verify-tag', '--title', "Choreothek $($tag.TrimStart('v'))", '--notes', $notes)
+            if ($env:EP_PRE_RELEASE -eq 'true') { $releaseArgs += '--prerelease' }
+            gh @releaseArgs
+          }
       - name: Installer bauen und veröffentlichen
         run: npx electron-builder --win --publish always
         env:
