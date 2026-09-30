@@ -57,6 +57,15 @@ jobs:
       # Electron lädt sein Programm erst beim ersten Aufruf; der Installer braucht node_modules/electron/dist
       - name: Electron bereitstellen
         run: node node_modules/electron/install.js
+      # Vor dem Veröffentlichen: startet das mitgelieferte ffmpeg in der gepackten App? (0.9.0/0.9.1 fehlten die DLLs)
+      - name: Gepacktes ffmpeg prüfen
+        shell: pwsh
+        run: |
+          npx electron-builder --win --dir --publish never
+          & out/win-unpacked/resources/ffmpeg/ffmpeg.exe -hide_banner -version
+          if ($LASTEXITCODE -ne 0) { throw "ffmpeg in der gepackten App startet nicht (Exit $LASTEXITCODE)" }
+          & out/win-unpacked/resources/ffmpeg/ffprobe.exe -hide_banner -version
+          if ($LASTEXITCODE -ne 0) { throw "ffprobe in der gepackten App startet nicht (Exit $LASTEXITCODE)" }
       # Release vorher anlegen: electron-builder lädt Installer und Blockmap gleichzeitig hoch und legte
       # sonst zwei Releases für denselben Tag an (Wettlauf beim Anlegen); so lädt er nur noch hinein
       - name: Release anlegen

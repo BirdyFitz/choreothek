@@ -80,6 +80,7 @@
         "to": "ffmpeg",
         "filter": [
           "*.exe",
+          "*.dll",
           "LICENSE*"
         ]
       }
