@@ -1,7 +1,7 @@
 {
   "name": "choreothek",
   "productName": "Choreothek",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "description": "Nachschlagewerk für Choreos, Songs und Rhythmen aus dem eigenen Tanz-Archiv (Jam Sessions, Mixe, Volumes) – Windows-Desktop-App",
   "license": "GPL-3.0-only",
   "author": "Harald Henke",
