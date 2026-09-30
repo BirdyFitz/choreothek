@@ -36,6 +36,7 @@ jobs:
     runs-on: windows-latest
     permissions:
       contents: write
+      actions: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -83,5 +84,10 @@ jobs:
           }
       - name: Installer bauen und veröffentlichen
         run: npx electron-builder --win --publish always
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # Erst jetzt ist der Installer online -> Webseite mit dem neuen Download-Link hochladen
+      - name: Webseite aktualisieren
+        run: gh workflow run website.yml --ref main
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -14,8 +14,9 @@ on:
     branches: [main]
     paths:
       - 'website/**'
-      - 'package.json'
       - '.github/workflows/website.yml'
+  # Neue Version: der Release-Workflow startet diesen Workflow, sobald der Installer online ist
+  # (der Download-Knopf verlinkt direkt auf die Installer-Datei)
   workflow_dispatch:
 
 concurrency:
@@ -34,6 +35,12 @@ jobs:
           node-version: 24
       - name: Webseite bauen
         run: node website/build.mjs
+      # Nie eine Seite hochladen, deren Download-Knopf ins Leere führt
+      - name: Installer der Version erreichbar?
+        run: |
+          version=$(node -p "require('./package.json').version")
+          url="https://github.com/BirdyFitz/choreothek/releases/download/v$version/Choreothek-Setup-$version.exe"
+          curl -fsIL -o /dev/null "$url" || { echo "::error::Installer fehlt: $url"; exit 1; }
       - name: Zugangsdaten vorhanden?
         id: secrets
         env:

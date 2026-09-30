@@ -12,10 +12,10 @@ const dist = path.join(root, 'dist');
 const layout = fs.readFileSync(path.join(root, 'layout.html'), 'utf8');
 const pkg = JSON.parse(fs.readFileSync(path.join(root, '..', 'package.json'), 'utf8'));
 
-// Download: in der Pilotphase (0.x) die Liste aller Releases (die Vorabversion ist nicht „latest“)
-const DOWNLOAD = pkg.version.startsWith('0.')
-  ? 'https://github.com/BirdyFitz/choreothek/releases'
-  : 'https://github.com/BirdyFitz/choreothek/releases/latest';
+// Download: direkt die Installer-Datei der aktuellen Version (die Release-Seite von GitHub verwirrt:
+// Installer unter „Assets“ versteckt, Werbung für GitHub). Deshalb lädt der Release-Workflow die
+// Webseite erst hoch, wenn der Installer veröffentlicht ist.
+const DOWNLOAD = `https://github.com/BirdyFitz/choreothek/releases/download/v${pkg.version}/Choreothek-Setup-${pkg.version}.exe`;
 
 fs.rmSync(dist, { recursive: true, force: true });
 fs.mkdirSync(dist, { recursive: true });
