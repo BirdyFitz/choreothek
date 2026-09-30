@@ -141,6 +141,8 @@ export default function MediaPlayer({ url, kind, seekTo }) {
         ref={media}
         key={url}
         className={kind === 'video' ? `viewer video-size-${videoSize}` : 'player-audio'}
+        // Nicht abspielbar: leeres (schwarzes) Feld ausblenden, der Hinweis darunter erklärt es
+        style={failed ? { display: 'none' } : undefined}
         src={url}
         preload="metadata"
         onClick={toggle}
