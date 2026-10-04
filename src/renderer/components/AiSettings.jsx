@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import axios from 'axios'
 import { IconKey, IconTrash, IconPlugConnected, IconExternalLink, IconDeviceFloppy } from '@tabler/icons-react'
-import { formatUsd, formatDate } from '../lib/money.js'
+import { formatEur, formatDate } from '../lib/money.js'
 import Help from './Help.jsx'
 import { t } from '../../shared/i18n.js'
 
@@ -27,8 +27,8 @@ export default function AiSettings() {
     const [settings, costList] = await Promise.all([axios.get('/api/ai/settings'), axios.get('/api/ai/costs')])
     setData(settings.data)
     setCosts(costList.data.months)
-    setLimitInput(String(settings.data.costLimitUsd).replace('.', ','))
-    setWarnInput(String(settings.data.balanceWarnUsd).replace('.', ','))
+    setLimitInput(String(settings.data.costLimitEur).replace('.', ','))
+    setWarnInput(String(settings.data.balanceWarnEur).replace('.', ','))
   }, [])
 
   useEffect(() => {
@@ -88,22 +88,22 @@ export default function AiSettings() {
     run('test', () => axios.post('/api/ai/test-key', { provider: provider.id }), (res) => t('ai.keyValid', { count: res.data.models }))
 
   const saveLimits = () => {
-    const costLimitUsd = parseAmount(limitInput)
-    const balanceWarnUsd = parseAmount(warnInput)
-    if (costLimitUsd === null || balanceWarnUsd === null) {
+    const costLimitEur = parseAmount(limitInput)
+    const balanceWarnEur = parseAmount(warnInput)
+    if (costLimitEur === null || balanceWarnEur === null) {
       setMessage({ type: 'error', text: t('errors.ai.invalidAmount') })
       return
     }
-    save({ costLimitUsd, balanceWarnUsd }, t('ai.saved'))
+    save({ costLimitEur, balanceWarnEur }, t('ai.saved'))
   }
 
   const saveBalance = () => {
-    const amountUsd = parseAmount(balanceInput)
-    if (amountUsd === null) {
+    const amountEur = parseAmount(balanceInput)
+    if (amountEur === null) {
       setMessage({ type: 'error', text: t('errors.ai.invalidAmount') })
       return
     }
-    run('balance', () => axios.post('/api/ai/balance', { provider: provider.id, amountUsd }), t('ai.balanceSaved')).then(() => setBalanceInput(''))
+    run('balance', () => axios.post('/api/ai/balance', { provider: provider.id, amountEur }), t('ai.balanceSaved')).then(() => setBalanceInput(''))
   }
 
   const providerLabel = (id) => data.providers.find((p) => p.id === id)?.label || id
@@ -236,10 +236,10 @@ export default function AiSettings() {
         <span className="muted" style={{ fontSize: 12 }}>
           {provider.balance
             ? t('ai.balanceState', {
-                amount: formatUsd(provider.balance.amountUsd),
+                amount: formatEur(provider.balance.amountEur),
                 date: formatDate(provider.balance.since),
-                spent: formatUsd(provider.balance.spentUsd),
-                remaining: formatUsd(provider.balance.remainingUsd)
+                spent: formatEur(provider.balance.spentEur),
+                remaining: formatEur(provider.balance.remainingEur)
               })
             : t('ai.balanceNone')}{' '}
           <a href={provider.billingUrl} target="_blank" rel="noreferrer">
@@ -270,14 +270,18 @@ export default function AiSettings() {
                   <td>{c.month}</td>
                   <td>{providerLabel(c.provider)}</td>
                   <td>{c.calls}</td>
-                  <td>{formatUsd(c.cost_usd ?? 0)}</td>
+                  <td>{formatEur(c.cost_eur ?? 0)}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         )}
         <span className="muted" style={{ fontSize: 12 }}>
-          {t('ai.costsHint', { date: formatDate(data.pricesAsOf) })}
+          {t('ai.costsHint', {
+            date: formatDate(data.pricesAsOf),
+            rate: data.usdPerEur.toLocaleString(t('meta.dateLocale'), { maximumFractionDigits: 4 }),
+            rateDate: formatDate(data.rateAsOf)
+          })}
         </span>
       </div>
     </div>

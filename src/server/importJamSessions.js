@@ -3,6 +3,7 @@ import path from 'path';
 import { getUploadsDir } from './paths.js';
 import { insertJam, insertSongs, updateJamFolder, getSetting, setSetting } from './db.js';
 import { extractWithAi, isFatalAiError, AiError } from './ai/aiService.js';
+import { usdToEur } from './ai/prices.js';
 import { scanJams, NO_SONGS_SETTING } from './scan/jams.js';
 import { t } from '../shared/i18n.js';
 
@@ -73,5 +74,5 @@ export async function importJamSessions(permit, { log = console.log, onProgress 
 
   await setSetting(NO_SONGS_SETTING, JSON.stringify([...noSongs].sort()));
   const skippedEditions = jams.length - items.length;
-  return { importedEditions, importedSongs, skippedEditions, updatedFolders, errors, aiCostUsd: permit.costUsd };
+  return { importedEditions, importedSongs, skippedEditions, updatedFolders, errors, aiCostEur: usdToEur(permit.costUsd) };
 }

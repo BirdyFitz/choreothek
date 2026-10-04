@@ -38,6 +38,17 @@ export function costUsd(provider, model, inputTokens, outputTokens, date) {
   return (inputTokens * price.input + outputTokens * price.output) / 1_000_000;
 }
 
+// Die App zeigt alle Beträge in Euro (Grenzen, Guthaben, Kosten). Die Preise oben und das Protokoll
+// der Aufrufe bleiben in US-Dollar, wie die Anbieter sie nennen; umgerechnet wird mit einem festen Kurs.
+// Google rechnet in Deutschland in Euro ab, Anthropic und OpenAI in Dollar.
+// EZB-Referenzkurs vom 02.10.2026: 1 € = 1,1225 $.
+export const USD_PER_EUR = 1.1225;
+export const RATE_AS_OF = '2026-10-02';
+
+export function usdToEur(usd) {
+  return usd == null ? null : usd / USD_PER_EUR;
+}
+
 export function knownModels(provider) {
   return Object.keys(TABLE[provider] || {});
 }

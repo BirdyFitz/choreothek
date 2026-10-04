@@ -2,7 +2,7 @@
 // Server hinein, nie zurück zur Oberfläche (dort nur „vorhanden ja/nein“).
 import express from 'express';
 import { getProvider, providerIds } from '../ai/providers.js';
-import { knownModels, PRICES_AS_OF } from '../ai/prices.js';
+import { knownModels, PRICES_AS_OF, USD_PER_EUR, RATE_AS_OF, usdToEur } from '../ai/prices.js';
 import { setApiKey, deleteApiKey, hasApiKey } from '../ai/secrets.js';
 import { getAiSettings, saveAiSettings, modelFor, balanceInfo, buildPlan, testApiKey, isKnownProvider, AiError } from '../ai/aiService.js';
 import { aiCostsByMonth } from '../db.js';
@@ -47,9 +47,11 @@ router.get('/ai/settings', async (req, res) => {
     res.json({
       provider: settings.provider,
       askBeforeUse: settings.askBeforeUse,
-      costLimitUsd: settings.costLimitUsd,
-      balanceWarnUsd: settings.balanceWarnUsd,
+      costLimitEur: settings.costLimitEur,
+      balanceWarnEur: settings.balanceWarnEur,
       pricesAsOf: PRICES_AS_OF,
+      usdPerEur: USD_PER_EUR,
+      rateAsOf: RATE_AS_OF,
       providers
     });
   } catch (error) {
@@ -61,7 +63,7 @@ router.post('/ai/settings', async (req, res) => {
   try {
     const settings = await getAiSettings();
     const patch = {};
-    const { provider, model, privacyAck, askBeforeUse, costLimitUsd, balanceWarnUsd } = req.body;
+    const { provider, model, privacyAck, askBeforeUse, costLimitEur, balanceWarnEur } = req.body;
     if (provider !== undefined) {
       if (!isKnownProvider(provider)) return res.status(400).json({ error: t('errors.ai.unknownProvider') });
       patch.provider = provider;
@@ -75,13 +77,13 @@ router.post('/ai/settings', async (req, res) => {
       patch.privacyAck = { ...settings.privacyAck, [target]: privacyAck ? new Date().toISOString() : null };
     }
     if (askBeforeUse !== undefined) patch.askBeforeUse = Boolean(askBeforeUse);
-    if (costLimitUsd !== undefined) {
-      if (nonNegative(costLimitUsd) === null) return res.status(400).json({ error: t('errors.ai.invalidAmount') });
-      patch.costLimitUsd = costLimitUsd;
+    if (costLimitEur !== undefined) {
+      if (nonNegative(costLimitEur) === null) return res.status(400).json({ error: t('errors.ai.invalidAmount') });
+      patch.costLimitEur = costLimitEur;
     }
-    if (balanceWarnUsd !== undefined) {
-      if (nonNegative(balanceWarnUsd) === null) return res.status(400).json({ error: t('errors.ai.invalidAmount') });
-      patch.balanceWarnUsd = balanceWarnUsd;
+    if (balanceWarnEur !== undefined) {
+      if (nonNegative(balanceWarnEur) === null) return res.status(400).json({ error: t('errors.ai.invalidAmount') });
+      patch.balanceWarnEur = balanceWarnEur;
     }
     await saveAiSettings(patch);
     res.json({ success: true });
@@ -117,16 +119,16 @@ router.post('/ai/test-key', async (req, res) => {
   }
 });
 
-// Guthaben selbst eintragen („aufgeladen: 10 $“) -- ab jetzt werden die Kosten abgezogen
+// Guthaben selbst eintragen („aufgeladen: 5 €“) -- ab jetzt werden die Kosten abgezogen
 router.post('/ai/balance', async (req, res) => {
   try {
-    const { provider, amountUsd } = req.body;
+    const { provider, amountEur } = req.body;
     if (!isKnownProvider(provider)) return res.status(400).json({ error: t('errors.ai.unknownProvider') });
     const settings = await getAiSettings();
     const balances = { ...settings.balances };
-    if (amountUsd === null) delete balances[provider];
-    else if (nonNegative(amountUsd) === null) return res.status(400).json({ error: t('errors.ai.invalidAmount') });
-    else balances[provider] = { amountUsd, since: new Date().toISOString() };
+    if (amountEur === null) delete balances[provider];
+    else if (nonNegative(amountEur) === null) return res.status(400).json({ error: t('errors.ai.invalidAmount') });
+    else balances[provider] = { amountEur, since: new Date().toISOString() };
     await saveAiSettings({ balances });
     res.json({ success: true });
   } catch (error) {
@@ -136,7 +138,9 @@ router.post('/ai/balance', async (req, res) => {
 
 router.get('/ai/costs', async (req, res) => {
   try {
-    res.json({ pricesAsOf: PRICES_AS_OF, months: await aiCostsByMonth() });
+    // Protokoll in US-Dollar, Anzeige in Euro
+    const months = (await aiCostsByMonth()).map(({ cost_usd, ...m }) => ({ ...m, cost_eur: usdToEur(cost_usd) }));
+    res.json({ pricesAsOf: PRICES_AS_OF, months });
   } catch (error) {
     sendAiError(res, error);
   }

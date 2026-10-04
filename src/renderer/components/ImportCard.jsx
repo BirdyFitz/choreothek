@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { IconRefresh, IconSparkles } from '@tabler/icons-react'
 import { meldeDatenGeaendert } from '../lib/events.js'
-import { formatUsd } from '../lib/money.js'
+import { formatEur } from '../lib/money.js'
 import AiConfirmDialog from './AiConfirmDialog.jsx'
 import Help from './Help.jsx'
 import { t } from '../../shared/i18n.js'
@@ -80,7 +80,7 @@ export default function ImportCard({ onAiUsed }) {
 
     try {
       const response = await axios.post(`/api/reimport/${kind}`, body)
-      const { importedEditions, importedSongs, skippedEditions, updatedFolders, errors = [], aiCostUsd, cancelled } = response.data
+      const { importedEditions, importedSongs, skippedEditions, updatedFolders, errors = [], aiCostEur, cancelled } = response.data
       setReimportMessage({
         type: errors.length ? 'error' : 'success',
         text:
@@ -91,7 +91,7 @@ export default function ImportCard({ onAiUsed }) {
           }) +
           (updatedFolders ? t('sources.importFoldersAdded', { count: updatedFolders }) : '') +
           '.' +
-          (aiCostUsd ? t('sources.importAiCost', { amount: formatUsd(aiCostUsd) }) : '') +
+          (aiCostEur ? t('sources.importAiCost', { amount: formatEur(aiCostEur) }) : '') +
           (cancelled ? t('sources.importCancelled') : '') +
           (errors.length ? t('sources.importProblems', { list: errors.join(' | ') }) : '')
       })

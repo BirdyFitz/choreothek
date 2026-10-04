@@ -7,9 +7,10 @@ import os from 'os';
 import path from 'path';
 import { PDFDocument } from 'pdf-lib';
 import { startServer } from '../src/server/server.js';
-import { initDB, closeDB, aiCostsByMonth, getAllJams } from '../src/server/db.js';
+import { initDB, closeDB, aiCostsByMonth, getAllJams, setSetting } from '../src/server/db.js';
 import { setProviderOverride } from '../src/server/ai/providers.js';
-import { extractWithAi, saveAiSettings, DEFAULT_AI_SETTINGS } from '../src/server/ai/aiService.js';
+import { extractWithAi, saveAiSettings, getAiSettings, DEFAULT_AI_SETTINGS } from '../src/server/ai/aiService.js';
+import { USD_PER_EUR } from '../src/server/ai/prices.js';
 import { createPlan, redeemPlan, takeCall } from '../src/server/ai/gate.js';
 
 let session;
@@ -132,7 +133,7 @@ test('Plan beschreibt, was gesendet wird; ohne Bestätigung kein Aufruf', async 
   const p = await plan();
   assert.equal(p.blocked, null);
   assert.ok(p.pdfCount >= 1 && p.pages >= 2);
-  assert.ok(p.estimate.costUsd > 0);
+  assert.ok(p.estimate.costEur > 0);
   assert.ok(p.mustConfirm);
   assert.ok(p.reasons.includes('ask') && p.reasons.includes('firstUse'));
   assert.ok(p.items.every((i) => !('files' in i)), 'keine vollständigen Pfade an die Oberfläche');
@@ -154,10 +155,12 @@ test('bestätigtes Einlesen: Aufruf, Jam gespeichert, Kosten protokolliert; Plan
   assert.equal(calls[0].model, 'claude-sonnet-5');
   assert.equal(result.importedEditions, p.items.length);
   assert.equal((await getAllJams()).length, before + p.items.length);
-  // 5000 Eingabe × 2 $ + 400 Ausgabe × 10 $ je Mio. = 0,014 $ je Aufruf
-  assert.ok(Math.abs(result.aiCostUsd - 0.014 * p.items.length) < 1e-9);
+  // 5000 Eingabe × 2 $ + 400 Ausgabe × 10 $ je Mio. = 0,014 $ je Aufruf, angezeigt in Euro
+  assert.ok(Math.abs(result.aiCostEur - (0.014 / USD_PER_EUR) * p.items.length) < 1e-9);
   const [month] = await aiCostsByMonth();
-  assert.ok(month.cost_usd > 0);
+  assert.ok(Math.abs(month.cost_usd - 0.014 * p.items.length) < 1e-9, 'Protokoll bleibt in US-Dollar');
+  const costs = await (await fetch(`${session.url}api/ai/costs`)).json();
+  assert.ok(Math.abs(costs.months[0].cost_eur - month.cost_usd / USD_PER_EUR) < 1e-9);
 
   const again = await post('reimport/jam-sessions', { planId: p.id, confirmed: true });
   assert.equal((await again.json()).code, 'planInvalid');
@@ -189,25 +192,37 @@ test('„Nicht mehr fragen“ gilt, bis das Sicherheitsnetz greift', async () =>
 
   // Kostengrenze
   await addJamPdf();
-  await post('ai/settings', { costLimitUsd: 0 });
+  await post('ai/settings', { costLimitEur: 0 });
   p = await plan();
   assert.deepEqual(p.reasons, ['overLimit']);
   res = await post('reimport/jam-sessions', { planId: p.id });
   assert.equal((await res.json()).code, 'confirmationRequired');
 
   // Guthaben knapp
-  await post('ai/settings', { costLimitUsd: 1 });
-  await post('ai/balance', { provider: 'anthropic', amountUsd: 0.5 });
+  await post('ai/settings', { costLimitEur: 1 });
+  await post('ai/balance', { provider: 'anthropic', amountEur: 0.5 });
   p = await plan();
   assert.deepEqual(p.reasons, ['lowBalance']);
-  assert.ok(p.balance.afterUsd < 0.5);
+  assert.ok(p.balance.afterEur < 0.5);
 
   // Modellwechsel
-  await post('ai/balance', { provider: 'anthropic', amountUsd: null });
+  await post('ai/balance', { provider: 'anthropic', amountEur: null });
   await post('ai/settings', { model: 'claude-haiku-4-5' });
   p = await plan();
   assert.deepEqual(p.reasons, ['modelChanged']);
   assert.equal(calls.length, 2, 'keine weiteren Aufrufe ohne Bestätigung');
+});
+
+test('Grenzen und Guthaben aus Version 0.9.2 (US-Dollar) werden in Euro umgerechnet', async () => {
+  await setSetting('ai_settings', JSON.stringify({
+    provider: 'anthropic', costLimitUsd: 1, balanceWarnUsd: 5.6125,
+    balances: { anthropic: { amountUsd: 11.225, since: '2026-09-30T10:00:00.000Z' } }
+  }));
+  const s = await getAiSettings();
+  assert.equal(s.costLimitEur, 1, 'unveränderter alter Standard wird neuer Standard');
+  assert.equal(s.balanceWarnEur, 5);
+  assert.deepEqual(s.balances.anthropic, { amountEur: 10, since: '2026-09-30T10:00:00.000Z' });
+  assert.ok(!('costLimitUsd' in s) && !('balanceWarnUsd' in s));
 });
 
 test('Erlaubnis reicht nur für so viele Aufrufe, wie der Plan Einträge hat', () => {
@@ -239,7 +254,7 @@ test('unbrauchbare Antwort: Fehler gemeldet, verbrauchte Tokens trotzdem gezähl
   const result = await (await post('reimport/jam-sessions', { planId: p.id, confirmed: true })).json();
   assert.equal(result.importedEditions, 0);
   assert.match(result.errors[0], /unbrauchbar/);
-  assert.ok(result.aiCostUsd > 0);
+  assert.ok(result.aiCostEur > 0);
 });
 
 test('Schlüssel testen nutzt nur die Modellliste', async () => {

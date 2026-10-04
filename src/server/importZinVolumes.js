@@ -3,6 +3,7 @@ import path from 'path';
 import { getUploadsDir } from './paths.js';
 import { getAllZinVolumeEditionLabels, getAllZinVolumesFull, insertZinVolume, insertZinVolumeSongs, updateZinVolumeFolders } from './db.js';
 import { extractWithAi, isFatalAiError, AiError } from './ai/aiService.js';
+import { usdToEur } from './ai/prices.js';
 import { scanZinFromSettings, zinFolders } from './scan/settings.js';
 import { findWarmupSongs } from './utils/warmupParser.js';
 import { t } from '../shared/i18n.js';
@@ -119,5 +120,5 @@ export async function importZinVolumes(permit, { onProgress = () => {}, isCancel
     }
   }
 
-  return { importedEditions, importedSongs, skippedEditions, updatedFolders, errors, aiCostUsd: permit.costUsd };
+  return { importedEditions, importedSongs, skippedEditions, updatedFolders, errors, aiCostEur: usdToEur(permit.costUsd) };
 }

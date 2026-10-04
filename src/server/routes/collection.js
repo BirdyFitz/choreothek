@@ -22,6 +22,7 @@ import { getUploadsDir } from '../paths.js';
 import { zinFolders } from '../scan/settings.js';
 import { buildPlan, extractWithAi, rememberConfirmation, AiError } from '../ai/aiService.js';
 import { redeemPlan, closePermit, GateError } from '../ai/gate.js';
+import { usdToEur } from '../ai/prices.js';
 import { t } from '../../shared/i18n.js';
 
 const router = express.Router();
@@ -302,7 +303,7 @@ router.post('/collection/:type/:id/reextract', async (req, res) => {
       if (song.id == null) song.id = byName.get(song.song_name.trim().toLowerCase());
       byName.delete(song.song_name.trim().toLowerCase());
     }
-    res.json({ proposal, aiCostUsd: permit.costUsd });
+    res.json({ proposal, aiCostEur: usdToEur(permit.costUsd) });
   } catch (error) {
     sendError(res, error);
   } finally {

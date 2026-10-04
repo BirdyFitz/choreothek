@@ -5,7 +5,7 @@ import path from 'path';
 import { PDFDocument } from 'pdf-lib';
 import { getSetting, setSetting, logAiCall, aiAverages, aiSpentSince } from '../db.js';
 import { getProvider, providerIds, ProviderError } from './providers.js';
-import { costUsd, knownModels } from './prices.js';
+import { costUsd, usdToEur, knownModels } from './prices.js';
 import { getApiKey, hasApiKey } from './secrets.js';
 import { createPlan, takeCall, GateError } from './gate.js';
 import { jamPrompt, zinPrompt, parseJsonAnswer, validateJam, validateZin, AiAnswerError } from './prompts.js';
@@ -19,16 +19,36 @@ const PROMPT_TOKENS = 1000;
 const UNKNOWN_PAGES = 10;
 
 // Vorschlag Google mit Gemini 3.8 Flash: gute Ergebnisse, ca. 2 Cent je Choreo-Notes-PDF (Stand 09/2026)
+// Beträge in Euro (prices.js: usdToEur)
 export const DEFAULT_AI_SETTINGS = {
   provider: 'google',
   models: {},
   privacyAck: {},
   askBeforeUse: true,
-  costLimitUsd: 1,
+  costLimitEur: 1,
   balances: {},
-  balanceWarnUsd: 2,
+  balanceWarnEur: 2,
   lastConfirmed: null
 };
+
+const round2 = (n) => Math.round(n * 100) / 100;
+
+// Bis Version 0.9.2 standen Grenzen und Guthaben in US-Dollar: beim Lesen umrechnen.
+// Unveränderte alte Standardwerte (1 $ / 2 $) werden zu den neuen Standardwerten (1 € / 2 €).
+function migrateUsd(stored) {
+  const s = { ...stored };
+  for (const [usdKey, eurKey, oldDefault] of [['costLimitUsd', 'costLimitEur', 1], ['balanceWarnUsd', 'balanceWarnEur', 2]]) {
+    if (usdKey in s) {
+      if (!(eurKey in s) && s[usdKey] !== oldDefault) s[eurKey] = round2(usdToEur(s[usdKey]));
+      delete s[usdKey];
+    }
+  }
+  if (s.balances) {
+    s.balances = Object.fromEntries(Object.entries(s.balances).map(([provider, b]) =>
+      [provider, 'amountUsd' in b ? { amountEur: round2(usdToEur(b.amountUsd)), since: b.since } : b]));
+  }
+  return s;
+}
 
 export class AiError extends Error {
   constructor(code, detail) {
@@ -39,7 +59,7 @@ export class AiError extends Error {
 
 export async function getAiSettings() {
   const raw = await getSetting(SETTINGS_KEY);
-  return { ...DEFAULT_AI_SETTINGS, ...(raw ? JSON.parse(raw) : {}) };
+  return { ...DEFAULT_AI_SETTINGS, ...(raw ? migrateUsd(JSON.parse(raw)) : {}) };
 }
 
 export async function saveAiSettings(patch) {
@@ -62,12 +82,12 @@ async function pageCount(file) {
   }
 }
 
-// Geschätztes Restguthaben: selbst eingetragenes Guthaben minus seitdem protokollierte Kosten
+// Geschätztes Restguthaben in Euro: selbst eingetragenes Guthaben minus seitdem protokollierte Kosten
 export async function balanceInfo(settings, provider) {
   const balance = settings.balances[provider];
   if (!balance) return null;
-  const spent = await aiSpentSince(provider, balance.since);
-  return { amountUsd: balance.amountUsd, since: balance.since, spentUsd: spent, remainingUsd: balance.amountUsd - spent };
+  const spent = usdToEur(await aiSpentSince(provider, balance.since));
+  return { amountEur: balance.amountEur, since: balance.since, spentEur: spent, remainingEur: balance.amountEur - spent };
 }
 
 // Plan für einen Einlese-Vorgang. items: [{ label, files: [pdfPfade], ... }] -- was genau
@@ -97,10 +117,10 @@ export async function buildPlan(kind, items, { target = null } = {}) {
     planItems.push({ ...item, pages: itemPages });
   }
   const outputTokens = Math.round(outputPerCall * items.length);
-  const estimateUsd = items.length ? costUsd(provider, model, inputTokens, outputTokens) : 0;
+  const estimateEur = items.length ? usdToEur(costUsd(provider, model, inputTokens, outputTokens)) : 0;
 
   const balance = await balanceInfo(settings, provider);
-  const afterUsd = balance && estimateUsd != null ? balance.remainingUsd - estimateUsd : null;
+  const afterEur = balance && estimateEur != null ? balance.remainingEur - estimateEur : null;
 
   const reasons = [];
   let blocked = null;
@@ -108,9 +128,9 @@ export async function buildPlan(kind, items, { target = null } = {}) {
     if (!hasApiKey(provider)) blocked = 'noKey';
     else if (!settings.privacyAck[provider]) blocked = 'privacyAck';
     if (settings.askBeforeUse) reasons.push('ask');
-    if (estimateUsd == null) reasons.push('unknownPrice');
-    else if (estimateUsd > settings.costLimitUsd) reasons.push('overLimit');
-    if (afterUsd != null && afterUsd < settings.balanceWarnUsd) reasons.push('lowBalance');
+    if (estimateEur == null) reasons.push('unknownPrice');
+    else if (estimateEur > settings.costLimitEur) reasons.push('overLimit');
+    if (afterEur != null && afterEur < settings.balanceWarnEur) reasons.push('lowBalance');
     const last = settings.lastConfirmed;
     if (!last) reasons.push('firstUse');
     else if (last.provider !== provider || last.model !== model) reasons.push('modelChanged');
@@ -125,9 +145,9 @@ export async function buildPlan(kind, items, { target = null } = {}) {
     items: planItems,
     pdfCount,
     pages,
-    estimate: { inputTokens, outputTokens, costUsd: estimateUsd, measured: Boolean(measured?.input_per_page) },
-    balance: balance ? { ...balance, afterUsd } : null,
-    costLimitUsd: settings.costLimitUsd,
+    estimate: { inputTokens, outputTokens, costEur: estimateEur, measured: Boolean(measured?.input_per_page) },
+    balance: balance ? { ...balance, afterEur } : null,
+    costLimitEur: settings.costLimitEur,
     reasons,
     mustConfirm: reasons.length > 0,
     blocked

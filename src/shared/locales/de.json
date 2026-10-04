@@ -249,12 +249,12 @@
     "privacy": "Mir ist bekannt, dass die Choreo Notes von der KI analysiert werden, um die Videos und Musikdateien einander zuordnen zu können. Musik, Videos und die Datenbank bleiben auf meinem PC.",
     "privacyGoogle": "Hinweis: In der kostenlosen Stufe von Gemini darf Google die Inhalte zur Verbesserung seiner Produkte verwenden.",
     "askBeforeUse": "Vor jeder KI-Nutzung nachfragen",
-    "costLimit": "Immer nachfragen ab (US-Dollar je Einlesen)",
-    "balanceWarn": "Warnen, wenn Guthaben unter (US-Dollar)",
+    "costLimit": "Immer nachfragen ab (Euro je Einlesen)",
+    "balanceWarn": "Warnen, wenn Guthaben unter (Euro)",
     "costLimitHint": "Auch wenn „Nachfragen“ aus ist, erscheint die Meldung bei höheren Kosten, knappem Guthaben oder nach einem Wechsel von Anbieter oder Modell.",
     "save": "Speichern",
     "balance": "Guthaben bei {provider}",
-    "balancePlaceholder": "aufgeladener Betrag in US-Dollar, z. B. 10",
+    "balancePlaceholder": "aufgeladener Betrag in Euro, z. B. 5",
     "balanceSave": "Eintragen",
     "balanceSaved": "Guthaben eingetragen. Ab jetzt werden die geschätzten Kosten abgezogen.",
     "balanceState": "Eingetragen: {amount} am {date} · seitdem verbraucht ca. {spent} · geschätzt noch ca. {remaining}.",
@@ -265,7 +265,7 @@
     "costsMonth": "Monat",
     "costsCalls": "Aufrufe",
     "costsAmount": "Kosten",
-    "costsHint": "Berechnet aus den Token-Angaben der Anbieter und der Preistabelle (Stand {date}). Maßgeblich ist die Abrechnung des Anbieters.",
+    "costsHint": "Berechnet aus den Token-Angaben der Anbieter und der Preistabelle (Stand {date}), umgerechnet mit 1 € = {rate} US-Dollar (EZB, {rateDate}). Maßgeblich ist die Abrechnung des Anbieters.",
     "unknownAmount": "unbekannt",
     "keySaveTest": "Speichern und testen",
     "keySavedValid": {
@@ -717,8 +717,8 @@
       "askBeforeUse": "Vor jeder KI-Nutzung erscheint eine Meldung mit Anbieter, Umfang und geschätzten Kosten. Auch ausgeschaltet kommt sie, wenn die Kosten über der Grenze liegen, das Guthaben knapp wird oder Anbieter bzw. Modell gewechselt wurden.",
       "costLimit": "Ab diesen geschätzten Kosten je Einlesen fragt Choreothek immer nach – auch wenn „Nachfragen“ aus ist.",
       "balanceWarn": "Fällt das geschätzte Guthaben unter diesen Betrag, fragt Choreothek vor der KI-Nutzung nach.",
-      "balance": "Trag hier ein, wie viel du beim Anbieter aufgeladen hast. Choreothek zieht die geschätzten Kosten ab und zeigt, wie viel ungefähr noch übrig ist. Den echten Kontostand kann Choreothek beim Anbieter nicht abfragen.",
-      "costs": "Geschätzte Kosten je Monat und Anbieter, berechnet aus den Angaben der Anbieter und einer Preistabelle. Maßgeblich ist immer die Abrechnung des Anbieters."
+      "balance": "Trag hier in Euro ein, wie viel du beim Anbieter aufgeladen hast. Choreothek zieht die geschätzten Kosten ab und zeigt, wie viel ungefähr noch übrig ist. Den echten Kontostand kann Choreothek beim Anbieter nicht abfragen. Anthropic und OpenAI rechnen in US-Dollar ab – trag dort den ungefähren Euro-Betrag ein.",
+      "costs": "Geschätzte Kosten je Monat und Anbieter, berechnet aus den Angaben der Anbieter und einer Preistabelle. Die Anbieter nennen ihre Preise in US-Dollar; Choreothek rechnet mit einem festen Kurs in Euro um. Maßgeblich ist immer die Abrechnung des Anbieters."
     },
     "video": {
       "choose": "Choreothek vergleicht den Ton der gewählten Videos mit den Musikdateien im Jam-Ordner – wie eine Musikerkennungs-App, aber auf deinem PC. Vorgewählt sind Videos, die noch keinem Song zugeordnet sind.",

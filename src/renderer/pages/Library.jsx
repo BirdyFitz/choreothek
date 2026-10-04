@@ -20,7 +20,7 @@ import Splitter from '../components/Splitter.jsx'
 import { clampPaneWidth } from '../lib/paneWidth.js'
 import { meldeDatenGeaendert, DATEN_GEAENDERT, OPEN_IN_LIBRARY } from '../lib/events.js'
 import { usePersistent } from '../lib/usePersistent.js'
-import { formatUsd } from '../lib/money.js'
+import { formatEur } from '../lib/money.js'
 import Help from '../components/Help.jsx'
 import { t } from '../../shared/i18n.js'
 
@@ -169,7 +169,7 @@ function Editor({ type, id, onChanged }) {
       }
       setSongs(data.proposal.songs)
       setDirty({ head: Boolean(data.proposal.head), songs: true })
-      setMessage({ type: 'warning', text: t('library.proposal', { amount: formatUsd(data.aiCostUsd) }) })
+      setMessage({ type: 'warning', text: t('library.proposal', { amount: formatEur(data.aiCostEur) }) })
     })
 
   const startReextract = () =>

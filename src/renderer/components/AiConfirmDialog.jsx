@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { IconSparkles } from '@tabler/icons-react'
-import { formatUsd } from '../lib/money.js'
+import { formatEur } from '../lib/money.js'
 import { t } from '../../shared/i18n.js'
 
 // Meldung „Jetzt wird die KI genutzt“ (Grundsatz 5): Anbieter, Modell, was gesendet wird,
@@ -36,13 +36,13 @@ export default function AiConfirmDialog({ plan, onConfirm, onCancel }) {
           <dd>{t('aiDialog.sendsValue', { units, pdfs: plan.pdfCount, pages: plan.pages })}</dd>
           <dt>{t('aiDialog.cost')}</dt>
           <dd>
-            {t('aiDialog.costValue', { amount: formatUsd(plan.estimate.costUsd) })}
+            {t('aiDialog.costValue', { amount: formatEur(plan.estimate.costEur) })}
             {!plan.estimate.measured && <span className="muted"> {t('aiDialog.costRough')}</span>}
           </dd>
           {plan.balance && (
             <>
               <dt>{t('aiDialog.balance')}</dt>
-              <dd>{t('aiDialog.balanceValue', { now: formatUsd(plan.balance.remainingUsd), after: formatUsd(plan.balance.afterUsd) })}</dd>
+              <dd>{t('aiDialog.balanceValue', { now: formatEur(plan.balance.remainingEur), after: formatEur(plan.balance.afterEur) })}</dd>
             </>
           )}
         </dl>
@@ -60,7 +60,7 @@ export default function AiConfirmDialog({ plan, onConfirm, onCancel }) {
             {t('aiDialog.reasonsTitle')}
             <ul>
               {safetyReasons.map((r) => (
-                <li key={r}>{t(`aiDialog.reasons.${r}`, { limit: formatUsd(plan.costLimitUsd) })}</li>
+                <li key={r}>{t(`aiDialog.reasons.${r}`, { limit: formatEur(plan.costLimitEur) })}</li>
               ))}
             </ul>
           </div>
