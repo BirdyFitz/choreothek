@@ -246,7 +246,7 @@
     "keyStored": "Schlüssel ist gespeichert.",
     "keyMissing": "Noch kein Schlüssel gespeichert – Schlüssel einfügen und „Speichern und testen“ klicken.",
     "keyCreate": "Schlüssel beim Anbieter erstellen",
-    "privacy": "Mir ist bekannt, dass die Choreo-Notes-PDFs zum Auslesen an {provider} gesendet werden. Musik, Videos und die Datenbank bleiben auf meinem PC.",
+    "privacy": "Mir ist bekannt, dass die Choreo Notes von der KI analysiert werden, um die Videos und Musikdateien einander zuordnen zu können. Musik, Videos und die Datenbank bleiben auf meinem PC.",
     "privacyGoogle": "Hinweis: In der kostenlosen Stufe von Gemini darf Google die Inhalte zur Verbesserung seiner Produkte verwenden.",
     "askBeforeUse": "Vor jeder KI-Nutzung nachfragen",
     "costLimit": "Immer nachfragen ab (US-Dollar je Einlesen)",
@@ -302,7 +302,7 @@
       "modelChanged": "Anbieter oder Modell seit der letzten Bestätigung gewechselt wurden",
       "firstUse": "du die KI zum ersten Mal nutzt"
     },
-    "privacy": "Die PDFs gehen an {provider}. Musik, Videos und die Datenbank bleiben auf deinem PC.",
+    "privacy": "Die Choreo Notes werden von der KI analysiert, um die Videos und Musikdateien einander zuordnen zu können. Musik, Videos und die Datenbank bleiben auf deinem PC.",
     "dontAskAgain": "Nicht mehr fragen (wieder einschaltbar unter Einstellungen → KI)",
     "cancel": "Abbrechen",
     "confirm": "KI nutzen und einlesen"
@@ -395,7 +395,7 @@
     "welcome": {
       "title": "Willkommen bei Choreothek",
       "text": "Choreothek macht dein eigenes Archiv aus Jam Sessions, MegaMixen und Volumes durchsuchbar – nach Song, Rhythmus, Jammer, Ort und Datum – und zeigt dazu Choreo Notes, Musik und Videos.",
-      "privacy": "Deine Daten bleiben auf deinem PC. Nur zum Auslesen der Choreo-Notes-PDFs werden diese an den KI-Anbieter gesendet, den du selbst auswählst – und nie ohne vorherige Meldung.",
+      "privacy": "Deine Daten bleiben auf deinem PC. Nur die Choreo Notes werden von der KI analysiert, um die Videos und Musikdateien einander zuordnen zu können – und nie ohne vorherige Meldung.",
       "needFolders": "Du wählst die Ordner, in denen deine Jam Sessions, MegaMixe und Volumes liegen.",
       "needKey": "Für Jam Sessions und Volumes brauchst du einen eigenen API-Schlüssel bei Anthropic, OpenAI oder Google. Die Kosten rechnet der Anbieter direkt mit dir ab.",
       "megamixNoAi": "MegaMixe liest Choreothek ohne KI aus den Dateinamen."
@@ -713,7 +713,7 @@
       "provider": "Welcher KI-Dienst die Choreo Notes ausliest. Du brauchst dort ein eigenes Konto mit API-Schlüssel; die Kosten rechnet der Anbieter direkt mit dir ab.",
       "model": "Das KI-Modell des Anbieters. Vorbelegt ist das Modell mit dem besten Verhältnis aus Genauigkeit und Kosten im Test.",
       "key": "Dein persönlicher Zugangsschlüssel beim KI-Anbieter. Er wird verschlüsselt gespeichert, nur für dein Windows-Konto lesbar, und verlässt deinen PC nur Richtung Anbieter. „Speichern und testen“ prüft ihn kostenlos.",
-      "privacy": "Zum Auslesen gehen die Choreo-Notes-PDFs an den gewählten Anbieter. Ohne diese Bestätigung liest Choreothek nichts mit der KI.",
+      "privacy": "Die Choreo Notes werden von der KI analysiert, um die Videos und Musikdateien einander zuordnen zu können. Ohne diese Bestätigung liest Choreothek nichts mit der KI.",
       "askBeforeUse": "Vor jeder KI-Nutzung erscheint eine Meldung mit Anbieter, Umfang und geschätzten Kosten. Auch ausgeschaltet kommt sie, wenn die Kosten über der Grenze liegen, das Guthaben knapp wird oder Anbieter bzw. Modell gewechselt wurden.",
       "costLimit": "Ab diesen geschätzten Kosten je Einlesen fragt Choreothek immer nach – auch wenn „Nachfragen“ aus ist.",
       "balanceWarn": "Fällt das geschätzte Guthaben unter diesen Betrag, fragt Choreothek vor der KI-Nutzung nach.",
