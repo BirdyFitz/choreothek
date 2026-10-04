@@ -4,7 +4,8 @@ const LABEL_PATTERN = /^(?:\d+-)?(?:Maga|Mega)\s+Mix\s+(\d+)$/i;
 const TRACK_PATTERN = /^(\d+)\s+(.*)$/;
 
 export function parseMegaMixFilename(filename) {
-  const base = filename.replace(/\.mp3$/i, '');
+  // alle Audioformate, die das MegaMix-Einlesen annimmt (sonst landet z. B. „.wav“ im Rhythmus)
+  const base = filename.replace(/\.(mp3|m4a|wav|flac|ogg)$/i, '');
   const parts = base.split(' - ');
   if (parts.length < 3) {
     throw new Error(t('errors.unexpectedFilename', { file: filename }));
