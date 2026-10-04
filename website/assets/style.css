@@ -87,6 +87,7 @@ main { padding: 32px 0 64px; }
 
 .shot { margin: 24px 0; }
 .shot img { border-radius: var(--radius); border: 1px solid var(--line); display: block; }
+.shot video { width: 100%; height: auto; border-radius: var(--radius); border: 1px solid var(--line); display: block; background: #000; }
 .shot figcaption { font-size: .9rem; color: var(--muted); margin-top: 6px; }
 
 /* Anleitung */

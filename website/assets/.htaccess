@@ -10,6 +10,9 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME}.html -f
 RewriteRule ^([a-z-]+)/?$ $1.html [L]
 
+# Hilfevideos der Anleitung (wegen nosniff muss der Typ stimmen)
+AddType video/mp4 .mp4
+
 <IfModule mod_headers.c>
   Header set X-Content-Type-Options "nosniff"
   Header set Referrer-Policy "strict-origin-when-cross-origin"
